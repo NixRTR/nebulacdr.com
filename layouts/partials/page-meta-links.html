@@ -1,0 +1,20 @@
+{{/* Override: only show Create documentation issue, Create project issue, Print entire section.
+     Removed: View page source, Edit this page, Create child page (for end-user docs). */}}
+{{ if .File -}}
+{{ $path := strings.TrimPrefix (add hugo.WorkingDir "/") $.File.Filename -}}
+{{ $gh_repo := $.Param "github_repo" -}}
+{{ $gh_project_repo := $.Param "github_project_repo" -}}
+<div class="td-page-meta ms-2 pb-1 pt-2 mb-0">
+{{ if $gh_repo -}}
+  {{ $issuesURL := printf "%s/issues/new?title=%s" $gh_repo (safeURL $.Title ) -}}
+  <a href="{{ $issuesURL }}" class="td-page-meta--issue td-page-meta__issue" target="_blank" rel="noopener"><i class="fa-solid fa-list-check fa-fw"></i> {{ T "post_create_issue" }}</a>
+  {{ with $gh_project_repo -}}
+    {{ $project_issueURL := printf "%s/issues/new" . -}}
+    <a href="{{ $project_issueURL }}" class="td-page-meta--project td-page-meta__project-issue" target="_blank" rel="noopener"><i class="fa-solid fa-list-check fa-fw"></i> {{ T "post_create_project_issue" }}</a>
+  {{ end -}}
+{{ end -}}
+{{ with .CurrentSection.AlternativeOutputFormats.Get "print" -}}
+  <a id="print" href="{{ .RelPermalink | safeURL }}"><i class="fa-solid fa-print fa-fw"></i> {{ T "print_entire_section" }}</a>
+{{ end }}
+</div>
+{{ end -}}

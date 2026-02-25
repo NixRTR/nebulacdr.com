@@ -1,0 +1,121 @@
+baseURL: https://nebulacdr.com/
+title: Nebula Commander
+
+# Language settings
+contentDir: content/en
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: false
+enableMissingTranslationPlaceholders: true
+enableRobotsTXT: true
+enableGitInfo: false  # set true when repo has commits
+
+taxonomies:
+  tag: tags
+  category: categories
+
+pygmentsCodeFences: true
+pygmentsUseClasses: false
+pygmentsUseClassic: false
+pygmentsStyle: monokai
+
+mediaTypes:
+  text/redirects:
+    delimiter: ''
+
+outputFormats:
+  redirects:
+    baseName: _redirects
+    isPlainText: true
+    mediaType: text/redirects
+    root: true
+
+permalinks:
+  blog: /:section/:year/:month/:day/:slugorcontentbasename
+
+imaging:
+  resampleFilter: CatmullRom
+  quality: 75
+  anchor: smart
+
+languages:
+  en:
+    languageName: English
+    title: Nebula Commander
+    params:
+      description: A self-hosted control plane for Nebula overlay networks
+
+markup:
+  goldmark:
+    parser:
+      attribute:
+        block: true
+    renderer:
+      unsafe: true
+    highlight:
+      style: monokai
+      noClasses: false
+
+outputs:
+  home: [HTML, print, RSS, redirects]
+  section: [HTML, print, RSS]
+
+params:
+  taxonomy:
+    taxonomyCloud: [tags, categories]
+    taxonomyCloudTitle: [Tag Cloud, Categories]
+    taxonomyPageHeader: [tags, categories]
+
+  # Repository and project links
+  github_repo: https://github.com/NixRTR/nebula-commander
+  github_project_repo: https://github.com/NixRTR/nebula-commander
+  github_branch: main
+
+  # Disable search for now (no GCS ID)
+  # gcs_engine_id:
+  offlineSearch: false
+  prism_syntax_highlighting: false
+
+  copyright:
+    authors: "The Bearded Tek"
+    from_year: 2025
+    to_year: present
+
+  version: 0.1
+  archived_version: false
+
+  ui:
+    breadcrumb_disable: false
+    navbar_logo: true
+    navbar_translucent_over_cover_disable: false
+    sidebar_menu_foldable: true
+    sidebar_menu_compact: false
+    sidebar_search_disable: false
+    showLightDarkModeMenu: true
+    feedback:
+      enable: false
+    readingtime:
+      enable: false
+
+  links:
+    user:
+      - name: GitHub
+        url: https://github.com/NixRTR/nebula-commander
+        icon: fab fa-github
+        desc: Source code and issues
+      - name: Nebula
+        url: https://github.com/slackhq/nebula
+        icon: fa-solid fa-network-wired
+        desc: The overlay network Nebula Commander manages
+    developer:
+      - name: GitHub
+        url: https://github.com/NixRTR/nebula-commander
+        icon: fab fa-github
+        desc: Contribute and report issues
+
+module:
+  hugoVersion:
+    extended: true
+    min: "0.110.0"
+  imports:
+    - path: github.com/google/docsy
+      disable: false

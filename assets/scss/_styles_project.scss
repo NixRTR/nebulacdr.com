@@ -1,0 +1,342 @@
+// Nebula Commander custom styles
+
+// Lock site-wide font so it doesn't revert when other CSS or scripts run
+$font-family-sans: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+$font-family-brand: "Archivo Black", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+
+// Site-wide color scheme: purple in light mode, gold in dark mode
+:root,
+[data-bs-theme="light"] {
+  --bs-body-font-family: #{$font-family-sans} !important;
+  --bs-primary: #6f22cc;
+  --bs-primary-rgb: 111, 34, 204;
+  --bs-link-color: #6f22cc;
+  --bs-link-color-rgb: 111, 34, 204;
+  --bs-link-hover-color: #c9a227;
+  --bs-link-decoration: underline;
+  --bs-link-underline-opacity: 0.75;
+}
+[data-bs-theme="dark"] {
+  --bs-link-color: #cec074;
+  --bs-link-color-rgb: 206, 192, 116;
+  --bs-link-hover-color: #673ab7;
+  --bs-primary: #cec074;
+  --bs-primary-rgb: 206, 192, 116;
+  --bs-primary-text-emphasis: #e0d8a8;
+  --bs-primary-bg-subtle: rgba(206, 192, 116, 0.15);
+}
+body {
+  font-family: $font-family-sans !important;
+}
+
+// Link hover: yellow shade in light mode, primary purple in dark (override Bootstrap blue)
+a:hover,
+a:focus-visible {
+  color: var(--bs-link-hover-color) !important;
+}
+[data-bs-theme="light"] a:hover,
+[data-bs-theme="light"] a:focus-visible {
+  color: #c9a227 !important;
+}
+[data-bs-theme="dark"] a:hover,
+[data-bs-theme="dark"] a:focus-visible {
+  color: #673ab7 !important;
+}
+
+// "Nebula Commander" branding: Archivo Black + gold color #cec074
+.td-navbar .navbar-brand__name,
+.td-cover-block .display-1,
+.td-cover-block .display-4 {
+  font-family: $font-family-brand !important;
+  font-weight: 700;
+  color: #cec074 !important;
+}
+
+// Navbar: always dark (same as dark mode), regardless of site theme
+.td-navbar {
+  background-color: #212529 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  --td-navbar-bg-color: #212529;
+}
+.td-navbar .navbar-brand,
+.td-navbar .navbar-brand:hover {
+  color: inherit;
+}
+.td-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.td-navbar .nav-link:hover,
+.td-navbar .nav-link:focus {
+  color: rgba(255, 255, 255, 1) !important;
+}
+.td-navbar .dropdown-toggle,
+.td-navbar .bi {
+  color: inherit !important;
+}
+
+// Navbar: reduce gap between logo and "Nebula Commander" title
+.td-navbar .navbar-brand {
+  gap: 0.4rem;
+  align-items: center;
+}
+.td-navbar .navbar-brand__logo {
+  margin-right: 0;
+  flex-shrink: 0;
+}
+.td-navbar .navbar-brand__logo svg {
+  width: 2rem;
+  height: 2rem;
+  display: block;
+}
+
+// Hero cover block: nebula.webp background with dark overlay for readability
+
+.td-cover-block {
+  background: linear-gradient(135deg, #0d0221 0%, #1a0a2e 50%, #0f3460 100%);
+  background-image: url("/nebula.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+// Dark overlay: lower alpha = less muted, more of nebula.webp visible (adjust 0.35–0.5 to taste)
+.td-cover-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(13, 2, 33, 0.3) 0%, rgba(26, 10, 46, 0.25) 50%, rgba(15, 52, 96, 0.35) 100%);
+  pointer-events: none;
+}
+
+// Bolder hero text (title + description)
+.td-cover-block .display-1,
+.td-cover-block .display-4 {
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+.td-cover-block .lead {
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+// Ensure logo stands out on the cover
+.td-cover-block .hero-logo {
+  max-height: 200px;
+  width: auto;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.6));
+}
+
+// Hero CTA buttons: drop shadow; lock text/icon color on hover (no link-color override)
+.td-cover-block .btn {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+.td-cover-block .btn-primary,
+.td-cover-block .btn-primary:hover,
+.td-cover-block .btn-primary:focus,
+.td-cover-block .btn-primary:focus-visible {
+  color: #fff !important;
+}
+.td-cover-block .btn-primary i,
+.td-cover-block .btn-primary:hover i,
+.td-cover-block .btn-primary:focus i {
+  color: inherit !important;
+}
+.td-cover-block .btn-secondary,
+.td-cover-block .btn-secondary:hover,
+.td-cover-block .btn-secondary:focus,
+.td-cover-block .btn-secondary:focus-visible {
+  color: #111827 !important;
+}
+.td-cover-block .btn-secondary i,
+.td-cover-block .btn-secondary:hover i,
+.td-cover-block .btn-secondary:focus i {
+  color: inherit !important;
+}
+
+// Hero link-down (circle chevron): logo gold for contrast and brand alignment
+// Gold from logo gradient (#e0bc50 / #e0ba52); hover slightly darker for affordance
+.td-cover-block .btn-link.text-info {
+  color: #c9a227 !important;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+.td-cover-block .btn-link.text-info:hover,
+.td-cover-block .btn-link.text-info:focus {
+  color: #cec074 !important;
+}
+.td-cover-block .btn-link.text-info i {
+  color: inherit;
+}
+
+// Primary section (Networks & nodes, Web UI, Device client): purple + gold, no red/blue clash
+.td-box--primary {
+  background-color: #2d1b4e !important;
+  color: #e8e2d4 !important;
+  .td-arrow-down::before {
+    border-color: #2d1b4e transparent transparent transparent !important;
+  }
+  a,
+  p > a,
+  span > a {
+    color: #cec074 !important;
+  }
+  a:hover,
+  a:focus,
+  p > a:hover,
+  span > a:hover {
+    color: #e0d8a8 !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #e8e2d4 !important;
+  }
+}
+
+// Community page top section: same nebula.webp background and muting as hero
+.td-box--nebula-bg {
+  background: linear-gradient(135deg, #0d0221 0%, #1a0a2e 50%, #0f3460 100%) !important;
+  background-image: url("/nebula.webp") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+  position: relative;
+  padding-bottom: 50px !important;
+  color: #fff !important;
+  > .col-12 {
+    position: relative;
+    z-index: 2;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family-brand !important;
+    color: #cec074 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  p {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.4);
+  }
+  a {
+    color: #e0d8a8 !important;
+  }
+  a:hover,
+  a:focus {
+    color: #fff !important;
+  }
+}
+// Same dark overlay as hero (muted nebula) – match .td-cover-block::before
+.td-box--nebula-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(13, 2, 33, 0.3) 0%, rgba(26, 10, 46, 0.25) 50%, rgba(15, 52, 96, 0.35) 100%);
+  pointer-events: none;
+}
+// Hide solid chevron so nebula extends behind that area (padding-bottom extends the image)
+.td-box--nebula-bg .td-arrow-down::before {
+  display: none !important;
+}
+
+// Buttons: keep text color on hover/focus; only background (and border) should change
+.btn:hover,
+.btn:focus,
+.btn:focus-visible,
+.btn.active {
+  color: var(--bs-btn-color) !important;
+}
+
+// Primary: Add Network style (same for light and dark)
+.btn-primary {
+  --bs-btn-color: #fff;
+  background-color: #6f22cc !important;
+  border-color: #6f22cc !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #673ab7 !important;
+  border-color: #673ab7 !important;
+  color: #fff !important;
+}
+.btn-secondary {
+  --bs-btn-color: #111827;
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: #d1d5db !important;
+  border-color: #d1d5db !important;
+  color: #111827 !important;
+  opacity: 1;
+}
+
+// Code blocks: dark theme in dark mode (avoid white code blocks on dark background)
+[data-bs-theme="dark"] {
+  .highlight,
+  .chroma,
+  pre.chroma,
+  div.highlight pre,
+  td.code pre {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  // Chroma token overrides for readability on dark background (monokai-like)
+  .chroma .hl { color: #d4d4d4 !important; }
+  .chroma .c,
+  .chroma .ch,
+  .chroma .cm,
+  .chroma .cpf { color: #6a9955 !important; }  // comments
+  .chroma .k,
+  .chroma .kc,
+  .chroma .kd,
+  .chroma .kn,
+  .chroma .kp,
+  .chroma .kr,
+  .chroma .kt { color: #569cd6 !important; }   // keywords
+  .chroma .s,
+  .chroma .sa,
+  .chroma .sb,
+  .chroma .sc,
+  .chroma .dl,
+  .chroma .sd,
+  .chroma .s2,
+  .chroma .se,
+  .chroma .sh,
+  .chroma .si,
+  .chroma .sx,
+  .chroma .sr,
+  .chroma .s1,
+  .chroma .ss { color: #ce9178 !important; }  // strings
+  .chroma .n,
+  .chroma .na,
+  .chroma .nb,
+  .chroma .bp,
+  .chroma .nc,
+  .chroma .no,
+  .chroma .nd,
+  .chroma .ni,
+  .chroma .ne,
+  .chroma .nf,
+  .chroma .nl,
+  .chroma .nn,
+  .chroma .nx,
+  .chroma .py,
+  .chroma .nt,
+  .chroma .nv,
+  .chroma .vc,
+  .chroma .vg,
+  .chroma .vi,
+  .chroma .vm { color: #d4d4d4 !important; }   // names (default)
+  .chroma .mi,
+  .chroma .il { color: #b5cea8 !important; }    // numbers
+  .chroma .o,
+  .chroma .ow { color: #d4d4d4 !important; }   // operators
+  .chroma .p { color: #d4d4d4 !important; }   // punctuation
+  .chroma .nb,
+  .chroma .nf { color: #dcdcaa !important; }   // builtin / function
+}

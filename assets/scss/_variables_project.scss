@@ -1,0 +1,12 @@
+// Noto Sans for body text; Archivo Black for branding. Fonts loaded via layouts/partials/hooks/head-end.html
+// so they apply reliably and don't revert (no @import in main CSS).
+$td-enable-google-fonts: false !default;
+$td-google-font-name: "Noto Sans" !default;
+$td-google-font-family: "Noto+Sans:wght@400;700" !default;
+
+// Site-wide body font: Noto Sans, then current system fallbacks
+$font-family-sans-serif: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+
+// Primary = Add Network default (#6f22cc); hover = #673ab7. Same for light and dark.
+$primary: #6f22cc !default;
+$secondary: #6c757d !default; // .btn-secondary overridden in _styles_project
