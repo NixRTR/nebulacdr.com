@@ -1,7 +1,7 @@
 ---
 title: Development Setup
-linkTitle: Development
-weight: 30
+linkTitle: Setup
+weight: 10
 ---
 
 Run the backend and frontend locally for development.

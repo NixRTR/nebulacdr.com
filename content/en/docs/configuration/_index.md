@@ -1,6 +1,6 @@
 ---
-title: Configuration
-linkTitle: Configuration
+title: Server Configuration
+linkTitle: Server Configuration
 weight: 30
 ---
 

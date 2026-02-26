@@ -79,6 +79,6 @@ Both are installed to `%ProgramFiles%\Nebula Commander\`. The installer can add 
    ```powershell
    ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX
    ```
-2. Run the client from the command line or use the tray app from the Start Menu (see [Windows Tray](/docs/ncclient/usage/#windows-tray) in Usage).
+2. Run the client from the command line or use the tray app from the Start Menu (see [Windows Tray](/docs/usage/ncclient/usage/#windows-tray) in Usage).
 
-For building the MSI yourself, see [Building and CI: Manual builds](/docs/building-and-ci/manual-builds/#windows-msi).
+For building the MSI yourself, see [Development: Manual builds](/docs/development/manual-builds/#windows-msi).

@@ -1,10 +1,10 @@
 ---
-title: Manual Node Setup
-linkTitle: Manual Setup
+title: Running Nebula manually
+linkTitle: nebula
 weight: 30
 ---
 
-You can use Nebula Commander to create networks, nodes, and certificates, then run [Nebula](https://github.com/slackhq/nebula) on devices yourself without ncclient. Config and certs are copied or downloaded from the UI (or API) and you start Nebula manually.
+**This is the preferred method until [ncclient](/docs/usage/ncclient/) stabilizes.** You use Nebula Commander to create networks, nodes, and certificates, then run [Nebula](https://github.com/slackhq/nebula) on devices yourself without ncclient. Config and certs are copied or downloaded from the UI (or API) and you start Nebula manually.
 
 ## When to use this
 
@@ -12,7 +12,7 @@ You can use Nebula Commander to create networks, nodes, and certificates, then r
 - You do not want to enroll devices or run the ncclient daemon.
 - You are fine updating config and certs manually when the network or node changes (re-download from the UI or API and replace files, then restart Nebula).
 
-With [ncclient](/docs/ncclient/), the device enrolls once and ncclient polls for config and certs and can run or restart Nebula automatically. With manual setup, you handle file deployment and restarts yourself.
+With [ncclient](/docs/usage/ncclient/), the device enrolls once and ncclient polls for config and certs and can run or restart Nebula automatically. With manual setup, you handle file deployment and restarts yourself.
 
 ## Steps
 
@@ -25,14 +25,14 @@ In the [Web UI](/docs/usage/web-ui/): create a network, add a node for this devi
 
 ### 2. Get config and certs onto the device
 
-Download or copy from the UI (or use the API) the node’s config and certificate files. You typically need:
+Download or copy from the UI (or use the API) the node's config and certificate files. You typically need:
 
 - `config.yaml` (Nebula config for this node)
 - `ca.crt` (CA certificate)
 - `host.crt` (host certificate for this node)
 - `host.key` (only if you used Create certificate; with Sign, you already have this on the device)
 
-Where to get them depends on your Nebula Commander version: use the node’s detail or download actions in the UI, or the device/config API. Place the files in a directory on the device (e.g. `/etc/nebula` or `~/.nebula`).
+Where to get them depends on your Nebula Commander version: use the node's detail or download actions in the UI, or the device/config API. Place the files in a directory on the device (e.g. `/etc/nebula` or `~/.nebula`).
 
 ### 3. Install and run Nebula on the device
 
@@ -46,12 +46,12 @@ Use the path to the `config.yaml` you deployed. Nebula will read `ca.crt`, `host
 
 ### 4. Run Nebula at startup (optional)
 
-Use your platform’s init system so Nebula keeps running: systemd on Linux, launchd on macOS, or a Windows service/task. When you change config or certs (after re-downloading from Nebula Commander), replace the files and restart Nebula.
+Use your platform's init system so Nebula keeps running: systemd on Linux, launchd on macOS, or a Windows service/task. When you change config or certs (after re-downloading from Nebula Commander), replace the files and restart Nebula.
 
 ## Summary
 
-| | ncclient | Manual node setup |
-|--|----------|-------------------|
+| | ncclient | Manual (nebula) |
+|--|----------|-----------------|
 | Enrollment | One-time; device gets a token | None |
 | Config/certs | Fetched automatically by ncclient | You copy or download and place them |
 | Nebula process | ncclient can run or restart it | You run and restart Nebula yourself |

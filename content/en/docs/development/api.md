@@ -1,7 +1,7 @@
 ---
 title: API
 linkTitle: API
-weight: 50
+weight: 40
 ---
 
 The Nebula Commander backend exposes a REST API under the base path **`/api`**. All routes are prefixed with `/api`.

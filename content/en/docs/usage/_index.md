@@ -1,14 +1,12 @@
 ---
-title: Usage
-linkTitle: Usage
+title: Client Usage
+linkTitle: Client Usage
 weight: 40
 ---
 
-After [installation](/docs/installation/) and [configuration](/docs/configuration/), you use Nebula Commander in several ways:
+After [server installation](/docs/installation/) and [server configuration](/docs/configuration/), you can use the [Web UI](/docs/web-ui/) or run Nebula on devices:
 
-- **[Web UI](/docs/usage/web-ui/)** – Log in (OIDC or dev token when debug is on), then manage networks, nodes, certificates, and users. Access control is role-based (system-admin, network-owner, user).
-- **[Manual Setup](/docs/usage/manual-node-setup/)** – Use Nebula Commander to create networks, nodes, and certificates, then deploy config and certs yourself and run Nebula manually (no ncclient).
-
-For the device client (enroll, daemon, Windows tray), see [ncclient](/docs/ncclient/).
+- **[ncclient](/docs/usage/ncclient/)** – Device client (experimental): installation and usage (CLI, Windows Tray). ncclient will change often; see [nebula](/docs/usage/nebula/) for the stable approach.
+- **[nebula](/docs/usage/nebula/)** – Preferred method until ncclient stabilizes: create networks and nodes in the UI, then deploy config and certs yourself and run Nebula manually.
 
 All of these assume the backend is running and reachable at the URL you configure.

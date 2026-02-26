@@ -1,7 +1,7 @@
 ---
 title: GitHub Actions
-linkTitle: GitHub Actions
-weight: 10
+linkTitle: Github Actions
+weight: 20
 ---
 
 Nebula Commander uses two GitHub Actions workflows: one to build ncclient binaries (and create releases), and one to build and push Docker images.

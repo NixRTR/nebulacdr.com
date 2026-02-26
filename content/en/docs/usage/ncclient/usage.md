@@ -4,7 +4,7 @@ linkTitle: Usage
 weight: 20
 ---
 
-After [installing ncclient](/docs/ncclient/installation/), enroll the device once, then run the daemon (or install the service on Linux).
+After [installing ncclient](/docs/usage/ncclient/installation/), enroll the device once, then run the daemon (or install the service on Linux).
 
 ## Command Line
 
@@ -131,4 +131,4 @@ python build.py
 
 Output is in `client/windows/dist/` (e.g. `ncclient-tray.exe`). See [client/windows/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows/README.md) and `build.py` for details.
 
-The [Windows Tray installer](/docs/ncclient/installation/#windows-tray) (MSI) includes both the CLI and the tray app.
+The [Windows Tray installer](/docs/usage/ncclient/installation/#windows-tray) (MSI) includes both the CLI and the tray app.

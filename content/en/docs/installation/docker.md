@@ -306,7 +306,7 @@ docker compose build
 docker compose up -d
 ```
 
-See [Building and CI: Manual builds](/docs/building-and-ci/manual-builds/#docker) for build-args and multi-arch builds.
+See [Development: Manual builds](/docs/development/manual-builds/#docker) for build-args and multi-arch builds.
 
 ## Images
 

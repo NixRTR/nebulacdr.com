@@ -1,7 +1,7 @@
 ---
 title: Manual Builds
 linkTitle: Manual Builds
-weight: 20
+weight: 30
 ---
 
 You can build all ncclient binaries, the Windows tray app, the Windows MSI, and the Docker images locally without using GitHub Actions.

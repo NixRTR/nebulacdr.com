@@ -12,11 +12,10 @@ Welcome to the Nebula Commander documentation.
 This section contains guides for installing, configuring, and using Nebula Commander:
 
 - **[Getting started](/docs/getting-started/)** – What Nebula Commander is, features, and prerequisites
-- **[Installation](/docs/installation/)** – Docker (recommended), NixOS, Development
-- **[Configuration](/docs/configuration/)** – Environment variables, OIDC, and how to configure everything
-- **[Usage](/docs/usage/)** – Web UI and Manual Setup
-- **[ncclient](/docs/ncclient/)** – Device client: installation (pip, binaries, Windows Tray) and usage (CLI, Windows Tray)
-- **[API](/docs/api/)** – REST API base path and OpenAPI docs
-- **[Building and CI](/docs/building-and-ci/)** – GitHub Actions and manual builds (binaries, Docker, MSI)
+- **[Server Installation](/docs/installation/)** – Docker (recommended), NixOS
+- **[Server Configuration](/docs/configuration/)** – Environment variables, OIDC, and how to configure everything
+- **[Web UI](/docs/web-ui/)** – Networks, Groups, Nodes, Client Download, Invitations
+- **[Client Usage](/docs/usage/)** – ncclient (experimental), nebula (preferred)
+- **[Development](/docs/development/)** – Setup, GitHub Actions, manual builds, API
 
 When the backend is running, interactive API docs are available at `/api/docs`.
