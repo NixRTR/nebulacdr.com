@@ -6,6 +6,8 @@ weight: 20
 
 The **Groups** page lets you define Nebula security groups and their **inbound firewall rules** per network. Groups are used by nodes (each node has one or more groups). Firewall rules control which other groups can send traffic to this group and on what protocol and ports.
 
+![Groups page](/screenshots/groups%20-%20main.png)
+
 ## Selecting a network
 
 At the top of the Groups page, choose a **network** from the dropdown. Groups and rules are per network. Only networks you have access to appear in the list.
@@ -34,6 +36,8 @@ For each group you configure **inbound rules**: who can send traffic **to** this
 | **Description** | Optional note for the rule. |
 
 Example: To allow the group `laptops` to reach the group `servers` on TCP ports 80 and 443, add an inbound rule on the **servers** group with allowed group `laptops`, protocol `tcp`, and port range `80,443` (or two rules if your UI uses one port per rule).
+
+![Firewall rules per group](/screenshots/groups-rules.png)
 
 Rules are stored per group. After editing rules, click **Save** for that group. Changes apply when Nebula config is regenerated (e.g. when ncclient polls or you re-download config).
 

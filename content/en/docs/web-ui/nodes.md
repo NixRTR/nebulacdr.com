@@ -6,6 +6,8 @@ weight: 30
 
 The **Nodes** page lists all nodes across networks (or filtered by one network). You create nodes, assign IPs and groups, create or sign certificates, generate **enrollment codes** for [ncclient](/docs/usage/ncclient/), and download config.
 
+![Nodes list](/screenshots/nodes.png)
+
 ## Creating a node
 
 1. Open **Nodes** and optionally filter by network.
@@ -36,7 +38,9 @@ Not all options may be visible in the UI; the table covers the main ones from th
 
 ## Editing a node
 
-Click the node row or an **Edit** action to open the node details. Change hostname, group, lighthouse/relay, public endpoint, DNS, logging, or punchy options as needed. Save. If you change the certificate (create/sign) or group, config for this node will change; devices using ncclient will pick up the change on the next poll.
+Click the node row or an **Edit** action to open the node details.
+
+![Node detail](/screenshots/nodes-detail.png) Change hostname, group, lighthouse/relay, public endpoint, DNS, logging, or punchy options as needed. Save. If you change the certificate (create/sign) or group, config for this node will change; devices using ncclient will pick up the change on the next poll.
 
 ## Certificates: Create vs Sign
 

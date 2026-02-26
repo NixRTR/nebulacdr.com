@@ -6,6 +6,8 @@ weight: 35
 
 The Nebula Commander web UI is a React dashboard that talks to the backend API. You use it to manage networks, nodes, certificates, and users.
 
+![Web UI home](/screenshots/home.png)
+
 ## Logging in
 
 - **With OIDC** – When OIDC is configured ([OIDC](/docs/configuration/oidc/)), open the app URL and you are redirected to the provider (e.g. Keycloak). After login, you are sent back to the UI with a session.

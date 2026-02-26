@@ -6,6 +6,8 @@ weight: 10
 
 The **Networks** page lists all Nebula networks you can access and lets you create or delete networks. Each network has a name and a subnet (CIDR) used for IP allocation to nodes.
 
+![Networks page](/screenshots/networks.png)
+
 ## Adding a new network
 
 1. Open **Networks** in the sidebar.

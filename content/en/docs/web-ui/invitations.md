@@ -6,6 +6,8 @@ weight: 50
 
 The **Invitations** page lets network owners (and system admins) invite users to a network with a chosen **role** and permissions. Invitations work when OIDC is configured; invited users sign in via the IdP and then gain access to the specified network.
 
+![Invitations – send invite](/screenshots/invitations-send.png)
+
 ## What invitations are
 
 An invitation associates an **email** (or link) with a **network**, a **role** (e.g. member, admin), and optional **permissions** (can manage nodes, can invite users, can manage firewall). The invitee accepts by clicking a link or using a token; after acceptance they appear as a user with access to that network according to the role and permissions.
@@ -32,7 +34,9 @@ The invitee opens the invitation link (from email or shared link). The link cont
 
 ## Listing and revoking
 
-The Invitations page lists all invitations you created (or all invitations in the system if you are a system admin). You can see status (pending, accepted, expired), email, network, role, and expiry. To revoke a pending invitation, use the revoke or delete action; the link will no longer work.
+The Invitations page lists all invitations you created (or all invitations in the system if you are a system admin).
+
+![Invitations – pending list](/screenshots/invitations-pending.png) You can see status (pending, accepted, expired), email, network, role, and expiry. To revoke a pending invitation, use the revoke or delete action; the link will no longer work.
 
 ## Email delivery
 

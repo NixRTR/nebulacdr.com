@@ -6,6 +6,8 @@ weight: 40
 
 The **Client Download** page (also reachable from the sidebar or at `/client-download`) lets users download **ncclient** binaries served directly from your Nebula Commander instance. No internet access to GitHub is required after deployment.
 
+![Client Download page](/screenshots/client-download.png)
+
 ## Purpose
 
 Install and run ncclient on a device to enroll with Nebula Commander and pull config and certificates. The enrollment code is obtained from the [Nodes](/docs/web-ui/nodes/) page (Enroll button for the node). This page provides the CLI and, on Windows, the tray app.
