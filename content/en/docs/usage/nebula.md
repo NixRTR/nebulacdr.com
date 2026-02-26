@@ -18,7 +18,7 @@ With [ncclient](/docs/usage/ncclient/), the device enrolls once and ncclient pol
 
 ### 1. Create network and node in Nebula Commander
 
-In the [Web UI](/docs/usage/web-ui/): create a network, add a node for this device, and create or sign a certificate for the node.
+In the [Web UI](/docs/web-ui/): create a network, add a node for this device, and create or sign a certificate for the node.
 
 - **Create certificate** – The server generates the key and cert; you can download a bundle that includes `host.key`, `host.crt`, `ca.crt`, and config.
 - **Sign certificate** – You generate the key on the device; the server signs the cert. You will need to place your own `host.key` next to the downloaded certs.
