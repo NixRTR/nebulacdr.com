@@ -44,7 +44,7 @@ Create and manage Nebula networks, enroll nodes, handle IP allocation, and issue
 
 {{% blocks/feature title="Web UI" icon="fa-solid fa-desktop" %}}
 
-React-based dashboard with OIDC (e.g. Keycloak) or dev token authentication. Full API at `/api` with OpenAPI docs at `/api/docs`.
+React-based dashboard to create and manage your nebula networks. [See the docs](/docs/web-ui/) for usage and [api endpoints](/docs/development/api/).
 
 {{% /blocks/feature %}}
 
@@ -60,7 +60,7 @@ React-based dashboard with OIDC (e.g. Keycloak) or dev token authentication. Ful
 
 {{% blocks/feature title="NixOS & Docker" icon="fa-solid fa-box" %}}
 
-Run via the NixOS module or Docker. See the [nebula-commander repo](https://github.com/NixRTR/nebula-commander) for installation and configuration.
+Run via the NixOS module or Docker. [See the docs](/docs/installation/) for installation and configuration.
 
 {{% /blocks/feature %}}
 
