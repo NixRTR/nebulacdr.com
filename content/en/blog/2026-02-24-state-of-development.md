@@ -1,12 +1,12 @@
 ---
 title: "State of Nebula Commander Development (February 2025)"
 linkTitle: "State of Development (Feb 2025)"
-date: 2025-02-24
+date: 2026-02-24
 draft: false
 description: "A snapshot of what's implemented, what's in progress, and how you can run or contribute to Nebula Commander."
 ---
 
-Nebula Commander is a self-hosted control plane for [Nebula](https://github.com/slackhq/nebula) overlay networks. This post summarizes where the project stands as of early 2025 and how you can try it or contribute.
+Nebula Commander is a self-hosted control plane for [Nebula](https://github.com/slackhq/nebula) overlay networks. This post summarizes where the project stands as of February 2026 and how you can try it or contribute.
 
 ## What’s in place
 
@@ -31,5 +31,6 @@ The project is in **early development**. Core APIs and UI are implemented and us
 - **Run it** – Follow [Getting started](https://nebulacdr.com/docs/getting-started/) and [Server Installation](https://nebulacdr.com/docs/installation/), then use the [Web UI](https://nebulacdr.com/docs/web-ui/) to create a network and nodes.
 - **Contribute** – Code and issues live on [GitHub](https://github.com/NixRTR/nebula-commander). See [Development](https://nebulacdr.com/docs/development/) for local setup, GitHub Actions, manual builds, and API overview.
 - **Stay updated** – Check the [blog](/blog/) and the repo for announcements. We’ll post when we hit milestones (e.g. ncclient stability, new features, or release tagging).
+- **Join us on Matrix** - Join the [Nebula Commander Matrix Space](https://matrix.to/#/#nebula-commander:matrix.org) for discussions, support, and the latest development conversations.
 
 Thanks for your interest in Nebula Commander.

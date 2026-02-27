@@ -106,11 +106,10 @@ params:
         url: https://github.com/slackhq/nebula
         icon: fa-solid fa-network-wired
         desc: The overlay network Nebula Commander manages
-    developer:
-      - name: GitHub
-        url: https://github.com/NixRTR/nebula-commander
-        icon: fab fa-github
-        desc: Contribute and report issues
+      - name: Matrix
+        url: https://matrix.to/#/#nebula-commander:matrix.org
+        icon: fa-solid fa-comments
+        desc: Discussion and support for Nebula Commander
 
 module:
   hugoVersion:

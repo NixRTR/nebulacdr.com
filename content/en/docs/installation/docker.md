@@ -4,7 +4,7 @@ linkTitle: Docker (recommended)
 weight: 10
 ---
 
-Run Nebula Commander with Docker using pre-built images or a local build. You can download all required files without cloning the repository.
+Run Nebula Commander with Docker using pre-built images or a local build. You can download all required files without cloning the repository. For HTTPS and HSTS at the edge (Nginx, Traefik, or Caddy in front of the frontend container), see [Reverse Proxy](/docs/installation/reverse-proxy/).
 
 ## Downloading files
 

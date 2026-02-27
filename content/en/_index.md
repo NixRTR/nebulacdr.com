@@ -15,6 +15,9 @@ params:
 <a class="btn btn-lg btn-primary me-3 mb-4" href="/docs/">
   Documentation <i class="fa-solid fa-book ms-2"></i>
 </a>
+<a class="btn btn-lg btn-info me-3 mb-4" href="https://matrix.to/#/#nebula-commander:matrix.org" target="_blank" rel="noopener">
+  Discussion and Support <i class="fa-solid fa-comments ms-2"></i>
+</a>
 <a class="btn btn-lg btn-secondary mb-4" href="https://github.com/NixRTR/nebula-commander">
   Get the code <i class="fab fa-github ms-2"></i>
 </a>

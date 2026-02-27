@@ -59,6 +59,27 @@ a:focus-visible {
   color: rgba(255, 255, 255, 0.9) !important;
   --td-navbar-bg-color: #212529;
 }
+
+// Matrix / Element links: use Element logo for all Matrix support links
+a[href*="matrix.to/#/#nebula-commander:matrix.org"] {
+  position: relative;
+}
+
+a[href*="matrix.to/#/#nebula-commander:matrix.org"] i {
+  display: none;
+}
+
+a[href*="matrix.to/#/#nebula-commander:matrix.org"]::after {
+  content: "";
+  display: inline-block;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-left: 0.4rem;
+  background-image: url("/images/element-logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
 .td-navbar .navbar-brand,
 .td-navbar .navbar-brand:hover {
   color: inherit;

@@ -82,4 +82,4 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 
 - Generate a strong JWT secret for production (e.g. `openssl rand -base64 32`). Do not use the default.
 - Prefer `*_FILE` options (JWT, OIDC secret, SMTP password) over plain env vars when possible.
-- In production: set `DEBUG=false`, use HTTPS for PUBLIC_URL and OIDC, and set CORS_ORIGINS to your actual frontend origin(s).
+- In production: set `DEBUG=false`, use HTTPS for PUBLIC_URL and OIDC, and set CORS_ORIGINS to your actual frontend origin(s). For examples of putting Nebula Commander behind Nginx, Traefik, or Caddy with TLS and HSTS, see [Reverse Proxy](/docs/installation/reverse-proxy/).
