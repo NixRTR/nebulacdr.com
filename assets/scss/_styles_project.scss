@@ -80,6 +80,22 @@ a[href*="matrix.to/#/#nebula-commander:matrix.org"]::after {
   background-repeat: no-repeat;
   vertical-align: middle;
 }
+
+// Community page: show Element logo at start of text (before the link text)
+.community-links-section a[href*="matrix.to/#/#nebula-commander:matrix.org"]::after {
+  display: none;
+}
+.community-links-section a[href*="matrix.to/#/#nebula-commander:matrix.org"]::before {
+  content: "";
+  display: inline-block;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-right: 0.4rem;
+  background-image: url("/images/element-logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
 .td-navbar .navbar-brand,
 .td-navbar .navbar-brand:hover {
   color: inherit;

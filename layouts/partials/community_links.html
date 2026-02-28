@@ -1,0 +1,26 @@
+<section class="row td-box td-box--white td-box--height-auto community-links-section">
+  <div class="container">
+    <div class="row">
+      {{/* Learn and Connect (left) */}}
+      <div class="col-12 col-md-6 mb-4 mb-md-0">
+        <h2>Learn and Connect</h2>
+        <p>Using or want to use Nebula Commander? Find out more here:</p>
+        <ul class="list-unstyled">
+          {{ range .Site.Params.links.user }}
+            <li class="mb-2">
+              <a href="{{ .url }}" target="_blank" rel="noopener">
+                <i class="{{ .icon }} me-2" aria-hidden="true"></i>{{ .name }}: {{ .desc }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+      {{/* Develop and Contribute (right) – our contributing statement */}}
+      <div class="col-12 col-md-6">
+        <h2>Develop and Contribute</h2>
+        <p>If you want to get more involved by contributing to Nebula Commander, join us on <a href="https://matrix.to/#/#nebula-commander:matrix.org">Matrix</a>!</p>
+        <p>Contributions are welcome. Prefer small, focused PRs. Open an <a href="{{ .Site.Params.github_repo }}/issues">issue</a> or <a href="{{ .Site.Params.github_repo }}/pulls">PR</a> on GitHub to get started.</p>
+      </div>
+    </div>
+  </div>
+</section>
