@@ -20,7 +20,7 @@ The dashboard lets you manage networks, groups, and nodes; create or sign certif
 The experimental client enrolls with a one-time code, then polls the server for config and certificates and can run or restart Nebula when config changes. Available as a CLI and a Windows tray app; installable via `pip install nebula-commander` or from our [releases](https://github.com/NixRTR/nebula-commander/releases).
 
 **Deployment**  
-We document [Docker](https://nebulacdr.com/docs/installation/docker/) (recommended) and [NixOS](https://nebulacdr.com/docs/installation/nixos/) installation, plus [environment and OIDC configuration](https://nebulacdr.com/docs/configuration/). The docs site you’re reading is the project’s main documentation.
+We document [Docker](https://nebulacommander.com/docs/installation/docker/) (recommended) and [NixOS](https://nebulacommander.com/docs/installation/nixos/) installation, plus [environment and OIDC configuration](https://nebulacommander.com/docs/configuration/). The docs site you’re reading is the project’s main documentation.
 
 ## Current status
 
@@ -28,8 +28,8 @@ The project is in **early development**. Core APIs and UI are implemented and us
 
 ## How to get involved
 
-- **Run it** – Follow [Getting started](https://nebulacdr.com/docs/getting-started/) and [Server Installation](https://nebulacdr.com/docs/installation/), then use the [Web UI](https://nebulacdr.com/docs/web-ui/) to create a network and nodes.
-- **Contribute** – Code and issues live on [GitHub](https://github.com/NixRTR/nebula-commander). See [Development](https://nebulacdr.com/docs/development/) for local setup, GitHub Actions, manual builds, and API overview.
+- **Run it** – Follow [Getting started](https://nebulacommander.com/docs/getting-started/) and [Server Installation](https://nebulacommander.com/docs/installation/), then use the [Web UI](https://nebulacommander.com/docs/web-ui/) to create a network and nodes.
+- **Contribute** – Code and issues live on [GitHub](https://github.com/NixRTR/nebula-commander). See [Development](https://nebulacommander.com/docs/development/) for local setup, GitHub Actions, manual builds, and API overview.
 - **Stay updated** – Check the [blog](/blog/) and the repo for announcements. We’ll post when we hit milestones (e.g. ncclient stability, new features, or release tagging).
 - **Join us on Matrix** - Join the [Nebula Commander Matrix Space](https://matrix.to/#/#nebula-commander:matrix.org) for discussions, support, and the latest development conversations.
 
