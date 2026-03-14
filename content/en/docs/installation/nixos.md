@@ -73,7 +73,7 @@ In your system flake (e.g. `flake.nix` in `/etc/nixos` or your config directory)
 
   outputs = { self, nixpkgs, nebula-commander, ... }: {
     nixosConfigurations.yourHost = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      system = "x86_64-linux";   # or "aarch64-linux" for ARM, etc.
       modules = [
         ./configuration.nix
         nebula-commander.nixosModules.default   # exact name depends on what the flake exports
@@ -83,7 +83,7 @@ In your system flake (e.g. `flake.nix` in `/etc/nixos` or your config directory)
 }
 ```
 
-The exact attribute (e.g. `nebula-commander.nixosModules.default`) depends on what the nebula-commander flake exports. If the repository does not yet have a `flake.nix`, use the path-based import above. When a flake is added, it may expose the module under `nixosModules.default` or a named module; check the flake output.
+The exact attribute (e.g. `nebula-commander.nixosModules.default`) depends on what the nebula-commander flake exports. When the flake supports multiple systems, use `x86_64-linux`, `aarch64-linux`, or `aarch64-darwin` as appropriate for your host. If the repository does not yet have a `flake.nix`, use the path-based import above. When a flake is added, it may expose the module under `nixosModules.default` or a named module; check the flake output.
 
 ### 2. Enable the service and optional package
 

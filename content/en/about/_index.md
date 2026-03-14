@@ -1,6 +1,6 @@
 ---
 title: About Nebula Commander
-linkTitle: About
+linkTitle: Status
 menu:
   main:
     weight: 10
@@ -26,13 +26,15 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - Audit Logging
 - Basic Invitation System
 - User Management System
+- Magic DNS
+
 
 ### What's coming in v0.2.0
 
-- Stabilize client
-- Client UI via Web Interface
-- Magic DNS Implementation
-- Exit Nodes
+- [x] Stabilize client
+- [x] ~~Client UI via Web Interface~~ ***REMOVED***
+- [x] Magic DNS Implementation
+- [ ] Exit Nodes
 
 ## Installation options
 

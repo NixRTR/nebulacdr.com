@@ -41,6 +41,7 @@ Defaults: poll every 60 seconds, write files to `/etc/nebula` (or `~/.nebula` on
 | `--token-file PATH` | Path to device token file |
 | `--nebula PATH` | Path to the `nebula` binary if it is not on PATH |
 | `--restart-service NAME` | Instead of running nebula directly, restart this systemd service (e.g. `nebula`). Use only one of `--nebula` or `--restart-service`. |
+| `--accept-dns` | Enable split-horizon DNS: fetch DNS config from the server and apply it so the Nebula domain is resolved via the network's DNS (lighthouses). On Linux use systemd-resolved, dnsmasq, or similar (run as root); on Windows uses NRPT (run as Administrator). See [Split-horizon DNS](#split-horizon-dns) below. |
 
 Example with nebula in a non-standard location:
 
@@ -55,6 +56,10 @@ ncclient run --server https://nc.example.com --restart-service nebula
 ```
 
 **Linux:** Creating the Nebula TUN device requires root. Run ncclient as root, e.g. `sudo ncclient run --server https://...`.
+
+### Split-horizon DNS
+
+When the server has [DNS enabled](/docs/web-ui/dns/) for the network, you can pass `--accept-dns` so ncclient fetches the DNS config (domain and lighthouse IPs) and configures the host to resolve the Nebula domain via the network's DNS. On Linux the client tries, in order: **systemd-resolved**, **dnsmasq**, **NetworkManager**, **systemd-networkd**, then **/etc/resolv.conf** (best-effort). On Windows it uses NRPT. Run as root (Linux) or Administrator (Windows) to apply. To remove the DNS override on exit, stop ncclient normally (e.g. Ctrl+C); the client clears the rules on exit.
 
 **Certificates:** If the cert was **created** via the server (Create certificate in the UI), the bundle includes `host.key`. If it was **signed** (Sign flow), the server does not have the key; put your `host.key` in the same directory as the generated certs (the output dir).
 
@@ -97,7 +102,7 @@ The Windows tray app provides the same enroll-and-poll flow as the ncclient CLI 
 ### Usage
 
 - **Enroll** – Open the tray menu and use Enroll. Enter the server URL and the one-time code from Nebula Commander (Nodes → Enroll for the node). The token is stored in the same location as the CLI (`%USERPROFILE%\.config\nebula-commander\token`).
-- **Settings** – Configure server URL, output directory for config and certs, poll interval, and optional path to the Nebula binary. When the app is built with bundled Nebula, the default Nebula path points to the bundled `nebula.exe`.
+- **Settings** – Configure server URL, output directory for config and certs, poll interval, optional path to the Nebula binary, and **Accept split-horizon DNS** (when the server has DNS enabled for the network, the tray can apply DNS so the Nebula domain is resolved via the network's DNS; requires Administrator on Windows). When the app is built with bundled Nebula, the default Nebula path points to the bundled `nebula.exe`.
 - **Start / Stop polling** – Start polling to fetch config and certs periodically and optionally run Nebula. Stop to pause.
 - **Start at login** – When enabled, the app is registered in the Windows Registry (`HKCU\...\Run`) so it starts when you sign in. No Windows Service is installed; the tray runs as a normal app.
 

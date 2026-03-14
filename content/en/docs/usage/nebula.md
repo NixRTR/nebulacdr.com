@@ -4,7 +4,7 @@ linkTitle: nebula
 weight: 30
 ---
 
-**This is the preferred method until [ncclient](/docs/usage/ncclient/) stabilizes.** You use Nebula Commander to create networks, nodes, and certificates, then run [Nebula](https://github.com/slackhq/nebula) on devices yourself without ncclient. Config and certs are copied or downloaded from the UI (or API) and you start Nebula manually.
+This is the **manual** method: you use Nebula Commander to create networks, nodes, and certificates, then run [Nebula](https://github.com/slackhq/nebula) on devices yourself without ncclient. Config and certs are copied or downloaded from the UI (or API) and you start Nebula manually. Use this when you prefer to deploy config and certs yourself or when ncclient is not available (e.g. on mobile).
 
 ## When to use this
 
@@ -47,6 +47,10 @@ Use the path to the `config.yaml` you deployed. Nebula will read `ca.crt`, `host
 ### 4. Run Nebula at startup (optional)
 
 Use your platform's init system so Nebula keeps running: systemd on Linux, launchd on macOS, or a Windows service/task. When you change config or certs (after re-downloading from Nebula Commander), replace the files and restart Nebula.
+
+## Mobile devices
+
+**The official Nebula client from [defined.net](https://defined.net)** (Nebula app) is the only way to run Nebula on a mobile device for now. ncclient is not available on mobile. Use the defined.net app and deploy config and certs manually: create the node and certificate in Nebula Commander, download or copy the config and cert files (e.g. from the Web UI or API), then import or place them in the app as the defined.net client expects.
 
 ## Summary
 

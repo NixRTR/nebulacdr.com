@@ -17,6 +17,7 @@ The Nebula Commander web UI is a React dashboard that talks to the backend API. 
 
 - **[Networks](/docs/web-ui/networks/)** – Create and manage Nebula networks. As a network owner you control nodes, IP allocation, and firewall groups.
 - **[Groups](/docs/web-ui/groups/)** – Define security groups and inbound firewall rules per group.
+- **[DNS](/docs/web-ui/dns/)** – Configure split-horizon DNS per network (domain and hostname aliases). Used by ncclient with `--accept-dns` and by the Docker lighthouse client.
 - **[Nodes](/docs/web-ui/nodes/)** – Add nodes to networks, assign IPs, create or sign certificates, and generate enrollment codes for ncclient.
 - **[Client Download](/docs/web-ui/client-download/)** – Download ncclient binaries (CLI and Windows tray) served from this server.
 - **[Invitations](/docs/web-ui/invitations/)** – Invite users to networks with roles and permissions (when OIDC is enabled).

@@ -1,6 +1,7 @@
 # Hugo
 /public/
 /resources/_gen/
+_vendor/
 
 # Node (PostCSS)
 node_modules/

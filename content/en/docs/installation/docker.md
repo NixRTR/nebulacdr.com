@@ -337,10 +337,10 @@ See [Configuration](/docs/configuration/) for full option lists.
 
 ## With Keycloak (OIDC)
 
-To use Keycloak for login:
+The default `docker-compose.yml` **includes** the Keycloak stack via `include: path: ./docker-compose-keycloak.yml`, so a single command starts backend, frontend, and Keycloak:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose-keycloak.yml up -d
+docker compose up -d
 ```
 
 Configure OIDC in `env.d/backend` and optionally use the zero-touch Keycloak setup. Details: [Configuration: OIDC](/docs/configuration/oidc/).

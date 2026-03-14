@@ -27,7 +27,7 @@ The table shows for each network:
 - **Subnet** – CIDR (e.g. `10.100.0.0/24`).
 - **Actions** – Links to manage nodes in that network, and optionally delete.
 
-Clicking a network row or a "Nodes" link takes you to the [Nodes](/docs/web-ui/nodes/) page filtered to that network. From there you add nodes, assign IPs, and manage certificates.
+Clicking a network row or a "Nodes" link takes you to the [Nodes](/docs/web-ui/nodes/) page filtered to that network. From there you add nodes, assign IPs, and manage certificates. As a network owner you can also configure [DNS](/docs/web-ui/dns/) (split-horizon domain and aliases) for the network.
 
 ## Deleting a network
 

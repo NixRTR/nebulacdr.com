@@ -77,7 +77,7 @@ Manage Nebula nodes (hosts) within networks. Used by the Web UI and for manual c
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| `GET` | `/api/nodes` | Yes | List nodes. Query: optional `network_id`. Returns list of node objects (id, network_id, hostname, ip_address, groups, is_lighthouse, is_relay, status, etc.). |
+| `GET` | `/api/nodes` | Yes | List nodes. Query: optional `network_id`. Returns only nodes the user can access (networks they have permission for, or node-level access grants). Response: list of node objects (id, network_id, hostname, ip_address, groups, is_lighthouse, is_relay, status, etc.). |
 | `GET` | `/api/nodes/{node_id}` | Yes | Get a single node by ID. |
 | `PATCH` | `/api/nodes/{node_id}` | Yes | Update node. Body (all optional): `group`, `is_lighthouse`, `is_relay`, `public_endpoint`, `lighthouse_options`, `logging_options`, `punchy_options`. 409 if removing the only lighthouse. Response: `{"ok": true}`. |
 | `DELETE` | `/api/nodes/{node_id}` | Yes | Delete node: release IP, remove host cert/key files, delete related records. 204. 409 if node is the only lighthouse. |
@@ -110,6 +110,22 @@ Used by **ncclient** for enrollment and for fetching config/certs with a device 
 | `POST` | `/api/device/enroll` | No | **Public.** Redeem a one-time code. Body: `code`. Response: `device_token`, `node_id`, `hostname`. Rate limited (e.g. 5 attempts per 15 min per IP). 404 if code invalid/expired, 400 if already used or expired. |
 | `GET` | `/api/device/config` | Device token | Return Nebula YAML config for the device (inline PKI). Header: `Authorization: Bearer <device_token>`. Optional `If-None-Match: <etag>` for 304 when unchanged. |
 | `GET` | `/api/device/certs` | Device token | Return ZIP with `ca.crt`, `host.crt`, optional `host.key`, `README.txt` for the device. |
+| `GET` | `/api/device/dns-client-config` | Device token | Split-horizon DNS config for the device: `domain` and `dns_servers` (lighthouse Nebula IPs). 404 if DNS is not enabled for the network. Used by ncclient with `--accept-dns`. |
+| `GET` | `/api/device/dnsmasq.conf` | Device token | dnsmasq zone config for this device's network (for lighthouse/container clients). Returns `text/plain`. Optional `If-None-Match: <etag>` for 304. Rate limited per device. |
+
+---
+
+## Networks DNS (`/api/networks/{network_id}/dns`)
+
+Per-network DNS configuration for split-horizon DNS (domain and aliases). **Network owners only.**
+
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| `GET` | `/api/networks/{network_id}/dns` | Yes | Get DNS config: `domain`, `enabled`, `upstream_servers`. Default domain is network name when not set. |
+| `PUT` | `/api/networks/{network_id}/dns` | Yes | Update DNS config. Body: optional `domain`, `enabled`, `upstream_servers`. |
+| `GET` | `/api/networks/{network_id}/dns/aliases` | Yes | List DNS aliases (hostname → node). Response: list of `{id, alias, node_id, node_hostname}`. |
+| `POST` | `/api/networks/{network_id}/dns/aliases` | Yes | Create alias. Body: `alias` (hostname label), `node_id`. 409 if alias exists. |
+| `DELETE` | `/api/networks/{network_id}/dns/aliases/{alias_id}` | Yes | Delete alias. 204. |
 
 ---
 
@@ -194,9 +210,9 @@ Read-only audit log. **System admins only.**
 - **`/api`** — Root, health
 - **`/api/auth`** — Login, callback, dev-token, logout, reauth
 - **`/api/nodes`** — Heartbeat, and full node CRUD + config/certs/revoke/re-enroll
-- **`/api/networks`** — Networks CRUD, group firewall, check-ip, and network users (permissions)
+- **`/api/networks`** — Networks CRUD, group firewall, check-ip, network users (permissions), and per-network DNS (config and aliases)
 - **`/api/certificates`** — Sign host cert (client key), create host cert (server key), list certs
-- **`/api/device`** — Enrollment codes, enroll (public), config and certs (device token)
+- **`/api/device`** — Enrollment codes, enroll (public), config and certs (device token), dns-client-config and dnsmasq.conf for split-horizon DNS
 - **`/api/users`** — User list/detail/update/delete (system admin)
 - **`/api/node-requests`** — Create/list/approve/reject node requests
 - **`/api/access-grants`** — Create/list/revoke temporary admin access

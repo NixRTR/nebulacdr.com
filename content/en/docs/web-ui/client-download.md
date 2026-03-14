@@ -39,7 +39,7 @@ On Windows, add the directory containing `ncclient-windows-amd64.exe` to your PA
 
 For Windows, the page may offer:
 
-- **ncclient-tray-windows-amd64.exe** – Standalone tray application. Features: system tray icon, Start/Stop polling, Enroll dialog (paste code from Nodes page), Settings (server URL, output dir, poll interval), auto-start at login (Registry), and optionally bundled Nebula binary.
+- **ncclient-tray-windows-amd64.exe** – Standalone tray application. Features: system tray icon, Start/Stop polling, Enroll dialog (paste code from Nodes page), Settings (server URL, output dir, poll interval, optional split-horizon DNS), auto-start at login (Registry), and optionally bundled Nebula binary.
 
 Download and run; no installer required. Alternatively, use the **MSI installer** (e.g. `/downloads/NebulaCommander-windows-amd64.msi`) to install both the CLI and the tray app and add them to PATH.
 
