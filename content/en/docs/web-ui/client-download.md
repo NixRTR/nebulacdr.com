@@ -37,17 +37,18 @@ On Windows, add the directory containing `ncclient-windows-amd64.exe` to your PA
 
 ## Windows Tray App
 
-For Windows, the page may offer:
+For Windows, use the **MSI installer** (e.g. `/downloads/NebulaCommander-windows-amd64.msi`) - it installs the CLI, the unelevated tray control UI, and a background Windows Service together, and adds them to PATH. The service does the actual work (polling, running Nebula, split-horizon DNS) as `LocalSystem`, so nothing here needs an admin prompt.
 
-- **ncclient-tray-windows-amd64.exe** – Standalone tray application. Features: system tray icon, Start/Stop polling, Enroll dialog (paste code from Nodes page), Settings (server URL, output dir, poll interval, optional split-horizon DNS), auto-start at login (Registry), and optionally bundled Nebula binary.
+The page may also offer the tray and service executables individually:
 
-Download and run; no installer required. Alternatively, use the **MSI installer** (e.g. `/downloads/NebulaCommander-windows-amd64.msi`) to install both the CLI and the tray app and add them to PATH.
+- **ncclient-tray-windows-amd64.exe** – The tray control UI alone, without the service. Mainly useful for development (see [Windows Tray usage](/docs/usage/ncclient/usage/#windows-tray)) - since the service is only ever registered by the MSI, running this standalone has nothing to control and shows as unreachable. For normal use, install via the MSI instead.
+- **ncclient-service-windows-amd64.exe** – The service binary alone. Also mainly for development; normal installs get this through the MSI, which registers it as `NebulaCommanderService`.
 
 ## Getting the enrollment code
 
 1. In the Web UI, go to [Nodes](/docs/web-ui/nodes/).
 2. Open the node for this device (or create one and create/sign a certificate).
 3. Click **Enroll** and copy the one-time code.
-4. On the device, run: `ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX`.
+4. On the device: if you installed via the Windows MSI, enroll from the **tray app's Enroll dialog** using the server URL and code - the service picks it up automatically. Otherwise (CLI, Docker, other platforms), run: `ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX`, then `ncclient run --server https://YOUR_SERVER_URL` to start polling for config and certs.
 
-Then run `ncclient run --server https://YOUR_SERVER_URL` to start polling for config and certs. See [ncclient usage](/docs/usage/ncclient/usage/) for full steps.
+See [ncclient usage](/docs/usage/ncclient/usage/) for full steps.

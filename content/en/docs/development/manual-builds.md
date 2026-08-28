@@ -4,7 +4,7 @@ linkTitle: Manual Builds
 weight: 30
 ---
 
-You can build all ncclient binaries, the Windows tray app, the Windows MSI, and the Docker images locally without using GitHub Actions.
+You can build all ncclient binaries, the Windows tray app and service, the Windows MSI, and the Docker images locally without using GitHub Actions.
 
 ## ncclient CLI (standalone binary)
 
@@ -48,7 +48,9 @@ On a Windows ARM64 machine (or with an ARM64 Python), install dependencies and r
 
 ---
 
-## Windows tray app
+## Windows tray app and service
+
+The tray is an unelevated control UI; the service (`NebulaCommanderService`) is what actually polls for config/certs and runs Nebula, as `LocalSystem`. Both are built from `client/windows/`.
 
 From the repository root:
 
@@ -60,17 +62,20 @@ cd client/windows
 python build.py
 ```
 
-Output: `client/windows/dist/ncclient-tray.exe`. The build can optionally bundle the Nebula Windows binary; see `client/windows/README.md` and `build.py` for details.
+`build.py` builds **both** executables by default (`--target both`). Use `--target tray` or `--target service` to build just one. Output: `client/windows/dist/ncclient-tray.exe` and `client/windows/dist/ncclient-service.exe`. The tray build can optionally bundle the Nebula Windows binary; see `client/windows/README.md` and `build.py` for details.
+
+Note: `ncclient-service.exe` only does anything useful when registered as a real Windows Service (which the MSI does via WiX's `ServiceInstall`/`ServiceControl` elements) - there is no standalone `install`/`remove` subcommand.
 
 ---
 
 ## Windows MSI
 
-The MSI installs the ncclient CLI and the tray app. You need both executables and WiX 5.
+The MSI installs the ncclient CLI, the tray app, and the service. You need all three executables and WiX 5.
 
-1. **Get the two executables** – Build as above or download from a release. Copy them into `installer/windows/redist/`:
+1. **Get the three executables** – Build as above or download from a release. Copy them into `installer/windows/redist/`:
    - `redist/ncclient.exe` (from `client/binaries/dist/ncclient.exe`)
    - `redist/ncclient-tray.exe` (from `client/windows/dist/ncclient-tray.exe`)
+   - `redist/ncclient-service.exe` (from `client/windows/dist/ncclient-service.exe`)
 
 2. **Install WiX 5** – e.g. `dotnet tool install --global wix --version 5.0.2`. Add the Util extension once:
    ```powershell
@@ -83,7 +88,7 @@ The MSI installs the ncclient CLI and the tray app. You need both executables an
    ```
    Replace `0.1.12` with the version you are building.
 
-Output: `NebulaCommander-windows-amd64.msi`.
+Output: `NebulaCommander-windows-amd64.msi`. Installing it registers `NebulaCommanderService` (auto-start, `LocalSystem`) and grants Authenticated Users start/stop/query rights on it, so the tray's Start/Stop/Restart Service menu works without a UAC prompt.
 
 ---
 

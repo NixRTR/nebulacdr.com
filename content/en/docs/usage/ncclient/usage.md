@@ -93,20 +93,22 @@ Token: `~/.config/nebula-commander/token` (or `/etc/nebula-commander/token` as r
 
 ### Windows notes (CLI)
 
-Token: `%USERPROFILE%\.config\nebula-commander\token`. Default output dir: `%USERPROFILE%\.nebula`. Use `--nebula` if `nebula.exe` is not on PATH. Do not use `--restart-service`. For a GUI and start at login, use the [Windows Tray](#windows-tray) section below.
+Token: `%USERPROFILE%\.config\nebula-commander\token`. Default output dir: `%USERPROFILE%\.nebula`. Use `--nebula` if `nebula.exe` is not on PATH. Do not use `--restart-service`. This plain-CLI token/output location is separate from the shared, service-managed location the tray/service use below - for a GUI and no manual daemon management, use the [Windows Tray](#windows-tray) section below instead.
 
 ## Windows Tray
 
-The Windows tray app provides the same enroll-and-poll flow as the ncclient CLI but with a GUI: tray icon, Enroll and Settings dialogs, Start/Stop polling, optional bundled Nebula, and **Start at login** (Registry Run).
+On Windows, the tray app is an **unelevated control UI** for a background **Windows Service** (`NebulaCommanderService`). The service does the actual work - polling for config/certs and running Nebula - as `LocalSystem`, so there is no UAC prompt at any point: not to launch the tray, not to enroll, not to start/stop/restart the daemon, and not to apply split-horizon DNS.
+
+The tray and service are installed together by the [MSI installer](/docs/usage/ncclient/installation/#windows-installer). The tray is not designed to run standalone without it - the service is only ever registered by the MSI (there is no CLI `install`/`remove` subcommand for it), so a standalone tray with no service installed has nothing to control and shows as unreachable.
 
 ### Usage
 
-- **Enroll** – Open the tray menu and use Enroll. Enter the server URL and the one-time code from Nebula Commander (Nodes → Enroll for the node). The token is stored in the same location as the CLI (`%USERPROFILE%\.config\nebula-commander\token`).
-- **Settings** – Configure server URL, output directory for config and certs, poll interval, optional path to the Nebula binary, and **Accept split-horizon DNS** (when the server has DNS enabled for the network, the tray can apply DNS so the Nebula domain is resolved via the network's DNS; requires Administrator on Windows). When the app is built with bundled Nebula, the default Nebula path points to the bundled `nebula.exe`.
-- **Start / Stop polling** – Start polling to fetch config and certs periodically and optionally run Nebula. Stop to pause.
-- **Start at login** – When enabled, the app is registered in the Windows Registry (`HKCU\...\Run`) so it starts when you sign in. No Windows Service is installed; the tray runs as a normal app.
+- **Enroll** – Open the tray menu and use Enroll. Enter the server URL and the one-time code from Nebula Commander (Nodes → Enroll for the node). This writes the device token (DPAPI-encrypted, machine-scope) and settings to the shared `%ProgramData%\nebula-commander\` folder the service reads from, then tells the service (over a local named pipe) to poll immediately instead of waiting for the next interval.
+- **Settings** – Configure server URL, poll interval, optional path to the Nebula binary, and **Accept split-horizon DNS**. There is no output-directory field - Nebula's config, certs, and logs always live under `%ProgramData%\nebula-commander\`. When the app is built with bundled Nebula, the default Nebula path points to the bundled `nebula.exe`.
+- **Start / Stop / Restart Service** – Controls the real Windows Service via the Service Control Manager (not an in-process loop). The installer grants Authenticated Users the rights to do this, so it works with no admin prompt.
+- **Run On Startup** – Optional: registers the tray itself (the UI) in the Windows Registry (`HKCU\...\Run`) so the icon appears when you sign in. This only affects the tray UI - the service already starts automatically at boot (`Start="auto"`, `LocalSystem`) regardless of whether anyone is logged in.
 
-Settings are stored in `%APPDATA%\nebula-commander\settings.json`.
+Settings are stored in `%ProgramData%\nebula-commander\settings.json` - shared between the tray and the service, not the per-user `%APPDATA%` location older versions used.
 
 ### Run from source
 
@@ -124,9 +126,11 @@ Or with `pythonw` to avoid a console window:
 pythonw -m client.windows.tray
 ```
 
+Running this way still expects a real installed-and-running `NebulaCommanderService` to control - it won't do anything useful on a machine without one.
+
 ### Build (PyInstaller)
 
-To build a standalone `ncclient-tray.exe` (and optionally bundle the Nebula Windows binary):
+To build the standalone tray and service executables (and optionally bundle the Nebula Windows binary):
 
 ```bash
 cd client/windows
@@ -134,6 +138,6 @@ pip install -r requirements.txt pyinstaller
 python build.py
 ```
 
-Output is in `client/windows/dist/` (e.g. `ncclient-tray.exe`). See [client/windows/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows/README.md) and `build.py` for details.
+By default `build.py` builds **both** `ncclient-tray.exe` and `ncclient-service.exe` (`--target both`); pass `--target tray` or `--target service` to build just one. Output is in `client/windows/dist/`. See [client/windows/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows/README.md) and `build.py` for details.
 
-The [Windows Tray installer](/docs/usage/ncclient/installation/#windows-tray) (MSI) includes both the CLI and the tray app.
+The [Windows MSI installer](/docs/usage/ncclient/installation/#windows-installer) installs and registers all three: `ncclient.exe`, `ncclient-tray.exe`, and `ncclient-service.exe`.

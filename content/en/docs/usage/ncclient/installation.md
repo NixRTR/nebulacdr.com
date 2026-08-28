@@ -84,14 +84,15 @@ Pre-built binaries are attached to [GitHub Releases](https://github.com/NixRTR/n
 
 ## Windows Installer
 
-On Windows you can install both the ncclient CLI and the optional tray app using the MSI installer.
+On Windows the MSI installer sets up the ncclient CLI, an unelevated tray control UI, and a background Windows Service that does the actual work as `LocalSystem` - no UAC prompts for enrolling, starting/stopping, or applying split-horizon DNS.
 
 **What the installer includes:**
 
 - **ncclient** – CLI for enrollment and daemon (poll for config/certs, run or restart Nebula).
-- **ncclient-tray** – System tray app: enroll, settings, start/stop polling, optional bundled Nebula, start at login.
+- **ncclient-tray** – Unelevated system tray control UI: enroll, settings, and start/stop/restart the background service.
+- **ncclient-service** – The `NebulaCommanderService` Windows Service that polls for config/certs and runs Nebula as `LocalSystem`. Starts automatically at boot; the tray talks to it over a local named pipe.
 
-Both are installed to `%ProgramFiles%\Nebula Commander\`. The installer can add that directory to PATH and create Start Menu shortcuts.
+All three are installed to `%ProgramFiles%\Nebula Commander\`. The installer can add that directory to PATH, creates Start Menu shortcuts, and registers/starts the service.
 
 **Getting the installer:**
 
@@ -100,11 +101,8 @@ Both are installed to `%ProgramFiles%\Nebula Commander\`. The installer can add 
 
 **After install:**
 
-1. Enroll: in Nebula Commander go to **Nodes**, open the node, click **Enroll**, and copy the code. Then run:
-   ```powershell
-   ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX
-   ```
-2. Run the client from the command line or use the tray app from the Start Menu (see [Windows Tray](/docs/usage/ncclient/usage/#windows-tray) in Usage).
+1. Open the tray app from the Start Menu and use **Enroll**: paste the server URL and the one-time code from Nebula Commander (**Nodes** → open the node → **Enroll**). This is the recommended way to enroll after an MSI install - it writes the token where the service reads it (`%ProgramData%\nebula-commander\`) and immediately notifies the service to fetch config. (The CLI's `ncclient enroll` writes to a separate per-user location the service does not read from, so avoid it for MSI installs unless you've explicitly redirected `NEBULA_COMMANDER_CONFIG_DIR`.)
+2. The service starts polling automatically once enrolled - nothing else to run. Use the tray's Start/Stop/Restart Service menu to control it, and Settings to change server URL, poll interval, or enable split-horizon DNS. See [Windows Tray](/docs/usage/ncclient/usage/#windows-tray) in Usage for details.
 
 For building the MSI yourself, see [Development: Manual builds](/docs/development/manual-builds/#windows-msi).
 

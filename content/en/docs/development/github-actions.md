@@ -31,9 +31,9 @@ Windows ARM64 is not built (GitHub has no Windows ARM64 runners). Linux ARM64 is
 ### Jobs and outputs
 
 1. **build** – Matrix job: builds the ncclient CLI for each platform. Uploads one artifact per platform.
-2. **build-windows-tray** – Builds the Windows tray app (`ncclient-tray.exe`) with optional bundled Nebula. Depends on the CLI build; uploads `ncclient-tray-windows-amd64.exe`.
-3. **build-msi** – Runs only on tag pushes. Downloads the Windows CLI and tray artifacts, copies them into `installer/windows/redist/`, builds the MSI with WiX 5, and uploads `NebulaCommander-windows-amd64.msi`.
-4. **upload-release** – Runs only on tag pushes. Downloads all artifacts (CLI, tray, MSI), flattens them, generates `SHA256SUMS.txt`, and uploads everything to the GitHub Release for that tag. Release is not draft; files can be overwritten.
+2. **build-windows-tray** – Builds the Windows tray control UI and the `NebulaCommanderService` background service (`python build.py --target both`), with optional bundled Nebula. Depends on the CLI build; uploads `ncclient-tray-windows-amd64.exe` and `ncclient-service-windows-amd64.exe` as separate artifacts.
+3. **build-msi** – Runs only on tag pushes. Downloads the Windows CLI, tray, and service artifacts, copies all three into `installer/windows/redist/`, builds the MSI with WiX 5, and uploads `NebulaCommander-windows-amd64.msi`.
+4. **upload-release** – Runs only on tag pushes. Downloads all artifacts (CLI, tray, service, MSI), flattens them, generates `SHA256SUMS.txt`, and uploads everything to the GitHub Release for that tag. Release is not draft; files can be overwritten.
 5. **checksums** – Generates checksums for the Actions UI; release gets checksums from the upload-release job.
 6. **summary** – Prints build status and notes that release binaries were uploaded when the run was tag-triggered.
 
@@ -45,7 +45,7 @@ Windows ARM64 is not built (GitHub has no Windows ARM64 runners). Linux ARM64 is
    git tag v0.1.5
    git push origin v0.1.5
    ```
-3. The workflow builds all platforms, the tray app, and the MSI, then creates the release and attaches all binaries and SHA256SUMS.
+3. The workflow builds all platforms, the tray app, the service, and the MSI, then creates the release and attaches all binaries and SHA256SUMS.
 
 ### Manual run
 
