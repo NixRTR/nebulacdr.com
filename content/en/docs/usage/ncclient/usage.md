@@ -99,7 +99,7 @@ Token: `%USERPROFILE%\.config\nebula-commander\token`. Default output dir: `%USE
 
 On Windows, the tray app is an **unelevated control UI** for a background **Windows Service** (`NebulaCommanderService`). The service does the actual work - polling for config/certs and running Nebula - as `LocalSystem`, so there is no UAC prompt at any point: not to launch the tray, not to enroll, not to start/stop/restart the daemon, and not to apply split-horizon DNS.
 
-The tray and service are installed together by the [MSI installer](/docs/usage/ncclient/installation/#windows-installer). The tray is not designed to run standalone without it - the service is only ever registered by the MSI (there is no CLI `install`/`remove` subcommand for it), so a standalone tray with no service installed has nothing to control and shows as unreachable.
+The tray and service are installed together by the [MSI installer](/docs/usage/ncclient/installation/windows/). The tray is not designed to run standalone without it - the service is only ever registered by the MSI (there is no CLI `install`/`remove` subcommand for it), so a standalone tray with no service installed has nothing to control and shows as unreachable.
 
 ### Usage
 
@@ -140,4 +140,4 @@ python build.py
 
 By default `build.py` builds **both** `ncclient-tray.exe` and `ncclient-service.exe` (`--target both`); pass `--target tray` or `--target service` to build just one. Output is in `client/windows/dist/`. See [client/windows/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows/README.md) and `build.py` for details.
 
-The [Windows MSI installer](/docs/usage/ncclient/installation/#windows-installer) installs and registers all three: `ncclient.exe`, `ncclient-tray.exe`, and `ncclient-service.exe`.
+The [Windows MSI installer](/docs/usage/ncclient/installation/windows/) installs and registers all three: `ncclient.exe`, `ncclient-tray.exe`, and `ncclient-service.exe`.

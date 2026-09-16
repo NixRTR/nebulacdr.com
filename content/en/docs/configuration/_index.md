@@ -20,4 +20,4 @@ See [Installation: Docker](/docs/installation/docker/#configuration) for the cop
 
 ## NixOS
 
-NixOS options (port, backendPort, databasePath, certStorePath, jwtSecretFile, debug) are documented in [Installation: NixOS](/docs/installation/nixos/). For OIDC and other backend-only settings, extend the service environment or point the backend at a config file if your setup supports it.
+`services.nebula-commander` exposes most of these settings as first-class options, including OIDC, `publicUrl`, `corsOrigins`, and `sessionHttpsOnly` — see [Installation: NixOS](/docs/installation/nixos/) for the full option table. Anything not yet exposed as an option can still be set by extending the service `environment` directly with the matching `NEBULA_COMMANDER_*` variable. A separate `services.ncclient` module is also available for running the device client declaratively.

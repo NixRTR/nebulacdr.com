@@ -14,7 +14,12 @@ Nebula Commander is a self-hosted control plane for [Nebula](https://github.com/
 
 ## Status
 
-Early development. Core APIs and UI are implemented.
+v0.3.0. The core control plane (networks, nodes, certificates, firewall groups, Magic
+DNS, audit logging, invitations, user management) and the web UI are mature and in
+production use. The device client (`ncclient`) ships as a CLI, a Windows service +
+tray app, a Docker image, and a NixOS module, with mobile support (iOS/Android via
+the official Mobile Nebula app). See [About: Status](/about/) for the full picture,
+including what's still planned.
 
 ## Prerequisites
 

@@ -211,44 +211,154 @@ Full example. See [Configuration: Environment](/docs/configuration/environment/)
 # =============================================================================
 # Nebula Commander Backend Configuration
 # =============================================================================
-# All variables use the NEBULA_COMMANDER_ prefix.
+# This file contains all backend-specific settings including database, JWT,
+# OIDC, CORS, and debug mode. All variables use the NEBULA_COMMANDER_ prefix.
 
-# Database
+# =============================================================================
+# Database Configuration
+# =============================================================================
+
+# SQLite database URL: use four slashes for absolute path (so DB is at /var/lib/..., not CWD/var/lib/...)
 NEBULA_COMMANDER_DATABASE_URL=sqlite+aiosqlite:////var/lib/nebula-commander/db.sqlite
+
+# Certificate storage path (inside container)
 NEBULA_COMMANDER_CERT_STORE_PATH=/var/lib/nebula-commander/certs
 
-# JWT (generate with: openssl rand -base64 32)
+# =============================================================================
+# JWT Authentication
+# =============================================================================
+
+# JWT secret key for signing tokens
+# WARNING: Generate a secure random key for production! Use: openssl rand -base64 32
+# DO NOT use this example value in production!
 NEBULA_COMMANDER_JWT_SECRET_KEY=CHANGE_ME_GENERATE_RANDOM_32_CHARS_MIN
+
+# Alternative: Use a secret file (more secure)
+# NEBULA_COMMANDER_JWT_SECRET_FILE=/run/secrets/jwt-secret
+
+# JWT algorithm (HS256, HS384, HS512)
 NEBULA_COMMANDER_JWT_ALGORITHM=HS256
+
+# JWT token expiration in minutes (1440 = 24 hours)
 NEBULA_COMMANDER_JWT_EXPIRATION_MINUTES=1440
 
-# Public URL (FQDN or host:port)
+# =============================================================================
+# Encryption at rest (required)
+# =============================================================================
+# Fernet key for encrypting sensitive DB columns and cert store files.
+# Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# Required at startup - the backend refuses to boot without one.
+NEBULA_COMMANDER_ENCRYPTION_KEY=your-fernet-key-here
+
+# Alternative: key from file
+# NEBULA_COMMANDER_ENCRYPTION_KEY_FILE=/run/secrets/encryption-key
+
+# =============================================================================
+# Public URL (required for OIDC and redirects)
+# =============================================================================
+# Base URL where users reach the app (browser). All auth redirects and callbacks
+# use this. Supports FQDN or host:port. Backend and frontend may be on different hosts.
+# Examples: https://nebula.example.com  |  http://192.168.1.1:9091
+# If set, OIDC redirect URI is derived as PUBLIC_URL + /api/auth/callback.
 NEBULA_COMMANDER_PUBLIC_URL=https://nebula.example.com
 
-# OIDC (optional)
+# =============================================================================
+# Standalone Admin Bootstrap (only relevant if you skip OIDC entirely)
+# =============================================================================
+# When no OIDC provider is configured below, /api/auth/dev-token is disabled by
+# default. If you're running standalone with no IdP and need the UI to be able
+# to self-issue an initial admin session, opt in explicitly here.
+# WARNING: This grants unauthenticated system-admin access to anyone who can
+# reach the backend. Only enable for a genuinely no-IdP deployment.
+# NEBULA_COMMANDER_STANDALONE_ADMIN_BOOTSTRAP=true
+
+# =============================================================================
+# OIDC Configuration (Optional)
+# =============================================================================
+# Uncomment and configure to use OIDC authentication with Keycloak or other providers.
+# All user-facing auth (login redirect, callback, logout) goes through the public URL above.
+
+# OIDC Issuer URL (internal - backend→Keycloak, same Docker network only)
+# Use CONTAINER port (8080). If Keycloak host port is 8082, still use 8080 here.
 NEBULA_COMMANDER_OIDC_ISSUER_URL=http://keycloak:8080/realms/nebula-commander
+
+# OIDC Public Issuer URL (external - for browser: logout, discovery)
+# Keycloak as seen by the user's browser: FQDN or host:port.
+# Examples: https://auth.example.com/realms/nebula-commander  |  http://host:8082/realms/nebula-commander
 NEBULA_COMMANDER_OIDC_PUBLIC_ISSUER_URL=https://auth.example.com/realms/nebula-commander
+
+# OIDC Client ID (configured in Keycloak)
 NEBULA_COMMANDER_OIDC_CLIENT_ID=nebula-commander
+
+# OIDC Client Secret (from Keycloak client credentials)
+# WARNING: Replace with your actual Keycloak client secret! Do not use this placeholder.
 NEBULA_COMMANDER_OIDC_CLIENT_SECRET=YOUR_KEYCLOAK_CLIENT_SECRET_HERE
+
+# Alternative: Use a secret file (more secure)
+# NEBULA_COMMANDER_OIDC_CLIENT_SECRET_FILE=/run/secrets/oidc-secret
+
+# Redirect URI: derived from NEBULA_COMMANDER_PUBLIC_URL when unset (PUBLIC_URL + /api/auth/callback).
+# Override only if you need a different callback URL.
+# NEBULA_COMMANDER_OIDC_REDIRECT_URI=
+
+# OIDC Scopes (space-separated)
 NEBULA_COMMANDER_OIDC_SCOPES=openid profile email
 
-# CORS (include your public URL)
+# =============================================================================
+# CORS Configuration
+# =============================================================================
+
+# Allowed CORS origins (comma-separated). Include your public app URL (FQDN or host:port).
+# SECURITY WARNING: Using '*' with credentials is insecure!
 NEBULA_COMMANDER_CORS_ORIGINS=https://nebula.example.com
+
+# =============================================================================
+# Session Security
+# =============================================================================
+
+# Set session cookie to HTTPS-only (recommended for production)
 NEBULA_COMMANDER_SESSION_HTTPS_ONLY=false
+
+# =============================================================================
+# Redirect Security
+# =============================================================================
+
+# Allowed hosts for OAuth/OIDC redirects (comma-separated)
+# When empty and NEBULA_COMMANDER_PUBLIC_URL is set, derived from PUBLIC_URL (recommended).
 NEBULA_COMMANDER_ALLOWED_REDIRECT_HOSTS=
 
-# SMTP (optional)
+# =============================================================================
+# Email / SMTP Configuration (Optional)
+# =============================================================================
+
 NEBULA_COMMANDER_SMTP_ENABLED=false
 NEBULA_COMMANDER_SMTP_HOST=smtp.gmail.com
 NEBULA_COMMANDER_SMTP_PORT=587
 NEBULA_COMMANDER_SMTP_USE_TLS=true
+# For Gmail, use an App Password, not your regular password.
 NEBULA_COMMANDER_SMTP_USERNAME=your-email@gmail.com
 NEBULA_COMMANDER_SMTP_PASSWORD=your-app-password
+# Alternative: NEBULA_COMMANDER_SMTP_PASSWORD_FILE=/run/secrets/smtp-password
 NEBULA_COMMANDER_SMTP_FROM_EMAIL=noreply@example.com
 NEBULA_COMMANDER_SMTP_FROM_NAME=Nebula Commander
 
-# Debug (disable in production)
-NEBULA_COMMANDER_DEBUG=true
+# =============================================================================
+# Analytics (Optional)
+# =============================================================================
+# When set, the frontend fetches /api/public-config and injects the corresponding
+# scripts into the page. No auth required; config is public.
+
+# NEBULA_COMMANDER_PLAUSIBLE_DOMAIN=example.com
+# NEBULA_COMMANDER_PLAUSIBLE_SCRIPT_SRC=https://plausible.example.com/js/script.file-downloads.hash.outbound-links.js
+# NEBULA_COMMANDER_GA_MEASUREMENT_ID=
+# NEBULA_COMMANDER_ANALYTICS_CUSTOM_SCRIPTS=[{"src":"https://example.com/script.js","defer":true}]
+
+# =============================================================================
+# Debug Mode
+# =============================================================================
+
+# Enable debug mode (enables /dev-token endpoint). Never enable in production!
+NEBULA_COMMANDER_DEBUG=false
 ```
 
 ### env.d.example/keycloak/keycloak

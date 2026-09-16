@@ -24,7 +24,7 @@ Pre-built executables for:
 | macOS Intel | `ncclient-macos-amd64` |
 | macOS Apple Silicon | `ncclient-macos-arm64` |
 
-Downloads are served from `/downloads/` (e.g. `/downloads/ncclient-linux-amd64`). These binaries are only available if the frontend was built with client binaries included (e.g. Docker image built with `DOWNLOAD_BINARIES=1`). If the page shows no downloads or 404, use [ncclient installation from releases](/docs/usage/ncclient/installation/#from-releases) or pip instead.
+Downloads are served from `/downloads/` (e.g. `/downloads/ncclient-linux-amd64`). These binaries are only available if the frontend was built with client binaries included (e.g. Docker image built with `DOWNLOAD_BINARIES=1`). If the page shows no downloads or 404, use [ncclient installation from releases](/docs/usage/ncclient/installation/binaries/#from-releases) or pip instead.
 
 After download on Linux or macOS, make the file executable and place it on your PATH:
 

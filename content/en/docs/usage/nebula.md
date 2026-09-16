@@ -50,7 +50,7 @@ Use your platform's init system so Nebula keeps running: systemd on Linux, launc
 
 ## Mobile devices
 
-**The official Nebula client from [defined.net](https://defined.net)** (Nebula app) is the only way to run Nebula on a mobile device for now. ncclient is not available on mobile. Use the defined.net app and deploy config and certs manually: create the node and certificate in Nebula Commander, download or copy the config and cert files (e.g. from the Web UI or API), then import or place them in the app as the defined.net client expects.
+**The official Nebula client from [defined.net](https://defined.net)** (Nebula app) is the only way to run Nebula on a mobile device — `ncclient` is not available on mobile. This is a first-class path, not a workaround: set a node's platform to iOS or Android on the [Nodes](/docs/web-ui/nodes/) page, then use its **download config.yaml** action — the same config the API always generates (cert/key/CA already inline), which is exactly the format the app's "Add Site → From file" import expects. See [Nodes: Mobile nodes](/docs/web-ui/nodes/#mobile-nodes-iosandroid) for split-horizon DNS behavior on each platform.
 
 ## Summary
 
