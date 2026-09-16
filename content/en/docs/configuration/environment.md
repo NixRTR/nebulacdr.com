@@ -11,6 +11,7 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NEBULA_COMMANDER_DEBUG` | Enable debug mode (enables dev-token endpoint; do not use in production) | `false` |
+| `NEBULA_COMMANDER_UPDATE_CHECK_ENABLED` | Check GitHub for a newer release, shown as a notification in the About screen. Set to `false` to disable all outbound calls to github.com (air-gapped/privacy-conscious deployments). | `true` |
 
 ## Database
 
