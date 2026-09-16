@@ -47,7 +47,43 @@ The backend talks to Keycloak on the Docker network. Use the **container** port 
 
 ## External OIDC provider
 
-Use the same variables. In the provider, set redirect URI to PUBLIC_URL + `/api/auth/callback`, client type Confidential, grant type Authorization Code. Set `OIDC_ISSUER_URL` and `OIDC_PUBLIC_ISSUER_URL` to the provider’s issuer URL (often the same). Run without the Keycloak compose file.
+Keycloak is the default, but Nebula Commander's OIDC integration is fully
+provider-agnostic: login, logout, and step-up reauth all use standard OIDC
+discovery (`.well-known/openid-configuration`) to find the provider's actual
+endpoints, rather than assuming Keycloak's URL conventions. Any standards-compliant
+provider — Authentik, Auth0, Okta, and others — works with the same environment
+variables.
+
+Use the same variables as above. In the provider, set redirect URI to PUBLIC_URL +
+`/api/auth/callback`, client type Confidential, grant type Authorization Code. Set
+`OIDC_ISSUER_URL` and `OIDC_PUBLIC_ISSUER_URL` to the provider's issuer URL (often
+the same).
+
+`docker-compose.yml` includes the Keycloak stack by default. To use an external
+provider instead, comment out (or delete) the `include:` block at the top of
+`docker-compose.yml`:
+
+```yaml
+# include:
+#   - path: ./docker-compose-keycloak.yml
+```
+
+then `docker compose up -d` starts only the backend and frontend.
+
+### Admin role mapping
+
+Keycloak assigns roles via a client-roles claim shaped like
+`resource_access.<client_id>.roles`, which most other providers don't emit by
+default. If you're not using Keycloak, set:
+
+- **`NEBULA_COMMANDER_OIDC_ADMIN_ROLE_CLAIM`** – the top-level claim your provider
+  emits (e.g. `roles`, `groups`, or an Auth0-style namespaced claim like
+  `https://nebula.example.com/roles`).
+- **`NEBULA_COMMANDER_OIDC_ADMIN_ROLE_VALUE`** – the value within that claim that
+  grants system-admin (default `system-admin`).
+
+Leave `OIDC_ADMIN_ROLE_CLAIM` unset to keep using Keycloak's default shape — this
+is the default, so existing Keycloak deployments need no changes.
 
 ## Roles and permissions
 

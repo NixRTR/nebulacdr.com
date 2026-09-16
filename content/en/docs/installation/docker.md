@@ -457,4 +457,14 @@ Configure OIDC in `env.d/backend` and optionally use the zero-touch Keycloak set
 
 ## Without Keycloak
 
-Run only the backend and frontend. The backend exposes `/api/auth/dev-token` when OIDC is not configured (suitable for development only).
+Comment out (or delete) the `include:` block at the top of `docker-compose.yml`:
+
+```yaml
+# include:
+#   - path: ./docker-compose-keycloak.yml
+```
+
+Then `docker compose up -d` starts only the backend and frontend. With no OIDC
+provider configured, the backend exposes `/api/auth/dev-token` (suitable for
+development only). To use a different OIDC provider instead of Keycloak, see
+[Configuration: OIDC § External OIDC provider](/docs/configuration/oidc/#external-oidc-provider).

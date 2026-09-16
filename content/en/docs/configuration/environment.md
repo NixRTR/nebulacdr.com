@@ -52,6 +52,8 @@ value — unlike most settings here, there's no insecure-but-working default.
 | `NEBULA_COMMANDER_OIDC_CLIENT_SECRET_FILE` | Path to file containing OIDC client secret | — |
 | `NEBULA_COMMANDER_OIDC_REDIRECT_URI` | Callback URL (optional; derived as PUBLIC_URL + `/api/auth/callback` when PUBLIC_URL is set) | — |
 | `NEBULA_COMMANDER_OIDC_SCOPES` | OIDC scopes (space-separated) | `openid profile email` |
+| `NEBULA_COMMANDER_OIDC_ADMIN_ROLE_CLAIM` | Top-level claim name used to detect the system-admin role (e.g. `roles`, `groups`, or an Auth0-style namespaced claim). Leave unset to use Keycloak's default `resource_access.<client_id>.roles` shape. | — |
+| `NEBULA_COMMANDER_OIDC_ADMIN_ROLE_VALUE` | Value that must appear in the admin-role claim to grant system-admin | `system-admin` |
 
 ## CORS and session
 
