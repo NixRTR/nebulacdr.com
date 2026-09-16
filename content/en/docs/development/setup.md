@@ -16,11 +16,16 @@ source .venv/bin/activate   # or .venv\Scripts\activate on Windows
 pip install -r backend/requirements.txt
 export NEBULA_COMMANDER_DATABASE_URL="sqlite+aiosqlite:///./backend/db.sqlite"
 export NEBULA_COMMANDER_CERT_STORE_PATH="./backend/certs"
-export DEBUG=true
+# Required — the backend refuses to boot without it. Generate one:
+# python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+export NEBULA_COMMANDER_ENCRYPTION_KEY="your-fernet-key-here"
+export NEBULA_COMMANDER_DEBUG=true
 python -m uvicorn backend.main:app --reload --port 8081
 ```
 
-Use a real JWT secret in production; for local dev, `DEBUG=true` enables the dev-token endpoint.
+Use a real JWT secret in production; for local dev, `NEBULA_COMMANDER_DEBUG=true`
+enables the dev-token endpoint. Every backend setting uses the
+`NEBULA_COMMANDER_` prefix — a bare `DEBUG=true` without it is silently ignored.
 
 ## Frontend
 
@@ -38,6 +43,7 @@ Set at least:
 
 - `NEBULA_COMMANDER_DATABASE_URL` – SQLite path (e.g. `sqlite+aiosqlite:///./backend/db.sqlite`)
 - `NEBULA_COMMANDER_CERT_STORE_PATH` – Directory for CA and host certs
-- `DEBUG=true` – Enables dev token and hot reload
+- `NEBULA_COMMANDER_ENCRYPTION_KEY` – Required; the backend won't start without it
+- `NEBULA_COMMANDER_DEBUG=true` – Enables dev token and hot reload
 
 See [Configuration: Environment](/docs/configuration/environment/) for all options.

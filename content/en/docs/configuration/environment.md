@@ -20,6 +20,16 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | `NEBULA_COMMANDER_DATABASE_PATH` | Override for SQLite path | — |
 | `NEBULA_COMMANDER_CERT_STORE_PATH` | Directory for CA and host certificates | `/var/lib/nebula-commander/certs` |
 
+## Encryption at rest
+
+**Required.** The backend refuses to boot if this is left at a placeholder/unset
+value — unlike most settings here, there's no insecure-but-working default.
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEBULA_COMMANDER_ENCRYPTION_KEY` | Fernet key used to encrypt certificates and private keys at rest. Generate one with `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`. | — (required) |
+| `NEBULA_COMMANDER_ENCRYPTION_KEY_FILE` | Path to a file containing the Fernet key (overrides the plain env var when present). On NixOS this is auto-generated into a `oneshot` service the first time the module runs. | — |
+
 ## JWT
 
 | Variable | Description | Default |
@@ -34,6 +44,7 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NEBULA_COMMANDER_PUBLIC_URL` | Base URL where users reach the app (FQDN or host:port). Used to derive redirect URI and for redirect validation. | — |
+| `NEBULA_COMMANDER_STANDALONE_ADMIN_BOOTSTRAP` | Allow the unauthenticated `/api/auth/dev-token` admin-bootstrap endpoint when no OIDC provider is configured below. Standalone (no-IdP) deployments must opt in explicitly — this grants unauthenticated system-admin access to anyone who can reach the backend, so only enable it for a genuinely no-IdP deployment. Deployments with OIDC configured are unaffected (always 404). | `false` |
 | `NEBULA_COMMANDER_OIDC_ISSUER_URL` | OIDC issuer URL used by the backend to reach the provider (internal; e.g. `http://keycloak:8080/realms/nebula-commander`) | — |
 | `NEBULA_COMMANDER_OIDC_PUBLIC_ISSUER_URL` | OIDC issuer URL as seen by the browser (FQDN or host:port) | — |
 | `NEBULA_COMMANDER_OIDC_CLIENT_ID` | OIDC client ID | — |
@@ -55,7 +66,7 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NEBULA_COMMANDER_DEFAULT_CERT_EXPIRY_DAYS` | Default certificate expiry in days | `365` |
-| `NEBULA_COMMANDER_DEVICE_TOKEN_EXPIRATION_DAYS` | Device token (enrollment) expiry in days | `3650` |
+| `NEBULA_COMMANDER_DEVICE_TOKEN_EXPIRATION_DAYS` | Device token (enrollment) expiry in days | `365` |
 
 ## SMTP (optional)
 
@@ -71,6 +82,17 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | `NEBULA_COMMANDER_SMTP_FROM_EMAIL` | From address | `noreply@example.com` |
 | `NEBULA_COMMANDER_SMTP_FROM_NAME` | From name | `Nebula Commander` |
 
+## Analytics (optional)
+
+Exposed publicly via `GET /api/public-config` (no auth) so the frontend can inject the corresponding script tags.
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEBULA_COMMANDER_PLAUSIBLE_DOMAIN` | Plausible domain (e.g. `example.com`); set to enable Plausible analytics | — |
+| `NEBULA_COMMANDER_PLAUSIBLE_SCRIPT_SRC` | Custom Plausible script URL (e.g. behind your own proxy), overriding the default script source | — |
+| `NEBULA_COMMANDER_GA_MEASUREMENT_ID` | Google Analytics measurement ID (e.g. `G-XXXXXXXXXX`); set to enable GA | — |
+| `NEBULA_COMMANDER_ANALYTICS_CUSTOM_SCRIPTS` | JSON array of custom scripts to inject, each `{"src": "https://...", "defer": true}` or `{"inline": "..."}` | — |
+
 ## Server (advanced)
 
 | Variable | Description | Default |
@@ -81,5 +103,6 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 ## Security notes
 
 - Generate a strong JWT secret for production (e.g. `openssl rand -base64 32`). Do not use the default.
-- Prefer `*_FILE` options (JWT, OIDC secret, SMTP password) over plain env vars when possible.
+- `ENCRYPTION_KEY` has no default to leave-unset-and-forget — the backend won't start without one. Generate it once and keep it: losing it makes every stored certificate/private key unrecoverable.
+- Prefer `*_FILE` options (JWT, encryption key, OIDC secret, SMTP password) over plain env vars when possible.
 - In production: set `DEBUG=false`, use HTTPS for PUBLIC_URL and OIDC, and set CORS_ORIGINS to your actual frontend origin(s). For examples of putting Nebula Commander behind Nginx, Traefik, or Caddy with TLS and HSTS, see [Reverse Proxy](/docs/installation/reverse-proxy/).

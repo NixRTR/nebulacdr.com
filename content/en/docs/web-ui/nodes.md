@@ -4,43 +4,64 @@ linkTitle: Nodes
 weight: 30
 ---
 
-The **Nodes** page lists all nodes across networks (or filtered by one network). You create nodes, assign IPs and groups, create or sign certificates, generate **enrollment codes** for [ncclient](/docs/usage/ncclient/), and download config.
+The **Nodes** page shows every node across networks (or filtered to one network) as
+a grid of square cards. You create nodes, assign IPs and groups, create or sign
+certificates, generate **enrollment codes** for [ncclient](/docs/usage/ncclient/),
+download config, and — new since v0.3.7 — pick which other node each one should
+route through as a [subnet router or exit node](/docs/usage/unsafe-routes/).
 
-![Nodes list](/screenshots/nodes.png)
+## The node grid
+
+Each card is color-coded by status — never checked in, active, or inactive — and
+carries a bottom-right badge cluster: **Lighthouse**, **Relay**, and a type/OS badge
+(**iOS**, **Android**, **Windows**, **Linux**, **macOS**, or a generic **Node**
+fallback until the platform is known). Hostname and IP sit at the top of the card,
+always drawn above the badges so a long badge row can never hide them, even on a
+narrow phone screen. Click a card to open its details panel. All of these colors,
+including the status backgrounds and badge colors, are user-configurable — see
+[Appearance](/docs/web-ui/appearance/).
 
 ## Creating a node
 
 1. Open **Nodes** and optionally filter by network.
-2. Use the **Add node** (or similar) action. You may need to pick a network first if not filtered.
+2. Click **Create Node**. Pick a network first if you haven't filtered to one.
 3. Enter a **hostname** (e.g. `laptop-alice`, `server-1`). The hostname identifies the node and is used in certificates and config.
-4. The server assigns an **IP address** from the network's subnet, or you may be able to choose one if the UI allows.
+4. The server assigns an **IP address** from the network's subnet, or you may suggest one.
 5. Set the node's **group** (e.g. `laptops`, `servers`). The group is used for [firewall rules](/docs/web-ui/groups/) and must match a group defined for that network.
-6. Submit. The node is created. Next you create or sign a certificate (see below).
+6. Set the **platform** — Desktop (runs `ncclient`), iOS, or Android.
+7. Submit. The node is created, its certificate is issued, and its card appears in the grid.
 
-## Node options (when creating or editing)
+## The node details panel
 
-When creating or editing a node, you can set:
+Click a card to open its details. The fields visible by default are the ones you're
+likely to change often:
 
-| Option | Description |
-|--------|-------------|
-| **Group** | Nebula security group(s) for this node. Used for firewall (see [Groups](/docs/web-ui/groups/)). |
-| **Lighthouse** | If enabled, this node acts as a Nebula lighthouse (others can punch through to it). |
-| **Relay** | If enabled, this node can relay traffic for other nodes. |
-| **Public endpoint** | Optional public address (e.g. `1.2.3.4:4242`) so other nodes can reach this node. Used for lighthouse/relay. |
-| **Serve DNS** | If the node is a lighthouse, enable to serve DNS for the Nebula network. |
-| **DNS host / port** | Bind address and port for the built-in DNS server (e.g. `0.0.0.0`, `53`). |
-| **Interval (seconds)** | Nebula's lighthouse check interval. |
-| **Log level** | `panic`, `fatal`, `error`, `warning`, `info`, `debug`. |
-| **Log format** | `json` or `text`. |
-| **Punchy** | Options for NAT punch-through (respond, delay, respond_delay). |
+| Field | Description |
+|-------|-------------|
+| **Platform** | Desktop, iOS, or Android. Converting an existing node changes how it's enrolled — see [Mobile nodes](#mobile-nodes-iosandroid) below. |
+| **Group** | Nebula security group for this node. Used for firewall (see [Groups](/docs/web-ui/groups/)). |
+| **Lighthouse** | If enabled, this node acts as a Nebula lighthouse (others can punch through to it). Desktop only. |
+| **Relay** | If enabled, this node can relay traffic for other nodes. Desktop only. |
+| **Use Subnet Router** | Pick another node on this network to route this node's traffic to its advertised subnets through. See [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/). |
+| **Use Exit Node** | Pick another node to route *all* of this node's traffic through (full-tunnel). Same doc as above. |
 
-Not all options may be visible in the UI; the table covers the main ones from the API. Defaults are applied for any you leave unset.
+### Advanced
 
-## Editing a node
+Settings you set once and rarely touch again are tucked under an **Advanced**
+disclosure at the bottom of the panel:
 
-Click the node row or an **Edit** action to open the node details.
+- **Logging** — Nebula's own log level, format, and timestamp options.
+- **Punchy** — NAT hole-punching behavior (respond, delay, respond delay).
+- **Subnet Router & Exit Node Config** — the *gateway* side of routing: which local
+  subnets this node advertises (auto-discovered on Linux nodes running `ncclient`,
+  or entered by hand under **Other**), plus a **"Used by"** picker per route
+  controlling which other nodes may consume it.
+- **Exit Node** — the gateway-side exit-node toggle (**Exit node (route all
+  traffic)**) and its own "Used by" picker.
 
-![Node detail](/screenshots/nodes-detail.png) Change hostname, group, lighthouse/relay, public endpoint, DNS, logging, or punchy options as needed. Save. If you change the certificate (create/sign) or group, config for this node will change; devices using ncclient will pick up the change on the next poll.
+If you're setting up a node to *be* a subnet router or exit node for others, that's
+all under Advanced. If you just want this node to *use* one that already exists,
+the visible **Use Subnet Router**/**Use Exit Node** dropdowns are all you need.
 
 ## Certificates: Create vs Sign
 
@@ -53,7 +74,7 @@ Choose Create for simplicity when the server can hold the key (or when you will 
 
 ## Enrollment code (for ncclient)
 
-After the node exists and has a certificate, you can generate an **enrollment code** for [ncclient](/docs/usage/ncclient/). On the Nodes page, open the node and click **Enroll**. Copy the one-time code. On the device run:
+After the node exists and has a certificate, you can generate an **enrollment code** for [ncclient](/docs/usage/ncclient/). Open the node's card and click **Get Enrollment Code**. Copy the one-time code. On the device run:
 
 ```bash
 ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code XXXXXXXX
@@ -67,5 +88,22 @@ You can download the node's Nebula config and certs (e.g. `config.yaml`, `ca.crt
 
 ## Re-enroll and delete
 
-- **Re-enroll** – If a device was enrolled but the token is lost or expired, you can generate a new enrollment code and run `ncclient enroll` again on the device.
-- **Delete node** – Removes the node and its certificate from Nebula Commander. Critical actions may require reauthentication. Devices using that node will need a new node or re-enrollment if you recreate it.
+- **Re-enroll** – If a device was enrolled but the token is lost or expired, generate a new enrollment code and run `ncclient enroll` again on the device.
+- **Delete node** – Removes the node and its certificate from Nebula Commander. Requires reauthentication and typing the node's hostname to confirm. Devices using that node will need a new node or re-enrollment if you recreate it.
+
+## Mobile nodes (iOS/Android)
+
+There's no `ncclient` agent for mobile, so mobile nodes skip the enroll-code flow
+entirely. Set a node's **platform** (Desktop, iOS, or Android) when creating or
+editing it — a mobile node can't also be a lighthouse or relay. Instead of an
+Enroll button, a mobile node's card shows a **download config.yaml** action: that
+file is the same one `GET /nodes/{id}/config` always generates (inline
+cert/key/CA already embedded), which is exactly the format the official Nebula
+app from [defined.net](https://defined.net)'s "Add Site → From file" import
+expects.
+
+Split-horizon DNS for mobile is platform-specific: **iOS** applies it
+automatically whenever the network has DNS enabled (no per-node opt-in needed);
+**Android** has no scoped equivalent, so it's an explicit opt-in checkbox — when
+enabled, *all* device DNS routes through the network's lighthouse(s) while
+connected.

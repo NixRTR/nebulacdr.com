@@ -32,14 +32,15 @@ Authentication and session management. OIDC (e.g. Keycloak) is used when configu
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| `GET` | `/api/auth/dev-token` | No | **Development only.** When `DEBUG=true` or OIDC is not configured, returns a JWT (`token`, `expires_in`). Grants full admin access. Returns 404 in production when OIDC is configured. |
+| `GET` | `/api/auth/dev-token` | No | **Development only.** Returns a JWT (`token`, `expires_in`) granting full admin access. Requires `DEBUG=true` (loopback requests only) or `NEBULA_COMMANDER_STANDALONE_ADMIN_BOOTSTRAP=true` when no OIDC provider is configured — it no longer falls back to enabled-by-default for standalone deployments. Returns 404 when OIDC is configured. |
+| `POST` | `/api/auth/exchange` | No | Trade a one-time exchange `code` (from the `/auth/callback` or reauth redirect) for the real JWT. Single-use, 60-second-lived. Response: `{"token": "..."}`. 400 if invalid, already used, or expired. |
 | `GET` | `/api/auth/me` | Optional | Current user info. Returns `{"authenticated": false}` or `{"authenticated": true, "sub", "email", "role", "system_role"}`. |
 | `GET` | `/api/auth/login` | No | Redirects to the OIDC provider for login. Returns 501 if OIDC is not configured. |
 | `GET` | `/api/auth/oidc-status` | No | OIDC provider readiness. Returns `{"status": "ok"}`, `{"status": "disabled"}`, or 503 if provider is unavailable. |
-| `GET` | `/api/auth/callback` | No | OAuth callback. Exchanges authorization code for tokens and redirects to frontend with JWT in query (`/auth/callback?token=...`). |
+| `GET` | `/api/auth/callback` | No | OAuth callback. Exchanges the authorization code for tokens, then redirects to the frontend with a one-time **exchange code**, not the JWT itself (`/auth/callback?code=...`) — this keeps the token out of the URL, browser history, referrer headers, and access logs. The frontend immediately calls `POST /api/auth/exchange` to trade it for the real token. |
 | `GET` | `/api/auth/logout` | No | Logs out and redirects to OIDC logout (or frontend if OIDC not configured). |
-| `POST` | `/api/auth/reauth/challenge` | Yes | Creates a reauthentication challenge for critical operations. Body: none. Response: `challenge`, `reauth_url`. Used before destructive actions (e.g. delete network). |
-| `GET` | `/api/auth/reauth/callback` | No | Reauth OAuth callback. Validates state (challenge) and redirects to frontend with reauth token. |
+| `POST` | `/api/auth/reauth/challenge` | Yes | Creates a reauthentication challenge for critical operations. Body: none. Response: `challenge`, `reauth_url`. Used before destructive actions (e.g. delete network/node, revoke certificate, delete user). |
+| `GET` | `/api/auth/reauth/callback` | No | Reauth OAuth callback. Validates state (challenge) and redirects to the frontend with a one-time exchange code for the reauth token (same exchange pattern as login). |
 
 ---
 
@@ -49,7 +50,7 @@ Used by ncclient (or other clients) to report node liveness.
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| `POST` | `/api/nodes/{node_id}/heartbeat` | Yes (JWT) | Updates `last_seen` and sets node `status` to `active`. Call periodically from enrolled nodes. Response: `{"ok": true, "last_seen": "<iso>"}`. |
+| `POST` | `/api/nodes/{node_id}/heartbeat` | Device token | Updates `last_seen` and sets node `status` to `active`. Call periodically from enrolled nodes using `Authorization: Bearer <device_token>` — not a human JWT. Body (all optional): `interval_seconds` (the client's actual poll interval, clamped 10–3600s, used by the dashboard to detect an offline node relative to its real cadence), `peer_reachability` (`{node_id: reachable}` — only honored when the reporting node is itself a lighthouse, checked server-side and scoped to its own network, so a node can't report on or spoof nodes it has no relationship to; see [Device: lighthouse-peers](#device-apidevice) below). Response: `{"ok": true, "last_seen": "<iso>"}`. |
 
 ---
 
@@ -77,14 +78,16 @@ Manage Nebula nodes (hosts) within networks. Used by the Web UI and for manual c
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| `GET` | `/api/nodes` | Yes | List nodes. Query: optional `network_id`. Returns only nodes the user can access (networks they have permission for, or node-level access grants). Response: list of node objects (id, network_id, hostname, ip_address, groups, is_lighthouse, is_relay, status, etc.). |
+| `GET` | `/api/nodes` | Yes | List nodes. Query: optional `network_id`. Returns only nodes the user can access (networks they have permission for, or node-level access grants). Response: list of node objects (id, network_id, hostname, ip_address, groups, is_lighthouse, is_relay, platform, status, etc.). |
 | `GET` | `/api/nodes/{node_id}` | Yes | Get a single node by ID. |
-| `PATCH` | `/api/nodes/{node_id}` | Yes | Update node. Body (all optional): `group`, `is_lighthouse`, `is_relay`, `public_endpoint`, `lighthouse_options`, `logging_options`, `punchy_options`. 409 if removing the only lighthouse. Response: `{"ok": true}`. |
-| `DELETE` | `/api/nodes/{node_id}` | Yes | Delete node: release IP, remove host cert/key files, delete related records. 204. 409 if node is the only lighthouse. |
+| `PATCH` | `/api/nodes/{node_id}` | Yes | Update node. Body (all optional): `group`, `is_lighthouse`, `is_relay`, `public_endpoint`, `lighthouse_options`, `logging_options`, `punchy_options`, `platform` (`desktop`/`ios`/`android` — 400 if setting a non-desktop platform while the node is a lighthouse or relay). 409 if removing the only lighthouse. A `group` change automatically re-signs the node's certificate in place (same IP and keypair — a Nebula cert bakes its group in at signing time) when the node already has one. Response: `{"ok": true, "cert_resigned": true or false}`. |
+| `DELETE` | `/api/nodes/{node_id}` | Yes | Delete node: release IP, remove host cert/key files, delete related records. Body: `reauth_token`, `confirmation` (must match node hostname). 204 on success. 409 if node is the only lighthouse. |
 | `GET` | `/api/nodes/{node_id}/config` | Yes | Generate and return Nebula YAML config for the node (with inline PKI when key is stored). Response: `application/yaml` attachment. |
 | `GET` | `/api/nodes/{node_id}/certs` | Yes | Return a ZIP with `ca.crt`, `host.crt`, optional `host.key`, and `README.txt`. |
-| `POST` | `/api/nodes/{node_id}/revoke-certificate` | Yes | Revoke the node's certificate; node record is kept. Releases IP and removes cert/key files. Node can re-enroll later. Response: `{"ok": true}`. |
+| `POST` | `/api/nodes/{node_id}/revoke-certificate` | Yes | Revoke the node's certificate and take it offline; node record is kept and can re-enroll later. Body: `reauth_token`, `confirmation` (must match node hostname). Releases IP and removes cert/key files. Response: `{"ok": true}`. |
 | `POST` | `/api/nodes/{node_id}/re-enroll` | Yes | Revoke existing cert (if any) and issue a new one for this node. Frontend typically creates an enrollment code afterward. Response: `{"ok": true, "node_id": id}`. |
+| `PUT` | `/api/nodes/{node_id}/subnet-router` | Yes | Consumer-side pick of which other node's advertised subnets this node should route through. Body: `router_node_id` (int or `null` to clear). Atomically adds this node to every matching route's consumers on the chosen gateway and removes it from every other gateway's matching routes — a node uses at most one subnet router at a time. 400 if the target routes through itself, isn't on the same network, or doesn't advertise a subnet. See [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/). |
+| `PUT` | `/api/nodes/{node_id}/exit-node` | Yes | Same as above, for the exit-route pair (`0.0.0.0/0` + `::/0`) instead of subnet routes. Body: `exit_node_id`. |
 
 ---
 
@@ -111,7 +114,8 @@ Used by **ncclient** for enrollment and for fetching config/certs with a device 
 | `GET` | `/api/device/config` | Device token | Return Nebula YAML config for the device (inline PKI). Header: `Authorization: Bearer <device_token>`. Optional `If-None-Match: <etag>` for 304 when unchanged. |
 | `GET` | `/api/device/certs` | Device token | Return ZIP with `ca.crt`, `host.crt`, optional `host.key`, `README.txt` for the device. |
 | `GET` | `/api/device/dns-client-config` | Device token | Split-horizon DNS config for the device: `domain` and `dns_servers` (lighthouse Nebula IPs). 404 if DNS is not enabled for the network. Used by ncclient with `--accept-dns`. |
-| `GET` | `/api/device/dnsmasq.conf` | Device token | dnsmasq zone config for this device's network (for lighthouse/container clients). Returns `text/plain`. Optional `If-None-Match: <etag>` for 304. Rate limited per device. |
+| `GET` | `/api/device/lighthouse-peers` | Device token | Return the other nodes on this device's network (`node_id`, `ip_address`, `hostname`), for a lighthouse to ping and report reachability on via its heartbeat's `peer_reachability`. Non-lighthouse devices always get an empty list — keeps client logic trivial and avoids leaking network topology to devices that don't need it. |
+| `GET` | `/api/device/dnsmasq.conf` | Device token | dnsmasq zone config for this device's network (for lighthouse/container clients), derived from the token. Returns `text/plain`. Optional `If-None-Match: <etag>` for 304. Rate limited per device. |
 
 ---
 
@@ -126,12 +130,27 @@ Per-network DNS configuration for split-horizon DNS (domain and aliases). **Netw
 | `GET` | `/api/networks/{network_id}/dns/aliases` | Yes | List DNS aliases (hostname → node). Response: list of `{id, alias, node_id, node_hostname}`. |
 | `POST` | `/api/networks/{network_id}/dns/aliases` | Yes | Create alias. Body: `alias` (hostname label), `node_id`. 409 if alias exists. |
 | `DELETE` | `/api/networks/{network_id}/dns/aliases/{alias_id}` | Yes | Delete alias. 204. |
+| `GET` | `/api/networks/{network_id}/dns/dnsmasq.conf` | Device token | Device-facing dnsmasq zone config, network given explicitly in the path rather than derived from the token. 403 if the token's node isn't a member of `network_id`. Otherwise identical to `/api/device/dnsmasq.conf` above (same ETag/304 behavior). |
+
+---
+
+## Users: self-service (`/api/users/me`)
+
+Per-account preferences, available to any authenticated user (not just admins). See [Appearance](/docs/web-ui/appearance/).
+
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| `GET` | `/api/users/me/theme` | Yes | Get the current user's active color theme: their saved overrides merged over the built-in defaults, so the response is always a complete token set. |
+| `PUT` | `/api/users/me/theme` | Yes | Merge the given tokens into the current user's active theme (partial update — omitted keys are left as-is). Body: `theme` (map of token key → `{light, dark}` hex pair). Each key must be a known token; each color must match `^#[0-9a-fA-F]{6}$`. 400 on an unknown key or invalid color. |
+| `GET` | `/api/users/me/themes` | Yes | List the current user's saved theme presets. Response: list of `{id, name, tokens, created_at}` — full token sets included, not just names. |
+| `POST` | `/api/users/me/themes` | Yes | Save a named preset. Body: `name`, `tokens` (same shape as `PUT /me/theme`'s `theme`). 400 if the name is empty, over 100 characters, or already used by one of this user's other saved themes. There's no separate "apply" endpoint — applying a saved theme is just `PUT /me/theme` with its `tokens`. |
+| `DELETE` | `/api/users/me/themes/{theme_id}` | Yes | Delete a saved theme. Scoped to the requesting user — 404 (not 403) if the theme belongs to someone else. 204 on success. |
 
 ---
 
 ## Users (`/api/users`)
 
-System admin user management. All endpoints require **system-admin** role.
+System admin user management. All endpoints below require **system-admin** role (self-service `/me` endpoints above do not).
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
@@ -139,19 +158,6 @@ System admin user management. All endpoints require **system-admin** role.
 | `GET` | `/api/users/{user_id}` | System admin | Get user details including `networks` (list of network id, name, role, permission flags). |
 | `PATCH` | `/api/users/{user_id}` | System admin | Update user. Body: optional `system_role` (`system-admin` or `user`). |
 | `DELETE` | `/api/users/{user_id}` | System admin | Delete user; removes all their network permissions. 204. |
-
----
-
-## Node requests (`/api/node-requests`)
-
-Request/approve workflow for node creation (e.g. when auto-approve is off).
-
-| Method | Path | Auth | Description |
-| --- | --- | --- | --- |
-| `POST` | `/api/node-requests` | Yes | Create a node request. Body: `network_id`, `hostname`, optional `groups`, `is_lighthouse`, `is_relay`. If user has manage_nodes or network has auto_approve_nodes, request is approved immediately and node is created. Response includes `status`, `created_node_id` if approved. |
-| `GET` | `/api/node-requests` | Yes | List node requests. Query: optional `network_id`, `status`. Users see own requests; network owners/admins see requests for their networks; system admins see all. |
-| `POST` | `/api/node-requests/{request_id}/approve` | Yes | Approve a pending request; creates the node and allocates IP. Body: empty object. Requires manage_nodes on the network. |
-| `POST` | `/api/node-requests/{request_id}/reject` | Yes | Reject a pending request. Body: `reason`. Requires manage_nodes on the network. |
 
 ---
 
@@ -208,13 +214,13 @@ Read-only audit log. **System admins only.**
 ## Summary
 
 - **`/api`** — Root, health
-- **`/api/auth`** — Login, callback, dev-token, logout, reauth
-- **`/api/nodes`** — Heartbeat, and full node CRUD + config/certs/revoke/re-enroll
-- **`/api/networks`** — Networks CRUD, group firewall, check-ip, network users (permissions), and per-network DNS (config and aliases)
+- **`/api/auth`** — Login, callback, exchange, dev-token, logout, reauth
+- **`/api/nodes`** — Heartbeat (device token, carries `peer_reachability`), full node CRUD + config/certs/revoke/re-enroll, and subnet-router/exit-node consumer selection
+- **`/api/networks`** — Networks CRUD, group firewall, check-ip, network users (permissions), and per-network DNS (config, aliases, device-facing dnsmasq.conf)
 - **`/api/certificates`** — Sign host cert (client key), create host cert (server key), list certs
-- **`/api/device`** — Enrollment codes, enroll (public), config and certs (device token), dns-client-config and dnsmasq.conf for split-horizon DNS
+- **`/api/device`** — Enrollment codes, enroll (public), config and certs (device token), lighthouse-peers, dns-client-config and dnsmasq.conf for split-horizon DNS
+- **`/api/users/me`** — Self-service: active color theme (get/set) and saved theme presets (list/create/delete), any authenticated user
 - **`/api/users`** — User list/detail/update/delete (system admin)
-- **`/api/node-requests`** — Create/list/approve/reject node requests
 - **`/api/access-grants`** — Create/list/revoke temporary admin access
 - **`/api/invitations`** — Create/list/accept/resend/revoke invitations
 - **`/api/audit`** — List audit log (system admin)
