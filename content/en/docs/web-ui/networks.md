@@ -8,6 +8,14 @@ The **Networks** page shows every Nebula network you can access as a grid of squ
 cards, and lets you create networks. Each network has a name and a subnet (CIDR)
 used for IP allocation to nodes.
 
+![Networks page](/screenshots/networks.png)
+
+Click a network's card to open its detail view: node/user/group counts and the
+**Group Access Diagram**, a live visualization of which groups can reach which
+(see [Groups](/docs/web-ui/groups/) for what restricted vs. open means).
+
+![Network detail page](/screenshots/network-detail.png)
+
 ## Adding a new network
 
 1. Open **Networks** in the sidebar.

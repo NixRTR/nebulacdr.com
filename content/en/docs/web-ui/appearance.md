@@ -9,6 +9,14 @@ The **Appearance** page (**sidebar → Appearance**, or `/settings/appearance`) 
 each user customize the colors used across Nebula Commander — this is a personal
 preference, saved to your own account, not a site-wide setting an admin controls.
 
+![Appearance page](/screenshots/appearance.png)
+
+Every color you pick automatically gets a readable, contrast-checked
+foreground: buttons, badges, status cards, and the page/container backgrounds
+all compute their own text color (near-black or near-white) from whatever
+background you choose, so an unusually light or dark pick never turns into
+illegible same-on-same text.
+
 ## Light and dark mode
 
 The moon/sun toggle in the top navbar switches between light and dark mode; the
@@ -63,3 +71,11 @@ presets:
 
 Saved themes are private to your account — other users don't see them, and there's
 no site-wide/shared theme.
+
+## Exporting a theme
+
+Click **Export YAML** (next to Save changes/Reset to defaults) to download the
+colors currently in the editor as a `.yaml` file. Each saved theme also has its
+own export button in the Saved Themes list, so you can back up or share a
+specific preset. This is export only today - there's no import button yet, so
+re-applying an exported file means manually re-entering its colors.

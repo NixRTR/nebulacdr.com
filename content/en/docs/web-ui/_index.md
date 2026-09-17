@@ -6,6 +6,8 @@ weight: 35
 
 The Nebula Commander web UI is a React dashboard that talks to the backend API. You use it to manage networks, nodes, certificates, and users. Most list pages — Networks, Nodes, Groups, Users, and the Home dashboard — use the same square-card grid layout, so once one feels familiar the rest do too.
 
+![Home dashboard](/screenshots/home.png)
+
 ## Logging in
 
 - **With OIDC** – When OIDC is configured ([OIDC](/docs/configuration/oidc/)), open the app URL and you are redirected to the provider (e.g. Keycloak). After login, you are sent back to the UI with a session.
@@ -31,6 +33,18 @@ quick jumping-off point.
 - **[Appearance](/docs/web-ui/appearance/)** – Customize your own color theme, light and dark mode.
 
 Certificates are created or signed from the Nodes page (Create or Sign flow). For Sign flow, the server does not have the private key; place `host.key` on the device (e.g. in the ncclient output directory).
+
+## Responsive / mobile
+
+The whole web UI is responsive - the same React app adapts down to phone-width
+screens rather than being a separate mobile build. The sidebar collapses to a
+hamburger menu, card grids reflow to fewer columns, and wide tables (like
+Invitations) scroll horizontally within their own container instead of the
+whole page:
+
+| Home | Nodes | Invitations |
+|---|---|---|
+| ![Home on mobile](/screenshots/mobile/home.png) | ![Nodes on mobile](/screenshots/mobile/nodes.png) | ![Invitations on mobile](/screenshots/mobile/invitations-pending.png) |
 
 ## Access control
 
