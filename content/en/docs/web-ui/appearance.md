@@ -9,7 +9,9 @@ The **Appearance** page (**sidebar → Appearance**, or `/settings/appearance`) 
 each user customize the colors used across Nebula Commander — this is a personal
 preference, saved to your own account, not a site-wide setting an admin controls.
 
-![Appearance page](/screenshots/appearance.png)
+| Light | Dark |
+|---|---|
+| ![Appearance page](/screenshots/appearance.png) | ![Appearance page in dark mode](/screenshots/dark/appearance.png) |
 
 Every color you pick automatically gets a readable, contrast-checked
 foreground: buttons, badges, status cards, and the page/container backgrounds

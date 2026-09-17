@@ -6,7 +6,9 @@ weight: 35
 
 The Nebula Commander web UI is a React dashboard that talks to the backend API. You use it to manage networks, nodes, certificates, and users. Most list pages — Networks, Nodes, Groups, Users, and the Home dashboard — use the same square-card grid layout, so once one feels familiar the rest do too.
 
-![Home dashboard](/screenshots/home.png)
+| Light | Dark |
+|---|---|
+| ![Home dashboard](/screenshots/home.png) | ![Home dashboard in dark mode](/screenshots/dark/home.png) |
 
 ## Logging in
 
@@ -45,6 +47,12 @@ whole page:
 | Home | Nodes | Invitations |
 |---|---|---|
 | ![Home on mobile](/screenshots/mobile/home.png) | ![Nodes on mobile](/screenshots/mobile/nodes.png) | ![Invitations on mobile](/screenshots/mobile/invitations-pending.png) |
+
+Dark mode works the same way on mobile:
+
+| Home | Nodes | Invitations |
+|---|---|---|
+| ![Home on mobile, dark mode](/screenshots/dark/mobile/home.png) | ![Nodes on mobile, dark mode](/screenshots/dark/mobile/nodes.png) | ![Invitations on mobile, dark mode](/screenshots/dark/mobile/invitations-pending.png) |
 
 ## Access control
 

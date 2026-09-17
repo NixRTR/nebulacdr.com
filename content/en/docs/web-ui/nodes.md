@@ -10,7 +10,9 @@ certificates, generate **enrollment codes** for [ncclient](/docs/usage/ncclient/
 download config, and — new since v0.3.7 — pick which other node each one should
 route through as a [subnet router or exit node](/docs/usage/unsafe-routes/).
 
-![Nodes page](/screenshots/nodes.png)
+| Light | Dark |
+|---|---|
+| ![Nodes page](/screenshots/nodes.png) | ![Nodes page in dark mode](/screenshots/dark/nodes.png) |
 
 ## The node grid
 
@@ -21,7 +23,9 @@ fallback until the platform is known). Hostname and IP sit at the top of the car
 always drawn above the badges so a long badge row can never hide them, even on a
 narrow phone screen. Click a card to open its details panel:
 
-![Node details panel](/screenshots/nodes-detail.png)
+| Light | Dark |
+|---|---|
+| ![Node details panel](/screenshots/nodes-detail.png) | ![Node details panel in dark mode](/screenshots/dark/nodes-detail.png) |
 
 All of these colors,
 including the status backgrounds and badge colors, are user-configurable — see

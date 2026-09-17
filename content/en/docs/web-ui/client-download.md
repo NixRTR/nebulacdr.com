@@ -6,7 +6,9 @@ weight: 40
 
 The **Client Download** page (also reachable from the sidebar or at `/client-download`) lets users download **ncclient** binaries served directly from your Nebula Commander instance. No internet access to GitHub is required after deployment.
 
-![Client Download page](/screenshots/client-download.png)
+| Light | Dark |
+|---|---|
+| ![Client Download page](/screenshots/client-download.png) | ![Client Download page in dark mode](/screenshots/dark/client-download.png) |
 
 ## Purpose
 

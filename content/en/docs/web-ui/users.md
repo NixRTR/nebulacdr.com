@@ -9,7 +9,9 @@ The **Users** page (**sidebar → Users**) lists every user account in Nebula
 Commander as a grid of square cards. It's visible only to **system admins** —
 everyone else never sees this link.
 
-![Users page](/screenshots/users.png)
+| Light | Dark |
+|---|---|
+| ![Users page](/screenshots/users.png) | ![Users page in dark mode](/screenshots/dark/users.png) |
 
 ## The user grid
 
@@ -24,7 +26,9 @@ per-network permissions — role (owner/member) and the specific capabilities
 (manage nodes, invite users, manage firewall) granted on each network they're part
 of.
 
-![User details modal](/screenshots/users-detail.png)
+| Light | Dark |
+|---|---|
+| ![User details modal](/screenshots/users-detail.png) | ![User details modal in dark mode](/screenshots/dark/users-detail.png) |
 
 - **Edit role** — click **Edit** next to the system role to reveal a dropdown
   (`User` or `System Admin`) in place, without leaving the modal. Save applies

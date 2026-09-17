@@ -6,7 +6,9 @@ weight: 20
 
 The **Groups** page lets you define Nebula security groups and their **inbound firewall rules** per network. Groups are used by nodes (each node has one group). Firewall rules control which other groups can send traffic to this group and on what protocol and ports.
 
-![Groups page](/screenshots/groups.png)
+| Light | Dark |
+|---|---|
+| ![Groups page](/screenshots/groups.png) | ![Groups page in dark mode](/screenshots/dark/groups.png) |
 
 ## Selecting a network
 
