@@ -4,7 +4,7 @@ linkTitle: Docker
 weight: 10
 ---
 
-The Docker client is the **preferred** method for the **first lighthouse** in a network so the container can run dnsmasq and you can use [Magic DNS](/docs/web-ui/dns/) (split-horizon DNS) for the network. Other devices (CLI, tray, or additional Docker clients) can then resolve Nebula hostnames via the lighthouse.
+The Docker client is the **preferred** method for the **first lighthouse** in a network so the container can run dnsmasq and you can use [Magic DNS](/docs/web-ui/dns/) (split-horizon DNS) for the network. Other devices (CLI, a native GUI app, or additional Docker clients) can then resolve Nebula hostnames via the lighthouse.
 
 **Image:** `ghcr.io/nixrtr/nebula-commander-ncclient:latest`, or build from the repo `client/docker` (Dockerfile in that directory).
 

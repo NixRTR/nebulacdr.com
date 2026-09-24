@@ -31,11 +31,14 @@ Windows ARM64 is not built (GitHub has no Windows ARM64 runners). Linux ARM64 is
 ### Jobs and outputs
 
 1. **build** – Matrix job: builds the ncclient CLI for each platform. Uploads one artifact per platform.
-2. **build-windows-tray** – Builds the Windows tray control UI and the `NebulaCommanderService` background service (`python build.py --target both`), with optional bundled Nebula. Depends on the CLI build; uploads `ncclient-tray-windows-amd64.exe` and `ncclient-service-windows-amd64.exe` as separate artifacts.
-3. **build-msi** – Runs only on tag pushes. Downloads the Windows CLI, tray, and service artifacts, copies all three into `installer/windows/redist/`, builds the MSI with WiX 5, and uploads `NebulaCommander-windows-amd64.msi`.
-4. **upload-release** – Runs only on tag pushes. Downloads all artifacts (CLI, tray, service, MSI), flattens them, generates `SHA256SUMS.txt`, and uploads everything to the GitHub Release for that tag. Release is not draft; files can be overwritten.
-5. **checksums** – Generates checksums for the Actions UI; release gets checksums from the upload-release job.
-6. **summary** – Prints build status and notes that release binaries were uploaded when the run was tag-triggered.
+2. **build-windows-service** – Builds the `NebulaCommanderService` background service with PyInstaller (`client/windows/build.py`). Uploads `ncclient-service-windows-amd64.exe`.
+3. **build-windows-app** – Builds the WinUI 3 app with `dotnet publish -c Release -r win-x64` (.NET 10) as a self-contained single file. Uploads `NebulaCommanderApp-windows-amd64.exe`.
+4. **build-deb** / **build-rpm** – Tag pushes only. Package the `build` job's `ncclient-linux-amd64` binary plus the service and desktop app into three `.deb` and three `.rpm` packages (`nebula-commander-client`, `-service`, `-desktop`).
+5. **build-flatpak** – Tag pushes only. Builds the desktop app against the GNOME 51 runtime and uploads `org.beardedtek.NebulaCommander.flatpak`.
+6. **build-msi** – Tag pushes only. Downloads the Windows CLI, app, and service artifacts, copies all three into `installer/windows/redist/`, builds the MSI with WiX 5 (Util + UI extensions), and uploads `NebulaCommander-windows-amd64.msi`. Any pre-release suffix is stripped from the MSI version, since MSI versions must be purely numeric.
+7. **upload-release** – Tag pushes only. Downloads all artifacts (CLI, Windows app/service/MSI, `.deb`, `.rpm`, Flatpak), flattens them, generates `SHA256SUMS.txt`, and uploads everything to the GitHub Release for that tag. Release is not draft; files can be overwritten.
+8. **checksums** – Generates checksums for the Actions UI; release gets checksums from the upload-release job.
+9. **summary** – Prints build status and notes that release binaries were uploaded when the run was tag-triggered.
 
 ### Creating a release
 
@@ -45,7 +48,7 @@ Windows ARM64 is not built (GitHub has no Windows ARM64 runners). Linux ARM64 is
    git tag v0.1.5
    git push origin v0.1.5
    ```
-3. The workflow builds all platforms, the tray app, the service, and the MSI, then creates the release and attaches all binaries and SHA256SUMS.
+3. The workflow builds all platforms, the Windows app and service, the MSI, and the Linux packages, then creates the release and attaches all binaries and SHA256SUMS.
 
 ### Manual run
 

@@ -14,7 +14,7 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Web UI** — React dashboard with OIDC (e.g. Keycloak) or dev token authentication
 - **Device client (ncclient)** — `pip install nebula-commander` for enroll and run; see [ncclient documentation](/docs/usage/ncclient/)
 
-## Status (as of v0.4.0)
+## Status (as of v0.5.1)
 
 ### What's implemented already
 
@@ -34,9 +34,10 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Per-account color theming** — every user can customize button, status, badge,
   and background colors independently for light and dark mode, and save named
   presets to switch between — see [Appearance](/docs/web-ui/appearance/)
-- Device client (`ncclient`): CLI, a Windows service + tray app, a Docker image, and
-  a NixOS module (`services.ncclient`), plus mobile support (iOS/Android via the
-  official Mobile Nebula app)
+- Device client (`ncclient`): CLI, native desktop apps for Windows (WinUI 3, with a
+  background service) and Linux (GTK4, as `.deb`/`.rpm`/Flatpak), a Docker image, and
+  NixOS modules (`services.ncclient`, `services.ncclient-desktop`), plus mobile support
+  (iOS/Android via the official Mobile Nebula app)
 - Lighthouse-based peer reachability monitoring and node offline detection
 - OIDC (e.g. Keycloak) or dev-token authentication, with step-up reauth required for
   sensitive actions (deletions, revocations)

@@ -63,6 +63,20 @@ When the server has [DNS enabled](/docs/web-ui/dns/) for the network, you can pa
 
 **Certificates:** If the cert was **created** via the server (Create certificate in the UI), the bundle includes `host.key`. If it was **signed** (Sign flow), the server does not have the key; put your `host.key` in the same directory as the generated certs (the output dir).
 
+### Subnet routes and exit nodes
+
+A [subnet router or exit node](/docs/usage/unsafe-routes/) that an admin assigns to this node is only *offered* to it. It is not used until you accept it on the device. Use `ncclient routes` with the same `--output-dir` that `run` uses:
+
+```bash
+ncclient routes list                              # offered routes, and which are accepted
+ncclient routes accept 192.168.1.0/24             # add --via <IP> if several gateways offer it
+ncclient routes reject 192.168.1.0/24
+ncclient routes accept-exit-node --via 10.100.0.1
+ncclient routes reject-exit-node
+```
+
+You can accept several subnet routes as long as they don't overlap, and at most one exit node. The running daemon picks up changes on its next poll; no restart is needed. The [Linux](#linux-app) and [Windows](#windows-app) apps offer the same controls on their Status pages.
+
 ### Install service
 
 #### Linux (quick install)
@@ -93,51 +107,97 @@ Token: `~/.config/nebula-commander/token` (or `/etc/nebula-commander/token` as r
 
 ### Windows notes (CLI)
 
-Token: `%USERPROFILE%\.config\nebula-commander\token`. Default output dir: `%USERPROFILE%\.nebula`. Use `--nebula` if `nebula.exe` is not on PATH. Do not use `--restart-service`. This plain-CLI token/output location is separate from the shared, service-managed location the tray/service use below - for a GUI and no manual daemon management, use the [Windows Tray](#windows-tray) section below instead.
+Token: `%USERPROFILE%\.config\nebula-commander\token`. Default output dir: `%USERPROFILE%\.nebula`. Use `--nebula` if `nebula.exe` is not on PATH. Do not use `--restart-service`. This plain-CLI token/output location is separate from the shared, service-managed location the app/service use below - for a GUI and no manual daemon management, use the [Windows App](#windows-app) section below instead.
 
-## Windows Tray
+## Linux App
 
-On Windows, the tray app is an **unelevated control UI** for a background **Windows Service** (`NebulaCommanderService`). The service does the actual work - polling for config/certs and running Nebula - as `LocalSystem`, so there is no UAC prompt at any point: not to launch the tray, not to enroll, not to start/stop/restart the daemon, and not to apply split-horizon DNS.
+| Light | Dark |
+|-------|------|
+| ![Linux app Status tab](/screenshots/apps/linux-status.png) | ![Linux app Status tab in dark mode](/screenshots/dark/apps/linux-status.png) |
 
-The tray and service are installed together by the [MSI installer](/docs/usage/ncclient/installation/windows/). The tray is not designed to run standalone without it - the service is only ever registered by the MSI (there is no CLI `install`/`remove` subcommand for it), so a standalone tray with no service installed has nothing to control and shows as unreachable.
+On Linux, **Nebula Commander** (GTK4/libadwaita) is an unelevated desktop app for the background **ncclient** systemd service. The service does the actual work - polling for config/certs and running Nebula - as root, and exposes a system D-Bus API (`org.beardedtek.NebulaCommander1`) that the app talks to, authorized per-call via polkit for any active local session. There is no group membership or relogin step, and no password prompt for enrolling, starting/stopping the service, or accepting routes.
+
+The app and service are installed together via [`.deb`, `.rpm`, or Flatpak](/docs/usage/ncclient/installation/linux/). Like the Windows app, it is not designed to run standalone without the service - if it isn't installed/running, the Status tab reflects that.
 
 ### Usage
 
-- **Enroll** – Open the tray menu and use Enroll. Enter the server URL and the one-time code from Nebula Commander (Nodes → Enroll for the node). This writes the device token (DPAPI-encrypted, machine-scope) and settings to the shared `%ProgramData%\nebula-commander\` folder the service reads from, then tells the service (over a local named pipe) to poll immediately instead of waiting for the next interval.
-- **Settings** – Configure server URL, poll interval, optional path to the Nebula binary, and **Accept split-horizon DNS**. There is no output-directory field - Nebula's config, certs, and logs always live under `%ProgramData%\nebula-commander\`. When the app is built with bundled Nebula, the default Nebula path points to the bundled `nebula.exe`.
-- **Start / Stop / Restart Service** – Controls the real Windows Service via the Service Control Manager (not an in-process loop). The installer grants Authenticated Users the rights to do this, so it works with no admin prompt.
-- **Run On Startup** – Optional: registers the tray itself (the UI) in the Windows Registry (`HKCU\...\Run`) so the icon appears when you sign in. This only affects the tray UI - the service already starts automatically at boot (`Start="auto"`, `LocalSystem`) regardless of whether anyone is logged in.
+The app has three tabs in its header bar. It follows the desktop's light/dark preference.
 
-Settings are stored in `%ProgramData%\nebula-commander\settings.json` - shared between the tray and the service, not the per-user `%APPDATA%` location older versions used.
+- **Status** – Connection state (e.g. *Connected – Config updated*), the systemd service state with Start/Stop/Restart buttons, a switch for each **subnet route offered to this node**, an **Exit node** picker, and **View Config** (under Advanced) to see the generated `config.yaml`. Routes that overlap one you've already accepted are shown disabled with the reason. You also get a desktop notification when the connection state changes or a new route is offered.
+- **Enrollment** – Shows whether the device is already enrolled (and to which server), and lets you enroll with the server URL and the one-time code from Nebula Commander (Nodes → Enroll for the node). Enrolling again replaces the device token.
+- **Settings** – Server URL, poll interval, optional path to the Nebula binary (blank uses `PATH`), **Accept split-horizon DNS**, and **Run on startup** (an XDG autostart entry for the app itself). Saving restarts the service automatically so the new values take effect.
+
+| Enrollment | Settings |
+|------------|----------|
+| ![Linux app Enrollment tab](/screenshots/apps/linux-enroll.png) | ![Linux app Settings tab](/screenshots/apps/linux-settings.png) |
+
+Settings, the device token, and status live under `/var/lib/ncclient/` (root-only; the app never reads these files directly, only through the D-Bus API). The service uses the distribution's own packaged `nebula` binary unless you set a path in Settings.
 
 ### Run from source
 
-From the nebula-commander repo root:
+From the nebula-commander repo root, with PyGObject, GTK 4, libadwaita, and `jeepney` installed (on Debian/Ubuntu: `python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 python3-jeepney`):
 
 ```bash
-pip install -r client/windows/requirements.txt
-pip install -e client/
-python -m client.windows.tray
+python3 -m client.linux.desktop
 ```
 
-Or with `pythonw` to avoid a console window:
+It still needs a running `ncclient.service` that exposes the D-Bus API (from `nebula-commander-service` or the [NixOS module](/docs/usage/ncclient/installation/nixos/)). Without one, Status shows the service as not installed.
 
-```bash
-pythonw -m client.windows.tray
+### Build
+
+See [Linux Desktop App installation](/docs/usage/ncclient/installation/linux/) and [Development: Manual builds](/docs/development/manual-builds/) for building the `.deb`/`.rpm`/Flatpak packages yourself.
+
+## Windows App
+
+![Windows app Status page](/screenshots/apps/windows-status.png)
+
+On Windows, **Nebula Commander** (WinUI 3) is a native, **unelevated** windowed app for a background **Windows Service** (`NebulaCommanderService`). The service does the actual work - polling for config/certs and running Nebula - as `LocalSystem`, so there is no UAC prompt at any point: not to launch the app, not to enroll, not to start/stop/restart the daemon, and not to apply split-horizon DNS.
+
+The app and service are installed together by the [MSI installer](/docs/usage/ncclient/installation/windows/). The app is not designed to run standalone without it - the service is only ever registered by the MSI (there is no CLI `install`/`remove` subcommand for it), so a standalone app with no service installed shows Status as unreachable, with nothing to control.
+
+### Usage
+
+The app has three side tabs (Settings is pinned at the bottom of the side bar). It follows the Windows light/dark app theme.
+
+- **Status** – One card each for:
+  - **Connection**: the server URL and a **Test Connection** button.
+  - **Nebula Commander Service**: state and Start/Stop/Restart.
+  - **Nebula Interface**: connected/error, the interface name, whether the Nebula process is running, and when the service last updated.
+  - **Split-Horizon DNS**: active or inactive.
+  - **Exit Node / Subnet Router**: what this device advertises, plus checkboxes for offered subnet routes and a picker for offered exit nodes.
+  - **Configuration**: **View Config** and **Open Containing Folder**.
+
+  Use **Refresh** to update the page right away.
+- **Enrollment** – Enter the server URL and the one-time code from Nebula Commander (Nodes → Enroll for the node). If the device is already enrolled, the page says so; enrolling again replaces the token and re-points the device at the new server. Enrolling writes the device token (DPAPI-encrypted, machine-scope) and settings to the shared `%ProgramData%\nebula-commander\` folder the service reads from, then tells the service (over a local named pipe) to poll immediately instead of waiting for the next interval.
+- **Settings** – Server URL, poll interval, optional path to the Nebula binary (blank uses `PATH`), and **Split-horizon DNS**. Under **Nebula binary** you can see the installed Nebula version, **Check for updates** against Nebula's GitHub releases, and **Download / update Nebula** into `%ProgramData%\nebula-commander\nebula\`. Under **Startup**, **Run on startup** opens the app to the tray when you sign in. There is no output-directory field - Nebula's config, certs, and logs always live under `%ProgramData%\nebula-commander\`.
+
+| Enrollment | Settings |
+|------------|----------|
+| ![Windows app Enrollment page](/screenshots/apps/windows-enroll.png) | ![Windows app Settings page](/screenshots/apps/windows-settings.png) |
+
+Closing the window minimizes it to the tray rather than exiting. Use the tray icon's **Open Nebula Commander** item to bring it back, or **Exit** to actually quit the app (the service keeps running either way - it starts automatically at boot, `Start="auto"`, `LocalSystem`, regardless of whether the app is open or anyone is logged in).
+
+Settings are stored in `%ProgramData%\nebula-commander\settings.json` - shared between the app and the service, not a per-user `%APPDATA%` location.
+
+### Run from source
+
+From `client/windows-app/`:
+
+```powershell
+dotnet build   # or: dotnet run
 ```
 
-Running this way still expects a real installed-and-running `NebulaCommanderService` to control - it won't do anything useful on a machine without one.
+Running this way still expects a real installed-and-running `NebulaCommanderService` to control - the Status page reflects that if it isn't installed/running yet, rather than failing.
 
-### Build (PyInstaller)
+### Build (self-contained publish)
 
-To build the standalone tray and service executables (and optionally bundle the Nebula Windows binary):
-
-```bash
-cd client/windows
-pip install -r requirements.txt pyinstaller
-python build.py
+```powershell
+cd client/windows-app
+dotnet publish -c Release -r win-x64
 ```
 
-By default `build.py` builds **both** `ncclient-tray.exe` and `ncclient-service.exe` (`--target both`); pass `--target tray` or `--target service` to build just one. Output is in `client/windows/dist/`. See [client/windows/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows/README.md) and `build.py` for details.
+Output: `bin\Release\net10.0-windows*\win-x64\publish\NebulaCommanderApp.exe` - a single self-contained file (bundles the full .NET runtime and Windows App SDK, no prerequisites to install on the target machine). See [client/windows-app/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows-app/README.md) for details.
 
-The [Windows MSI installer](/docs/usage/ncclient/installation/windows/) installs and registers all three: `ncclient.exe`, `ncclient-tray.exe`, and `ncclient-service.exe`.
+For the background service, see `client/windows/README.md` and [Development: Manual builds](/docs/development/manual-builds/).
+
+The [Windows MSI installer](/docs/usage/ncclient/installation/windows/) installs and registers all three: `ncclient.exe`, `NebulaCommanderApp.exe`, and `ncclient-service.exe`.

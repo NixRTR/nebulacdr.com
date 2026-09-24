@@ -5,18 +5,17 @@ weight: 25
 description: "Turn a node into a subnet router or an exit node, and pick which routes each other node actually uses — built on Nebula's unsafe_routes."
 ---
 
-Nebula Commander can turn a node into a **subnet router** (it advertises a LAN behind
-it to the rest of the mesh, the way `tailscale up --advertise-routes` does) or an
-**exit node** (it advertises `0.0.0.0/0`/`::/0` and routes all of another node's
-traffic, the way `tailscale up --advertise-exit-node` does). Both build on Nebula's
-own [`unsafe_routes`](https://nebula.defined.net/docs/config/tun/#tununsafe_routes)
-feature.
+Nebula Commander can turn a node into a **subnet router** (it advertises a LAN behind it
+to the rest of the mesh, the way `tailscale up --advertise-routes` does) or an **exit
+node** (it advertises `0.0.0.0/0`/`::/0` and routes all of another node's traffic, the
+way `tailscale up --advertise-exit-node` does). Both build on Nebula's own
+[`unsafe_routes`](https://nebula.defined.net/docs/config/tun/#tununsafe_routes) feature.
 
-This covers how it's configured from both sides — the gateway that advertises a
+This page covers how it's configured from both sides — the gateway that advertises a
 route, and the other nodes that actually use it — what happens automatically for
-nodes running [ncclient](/docs/usage/ncclient/) on Linux, and what you have to do
-yourself for everything else (Windows, macOS, Docker-deployed `ncclient`, or bare
-`nebula`).
+nodes running [ncclient](/docs/usage/ncclient/) on Linux, and — the part that's easy to miss — what you
+have to do yourself for everything else (Windows, macOS, Docker-deployed `ncclient`,
+or bare `nebula`).
 
 ## Two sides of the same setting
 
@@ -29,16 +28,14 @@ both sides in the [Nodes](/docs/web-ui/nodes/) page's node-details panel:
   route, a **"Used by"** checklist of which other nodes are allowed to consume it.
 - On a **consumer** node, the visible (non-Advanced) **Use Subnet Router** and
   **Use Exit Node** dropdowns let you pick a gateway directly, without opening the
-  gateway's own settings — the same underlying relationship, edited from whichever
-  side is more convenient at the time.
+  gateway's own settings.
 
 Both mechanisms write to the same data: picking a gateway from a consumer's
 dropdown adds that consumer to the gateway's "Used by" list for every matching
 route, and clears it from any other gateway's routes of the same kind (a node uses
-at most one subnet router and one exit node at a time). Checking a node in a
-gateway's "Used by" list does the same thing in reverse. **Either way, a route
-reaches nobody until an admin explicitly says who it's for** — advertising a
-route is never enough on its own.
+at most one subnet router and one exit node at a time). **Either way, a route
+reaches nobody until an admin explicitly says who it's for** — advertising a route
+is never enough on its own.
 
 ## Setting up a route (gateway side)
 
@@ -59,19 +56,55 @@ nodes on the network should actually receive a route to it.
 
 ## Picking a route (consumer side)
 
-On any other node's details panel — visible without opening Advanced, since this is
-something you're likely to change often:
+On any other node's details panel — visible without opening Advanced:
 
 - **Use Subnet Router** — a dropdown listing every other node on the network that
   advertises at least one subnet. Choosing one routes this node's traffic for all of
-  that gateway's advertised subnets through it; choosing **None** stops using a
-  subnet router.
+  that gateway's advertised subnets through it; **None** stops using one.
 - **Use Exit Node** — the same idea for full-tunnel routing: a dropdown of every
   other node advertising an exit route.
 
-This works for every platform, not just desktop/`ncclient` nodes — a mobile node can
+This works for every platform, not just desktop/`ncclient` nodes - a mobile node can
 pick a subnet router or exit node too, since consuming a route needs no host
 automation, just the generated Nebula config.
+
+## Accepting a route locally (desktop `ncclient` nodes)
+
+The picker above is server-side authorization - it controls what a node is *allowed*
+to consume, the same way DNS being enabled for a network doesn't by itself mean a
+device applies it (`accept_dns`/`--accept-dns` is the separate, local opt-in for
+that). Subnet routers and exit nodes work the same way on desktop `ncclient` nodes
+(Linux and Windows): being picked as a consumer makes the route *available*, not
+automatically *active*. `ncclient` writes everything it's authorized to consume to
+`available-routes.json` in its output directory, but only writes the locally
+*accepted* subset into `config.yaml` for Nebula to actually use.
+
+- **CLI** (`ncclient` on Linux, `ncclient.exe` on Windows - same commands either
+  way): `ncclient routes list` shows what's available and what's currently
+  accepted; `ncclient routes accept <CIDR>` / `routes reject <CIDR>` manage subnet
+  routes, `routes accept-exit-node --via <IP>` / `routes reject-exit-node` manage
+  the exit node. Multiple subnet routes can be accepted at once as long as their
+  CIDRs don't overlap - `accept` rejects an overlapping one with an explanation of
+  which already-accepted route it conflicts with. At most one exit node is ever
+  accepted at a time.
+- **The [Windows app](/docs/usage/ncclient/usage/#windows-app)**: the Status page's
+  "Exit Node / Subnet Router" card lists the same available/accepted state
+  interactively - checkboxes for subnet routes (disabled with a reason if accepting
+  one would overlap an already-accepted route) and a single-select list for the exit
+  node.
+- **The [Linux desktop app](/docs/usage/ncclient/usage/#linux-app)**: the Status tab
+  has a switch per offered subnet route (disabled with the conflict shown if it would
+  overlap an accepted one) and an **Exit node** picker. It also sends a desktop
+  notification when a new route is offered.
+
+A locally accepted/rejected change is picked up within one poll cycle without
+needing to re-enroll or restart anything by hand (or immediately, if something
+nudges the service to poll now - the Windows app already does this after a
+Settings change). This is entirely client-side: the "Used by" list above already
+determines *authorization*; this is a separate device-level *consent* step on top
+of it, and doesn't exist for mobile (Mobile Nebula) nodes, which have no local
+ncclient process to gate anything through - a mobile node's only control is the
+server-side picker.
 
 ## What happens automatically (Linux nodes running `ncclient`)
 
@@ -116,8 +149,8 @@ Linux-only. On such a gateway node you need to:
    - macOS: `sysctl -w net.inet.ip.forwarding=1`, plus `pfctl` for NAT.
 3. **Allow forwarding and (for an exit node) NAT between the Nebula tun interface and
    your physical interface.** On Linux with nftables, this is exactly what
-   `client/linux_routing.py` does for `ncclient` - use it as a reference. For a
-   subnet route to `192.168.1.0/24` via tun device `nebula1`:
+   [`client/linux_routing.py`](https://github.com/NixRTR/nebula-commander/blob/main/client/linux_routing.py) does for `ncclient` - use
+   it as a reference. For a subnet route to `192.168.1.0/24` via tun device `nebula1`:
 
    ```
    table inet ncclient_routing {
@@ -156,12 +189,20 @@ the gateway node's Nebula IP.
 **A consumer node has the route in its config, but traffic to the subnet doesn't
 arrive** - most likely the gateway's own firewall. Since Nebula 1.10, a firewall rule
 only matches traffic to the node's *own* Nebula IP unless it also sets `local_cidr` -
-Nebula Commander adds `local_cidr`-scoped copies of the gateway's inbound rules
-automatically for every subnet it advertises, but a manually-written config for a
-non-`ncclient` host needs the same treatment by hand. See [Nebula's firewall
-docs](https://nebula.defined.net/docs/config/firewall/) for the exact rule shape.
+Nebula Commander generates a `local_cidr`-scoped accept rule for each advertised
+subnet, one per node in that route's "Used by" list, matched by that consumer's own
+certificate-verified Nebula IP (`cidr: <ip>/32`). If the consumer isn't actually
+selected in "Used by" - even if it somehow has the route in its own config, e.g. a
+hand-edited config or a non-`ncclient` host - the gateway has no matching rule and
+will drop the forwarded traffic; check the "Used by" list first. A manually-written
+config for a non-`ncclient` gateway needs the equivalent `cidr`/`local_cidr` rules
+added by hand. See [Nebula's firewall docs](https://nebula.defined.net/docs/config/firewall/)
+for the exact rule shape.
 
-**The route works for one node but not another** - check that node's selection: either
-its own **Use Subnet Router**/**Use Exit Node** dropdown, or the "Used by" list on the
-gateway it should be using. A route only reaches nodes explicitly selected on one
-side or the other; an unselected node's config simply won't contain the route at all.
+**The route works for one node but not another** - check that node's selection:
+either its own **Use Subnet Router**/**Use Exit Node** dropdown, or the "Used by"
+list on the gateway it should be using. A route only reaches nodes explicitly
+selected on one side or the other, and - since the gateway's firewall now enforces
+this per node, not just config distribution - an unselected node can't use the
+route even if it has (or is given) a matching `tun.unsafe_routes` entry by some
+other means.

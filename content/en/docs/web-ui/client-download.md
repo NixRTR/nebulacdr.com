@@ -12,7 +12,7 @@ The **Client Download** page (also reachable from the sidebar or at `/client-dow
 
 ## Purpose
 
-Install and run ncclient on a device to enroll with Nebula Commander and pull config and certificates. The enrollment code is obtained from the [Nodes](/docs/web-ui/nodes/) page (Enroll button for the node). This page provides the CLI and, on Windows, the tray app.
+Install and run ncclient on a device to enroll with Nebula Commander and pull config and certificates. The enrollment code is obtained from the [Nodes](/docs/web-ui/nodes/) page (Enroll button for the node). The page is organized into tabs (Docker, Linux, Windows, macOS, Mobile) and provides the CLI for every platform, the Linux desktop app packages, and the Windows installer.
 
 ## CLI binaries (command-line ncclient)
 
@@ -37,20 +37,36 @@ chmod +x ncclient-linux-amd64   # or the file you downloaded
 
 On Windows, add the directory containing `ncclient-windows-amd64.exe` to your PATH or run it by full path.
 
-## Windows Tray App
+## Linux desktop app packages
 
-For Windows, use the **MSI installer** (e.g. `/downloads/NebulaCommander-windows-amd64.msi`) - it installs the CLI, the unelevated tray control UI, and a background Windows Service together, and adds them to PATH. The service does the actual work (polling, running Nebula, split-horizon DNS) as `LocalSystem`, so nothing here needs an admin prompt.
+The **Linux** tab offers the [Linux desktop app](/docs/usage/ncclient/installation/linux/) as three packages, in both `.deb` and `.rpm` form, plus a Flatpak:
 
-The page may also offer the tray and service executables individually:
+| File | Contents |
+|------|----------|
+| `nebula-commander-client.deb` / `.rpm` | The `ncclient` CLI |
+| `nebula-commander-service.deb` / `.rpm` | The `ncclient` systemd service and the D-Bus/polkit integration the app uses |
+| `nebula-commander-desktop.deb` / `.rpm` | The GTK4 desktop app |
+| `org.beardedtek.NebulaCommander.flatpak` | The desktop app only; still needs `nebula-commander-service` installed on the host |
 
-- **ncclient-tray-windows-amd64.exe** – The tray control UI alone, without the service. Mainly useful for development (see [Windows Tray usage](/docs/usage/ncclient/usage/#windows-tray)) - since the service is only ever registered by the MSI, running this standalone has nothing to control and shows as unreachable. For normal use, install via the MSI instead.
-- **ncclient-service-windows-amd64.exe** – The service binary alone. Also mainly for development; normal installs get this through the MSI, which registers it as `NebulaCommanderService`.
+Install all three together so the package manager resolves the order:
+
+```bash
+sudo apt install ./nebula-commander-client.deb ./nebula-commander-service.deb ./nebula-commander-desktop.deb
+# or
+sudo dnf install ./nebula-commander-client.rpm ./nebula-commander-service.rpm ./nebula-commander-desktop.rpm
+```
+
+## Windows installer
+
+The **Windows** tab offers the CLI on its own and the **MSI installer** (`/downloads/NebulaCommander-windows-amd64.msi`). The MSI installs the CLI, the [Windows app](/docs/usage/ncclient/usage/#windows-app), and a background Windows Service together, and can add them to PATH. The service does the actual work (polling, running Nebula, split-horizon DNS) as `LocalSystem`, so nothing here needs an admin prompt after installation.
+
+The standalone app and service executables (`NebulaCommanderApp-windows-amd64.exe`, `ncclient-service-windows-amd64.exe`) are published on [GitHub Releases](https://github.com/NixRTR/nebula-commander/releases) but not on this page. They're mainly for development: the service is only ever registered by the MSI, so for normal use install the MSI.
 
 ## Getting the enrollment code
 
 1. In the Web UI, go to [Nodes](/docs/web-ui/nodes/).
 2. Open the node for this device (or create one and create/sign a certificate).
 3. Click **Enroll** and copy the one-time code.
-4. On the device: if you installed via the Windows MSI, enroll from the **tray app's Enroll dialog** using the server URL and code - the service picks it up automatically. Otherwise (CLI, Docker, other platforms), run: `ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX`, then `ncclient run --server https://YOUR_SERVER_URL` to start polling for config and certs.
+4. On the device: if you installed the Windows MSI or the Linux desktop app, open **Nebula Commander**, go to the **Enrollment** tab, and enter the server URL and code - the service picks it up automatically. Otherwise (CLI, Docker, other platforms), run: `ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX`, then `ncclient run --server https://YOUR_SERVER_URL` to start polling for config and certs.
 
 See [ncclient usage](/docs/usage/ncclient/usage/) for full steps.

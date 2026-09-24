@@ -4,7 +4,7 @@ linkTitle: Manual Builds
 weight: 30
 ---
 
-You can build all ncclient binaries, the Windows tray app and service, the Windows MSI, and the Docker images locally without using GitHub Actions.
+You can build all ncclient binaries, the Windows service and app, the Windows MSI, the Linux `.deb`/`.rpm`/Flatpak packages, and the Docker images locally without using GitHub Actions.
 
 ## ncclient CLI (standalone binary)
 
@@ -48,9 +48,9 @@ On a Windows ARM64 machine (or with an ARM64 Python), install dependencies and r
 
 ---
 
-## Windows tray app and service
+## Windows service
 
-The tray is an unelevated control UI; the service (`NebulaCommanderService`) is what actually polls for config/certs and runs Nebula, as `LocalSystem`. Both are built from `client/windows/`.
+The service (`NebulaCommanderService`) is what actually polls for config/certs and runs Nebula, as `LocalSystem`. It is built with PyInstaller from `client/windows/`.
 
 From the repository root:
 
@@ -62,33 +62,76 @@ cd client/windows
 python build.py
 ```
 
-`build.py` builds **both** executables by default (`--target both`). Use `--target tray` or `--target service` to build just one. Output: `client/windows/dist/ncclient-tray.exe` and `client/windows/dist/ncclient-service.exe`. The tray build can optionally bundle the Nebula Windows binary; see `client/windows/README.md` and `build.py` for details.
+Output: `client/windows/dist/ncclient-service.exe`. The service does not bundle Nebula: it uses the copy the app downloads into `%ProgramData%\nebula-commander\nebula\`, the path set in Settings, or `nebula.exe` on `PATH`.
 
 Note: `ncclient-service.exe` only does anything useful when registered as a real Windows Service (which the MSI does via WiX's `ServiceInstall`/`ServiceControl` elements) - there is no standalone `install`/`remove` subcommand.
+
+## Windows app (WinUI 3)
+
+The windowed app lives in `client/windows-app/` and needs the .NET 10 SDK (CI uses `10.0.x`). From that directory:
+
+```powershell
+dotnet publish -c Release -r win-x64
+```
+
+Output: `client/windows-app/bin/Release/net10.0-windows10.0.26100.0/win-x64/publish/NebulaCommanderApp.exe`, a single self-contained file that bundles the .NET runtime and Windows App SDK. See [client/windows-app/README.md](https://github.com/NixRTR/nebula-commander/blob/main/client/windows-app/README.md) for details.
 
 ---
 
 ## Windows MSI
 
-The MSI installs the ncclient CLI, the tray app, and the service. You need all three executables and WiX 5.
+The MSI installs the ncclient CLI, the Windows app, and the service. You need all three executables and WiX 5.
 
 1. **Get the three executables** – Build as above or download from a release. Copy them into `installer/windows/redist/`:
    - `redist/ncclient.exe` (from `client/binaries/dist/ncclient.exe`)
-   - `redist/ncclient-tray.exe` (from `client/windows/dist/ncclient-tray.exe`)
+   - `redist/NebulaCommanderApp.exe` (from the `dotnet publish` output above)
    - `redist/ncclient-service.exe` (from `client/windows/dist/ncclient-service.exe`)
 
-2. **Install WiX 5** – e.g. `dotnet tool install --global wix --version 5.0.2`. Add the Util extension once:
+2. **Install WiX 5** – e.g. `dotnet tool install --global wix --version 5.0.2`. Add the Util and UI extensions once:
    ```powershell
    wix extension add -g WixToolset.Util.wixext/5.0.0
+   wix extension add -g WixToolset.UI.wixext/5.0.2
    ```
 
 3. **Build the MSI** – From `installer/windows/`:
    ```powershell
-   wix build Product.wxs -ext WixToolset.Util.wixext -o NebulaCommander-windows-amd64.msi -d Version=0.1.12 -arch x64
+   wix build Product.wxs -ext WixToolset.Util.wixext -ext WixToolset.UI.wixext -o NebulaCommander-windows-amd64.msi -d Version=0.5.1 -arch x64
    ```
-   Replace `0.1.12` with the version you are building.
+   Replace `0.5.1` with the version you are building. It must be purely numeric (`major.minor.patch`): strip any pre-release suffix such as `-rc1`. `installer/windows/build-msi.ps1` wraps this and checks that all three files are in `redist/` first.
 
-Output: `NebulaCommander-windows-amd64.msi`. Installing it registers `NebulaCommanderService` (auto-start, `LocalSystem`) and grants Authenticated Users start/stop/query rights on it, so the tray's Start/Stop/Restart Service menu works without a UAC prompt.
+Output: `NebulaCommander-windows-amd64.msi`. Installing it registers `NebulaCommanderService` (auto-start, `LocalSystem`) and grants Authenticated Users start/stop/query rights on it, so the app's Start/Stop/Restart buttons work without a UAC prompt.
+
+---
+
+## Linux packages (.deb / .rpm)
+
+Both builders produce three packages: `nebula-commander-client` (the frozen CLI, arch-specific), `nebula-commander-service` (systemd unit, D-Bus policy, polkit action/rule; depends on the distro's `nebula` package), and `nebula-commander-desktop` (the GTK4 app as plain Python source; arch: all). From the repository root:
+
+```bash
+# .deb - needs dpkg-deb (a Debian/Ubuntu host, container, or WSL)
+python3 packaging/deb/build.py --version 0.5.1
+
+# .rpm - needs rpmbuild (Fedora, or the `rpm` package on Debian/Ubuntu)
+python3 packaging/rpm/build.py --version 0.5.1
+```
+
+The client package uses `client/binaries/dist/ncclient`, building it first if it's missing; pass `--ncclient-binary PATH` to use a binary you already have (CI passes the release's `ncclient-linux-amd64`). `--only desktop service` builds a subset, and `--version` defaults to `git describe`. Output goes to `packaging/deb/dist/` and `packaging/rpm/dist/`.
+
+## Linux Flatpak
+
+The Flatpak contains the desktop app only (it still needs `nebula-commander-service` on the host). It builds against the GNOME 51 runtime:
+
+```bash
+flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak install --user -y flathub org.gnome.Platform//51 org.gnome.Sdk//51
+cd packaging/flatpak
+python3 sync-sources.py   # vendor the client sources the manifest builds from
+flatpak-builder --force-clean --user --repo=repo --install-deps-from=flathub \
+  build-dir org.beardedtek.NebulaCommander.yaml
+flatpak build-bundle repo org.beardedtek.NebulaCommander.flatpak org.beardedtek.NebulaCommander
+```
+
+Output: `packaging/flatpak/org.beardedtek.NebulaCommander.flatpak`.
 
 ---
 

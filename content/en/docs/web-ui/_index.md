@@ -29,7 +29,7 @@ quick jumping-off point.
 - **[Groups](/docs/web-ui/groups/)** – Define security groups and inbound firewall rules per group.
 - **[DNS](/docs/web-ui/dns/)** – Configure split-horizon DNS per network (domain and hostname aliases). Used by ncclient with `--accept-dns` and by the Docker lighthouse client.
 - **[Nodes](/docs/web-ui/nodes/)** – Add nodes to networks, assign IPs, create or sign certificates, generate enrollment codes for ncclient, and configure [subnet routers and exit nodes](/docs/usage/unsafe-routes/).
-- **[Client Download](/docs/web-ui/client-download/)** – Download ncclient binaries (CLI and Windows tray) served from this server.
+- **[Client Download](/docs/web-ui/client-download/)** – Download ncclient (CLI, Linux `.deb`/`.rpm`/Flatpak, Windows app/MSI) served from this server.
 - **[Invitations](/docs/web-ui/invitations/)** – Invite users to networks with roles and permissions (when OIDC is enabled).
 - **[Users](/docs/web-ui/users/)** – System admins manage every user account and their system role.
 - **[Appearance](/docs/web-ui/appearance/)** – Customize your own color theme, light and dark mode.
