@@ -33,7 +33,7 @@ Windows ARM64 is not built (GitHub has no Windows ARM64 runners). Linux ARM64 is
 1. **build** – Matrix job: builds the ncclient CLI for each platform. Uploads one artifact per platform.
 2. **build-windows-service** – Builds the `NebulaCommanderService` background service with PyInstaller (`client/windows/build.py`). Uploads `ncclient-service-windows-amd64.exe`.
 3. **build-windows-app** – Builds the WinUI 3 app with `dotnet publish -c Release -r win-x64` (.NET 10) as a self-contained single file. Uploads `NebulaCommanderApp-windows-amd64.exe`.
-4. **build-deb** / **build-rpm** – Tag pushes only. Package the `build` job's `ncclient-linux-amd64` binary plus the service and desktop app into three `.deb` and three `.rpm` packages (`nebula-commander-client`, `-service`, `-desktop`).
+4. **build-deb** / **build-rpm** – Tag pushes only. Package the `build` job's `ncclient-linux-amd64` binary plus the service and desktop app into three `.deb` and three `.rpm` packages (`nebula-commander-client`, `-service`, `-desktop`), plus an arm64 client package from `ncclient-linux-arm64` (`nebula-commander-client-arm64.deb`, `nebula-commander-client-aarch64.rpm`).
 5. **build-flatpak** – Tag pushes only. Builds the desktop app against the GNOME 51 runtime and uploads `org.beardedtek.NebulaCommander.flatpak`.
 6. **build-msi** – Tag pushes only. Downloads the Windows CLI, app, and service artifacts, copies all three into `installer/windows/redist/`, builds the MSI with WiX 5 (Util + UI extensions), and uploads `NebulaCommander-windows-amd64.msi`. Any pre-release suffix is stripped from the MSI version, since MSI versions must be purely numeric.
 7. **upload-release** – Tag pushes only. Downloads all artifacts (CLI, Windows app/service/MSI, `.deb`, `.rpm`, Flatpak), flattens them, generates `SHA256SUMS.txt`, and uploads everything to the GitHub Release for that tag. Release is not draft; files can be overwritten.
@@ -82,6 +82,30 @@ Each image is tagged with the version (e.g. `1.2.3`) and `latest`. Build uses Do
 A final job prints the version and the full image names with that tag.
 
 ---
+
+## Publish Package Repository
+
+**File:** `.github/workflows/publish-package-repo.yml`
+
+Rebuilds the signed apt and rpm repository at [pkgs.nebulacommander.com](https://pkgs.nebulacommander.com) (GitHub Pages) that Linux users add to install and update the client, service, and desktop app. See [Linux Desktop App](/docs/usage/ncclient/installation/linux/#package-repository-recommended).
+
+### Triggers
+
+- **workflow_run** – After "Build ncclient Binaries" completes successfully for a stable `v*` tag. Pre-release tags (containing `-`, e.g. `v0.7.0-rc1`) are skipped.
+- **workflow_dispatch** – Rebuild the repository at any time, e.g. after rotating the signing key.
+
+### What it does
+
+1. Downloads the `.deb`/`.rpm` assets of the newest 5 stable GitHub Releases that have Linux packages.
+2. Runs `packaging/repo/build_repo.py`: lays out an apt repository (`deb/`, one `stable` suite, `amd64` and `arm64`) and an rpm repository (`rpm/`), signs `InRelease`/`Release.gpg`, signs each RPM and `repomd.xml`, and writes `gpg.key`, the `.sources`/`.repo` files, and an index page.
+3. Verifies the signatures and deploys the site to GitHub Pages.
+
+The repository has no state of its own; every run regenerates it from the Releases.
+
+### Secrets
+
+- `PACKAGE_SIGNING_KEY` – The armored private key used for signing.
+- `PACKAGE_SIGNING_KEY_PASSPHRASE` – Its passphrase.
 
 ## Testing workflows locally (act)
 

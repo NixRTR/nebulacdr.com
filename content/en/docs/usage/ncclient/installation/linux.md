@@ -18,6 +18,38 @@ On Linux, three packages give you a GTK4/libadwaita desktop app plus a backgroun
 
 Because authorization goes through polkit (`allow_active=yes`) instead of Unix group membership, the desktop app works immediately after install and login - there is no `usermod`/relogin step like older group-based designs.
 
+## Package repository (recommended)
+
+Add the signed Nebula Commander repository once, and new releases arrive with your normal system updates (`apt upgrade`, `dnf upgrade`, `zypper update`). It carries the current and the previous few releases, for amd64 and arm64. Installing `nebula-commander-desktop` and `nebula-commander-service` pulls in `nebula-commander-client`.
+
+**Debian / Ubuntu:**
+
+```bash
+sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://pkgs.nebulacommander.com/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nebula-commander.gpg
+sudo curl -fsSL -o /etc/apt/sources.list.d/nebula-commander.sources https://pkgs.nebulacommander.com/deb/nebula-commander.sources
+sudo apt update
+sudo apt install nebula-commander-desktop nebula-commander-service
+```
+
+**Fedora / RHEL:**
+
+```bash
+sudo curl -fsSL -o /etc/yum.repos.d/nebula-commander.repo https://pkgs.nebulacommander.com/rpm/nebula-commander.repo
+sudo dnf install nebula-commander-desktop nebula-commander-service
+```
+
+**openSUSE:**
+
+```bash
+sudo zypper addrepo https://pkgs.nebulacommander.com/rpm/nebula-commander.repo
+sudo zypper install nebula-commander-desktop nebula-commander-service
+```
+
+On a server without a desktop, install just `nebula-commander-service`. The repository metadata and the RPMs are signed with the key at [pkgs.nebulacommander.com/gpg.key](https://pkgs.nebulacommander.com/gpg.key).
+
+The packages below can also be installed directly, without adding the repository.
+
 ## .deb (Debian, Ubuntu, and derivatives)
 
 Download all three packages from the [Client Download page](/docs/web-ui/client-download/) or [GitHub Releases](https://github.com/NixRTR/nebula-commander/releases), then install together so `apt` resolves the dependency order:
