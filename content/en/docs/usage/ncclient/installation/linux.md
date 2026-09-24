@@ -25,8 +25,9 @@ Add the signed Nebula Commander repository once, and new releases arrive with yo
 **Debian / Ubuntu:**
 
 ```bash
+sudo apt install -y curl
 sudo install -d -m 0755 /etc/apt/keyrings
-curl -fsSL https://pkgs.nebulacommander.com/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nebula-commander.gpg
+sudo curl -fsSL -o /etc/apt/keyrings/nebula-commander.asc https://pkgs.nebulacommander.com/gpg.key
 sudo curl -fsSL -o /etc/apt/sources.list.d/nebula-commander.sources https://pkgs.nebulacommander.com/deb/nebula-commander.sources
 sudo apt update
 sudo apt install nebula-commander-desktop nebula-commander-service
