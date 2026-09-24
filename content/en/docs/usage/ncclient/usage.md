@@ -59,7 +59,14 @@ ncclient run --server https://nc.example.com --restart-service nebula
 
 ### Split-horizon DNS
 
-When the server has [DNS enabled](/docs/web-ui/dns/) for the network, you can pass `--accept-dns` so ncclient fetches the DNS config (domain and lighthouse IPs) and configures the host to resolve the Nebula domain via the network's DNS. On Linux the client tries, in order: **systemd-resolved**, **dnsmasq**, **NetworkManager**, **systemd-networkd**, then **/etc/resolv.conf** (best-effort). On Windows it uses NRPT. Run as root (Linux) or Administrator (Windows) to apply. To remove the DNS override on exit, stop ncclient normally (e.g. Ctrl+C); the client clears the rules on exit.
+When the server has [DNS enabled](/docs/web-ui/dns/) for the network, you can pass `--accept-dns` so ncclient fetches the DNS config (domain and lighthouse IPs) and configures the host to resolve the Nebula domain via the network's DNS. On Linux the client detects how the host manages DNS and configures it to match:
+
+- **systemd-resolved** (on its own, or behind NetworkManager): per-link DNS on the Nebula interface, so only the Nebula domain goes to its servers.
+- **NetworkManager without systemd-resolved** (e.g. Debian desktops): NetworkManager's dnsmasq plugin with a rule for the Nebula domain. If NetworkManager is writing `/etc/resolv.conf` itself, the client switches it to the plugin; that needs `dnsmasq` (Debian: `dnsmasq-base`) installed.
+- **A standalone dnsmasq service**: a rule in `/etc/dnsmasq.d/`.
+- **Plain `/etc/resolv.conf`**: last resort, not true split-horizon.
+
+It also keeps NetworkManager from taking over the Nebula interface, re-checks the DNS on every poll (re-applying it if something undid it), and removes everything when it stops or DNS is turned off. If none of these can work, the client logs why and what to install. On Windows it uses NRPT. Run as root (Linux) or Administrator (Windows) to apply. To remove the DNS override on exit, stop ncclient normally (e.g. Ctrl+C); the client clears the rules on exit.
 
 **Certificates:** If the cert was **created** via the server (Create certificate in the UI), the bundle includes `host.key`. If it was **signed** (Sign flow), the server does not have the key; put your `host.key` in the same directory as the generated certs (the output dir).
 
