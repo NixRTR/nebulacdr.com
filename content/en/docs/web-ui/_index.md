@@ -32,6 +32,7 @@ quick jumping-off point.
 - **[Client Download](/docs/web-ui/client-download/)** – Download ncclient (CLI, Linux `.deb`/`.rpm`/Flatpak, Windows app/MSI) served from this server.
 - **[Invitations](/docs/web-ui/invitations/)** – Invite users to networks with roles and permissions (when OIDC is enabled).
 - **[Users](/docs/web-ui/users/)** – System admins manage every user account and their system role.
+- **[Backup & export](/docs/web-ui/backup/)** – System admins download an encrypted copy of the whole instance, or import one to move servers.
 - **[Appearance](/docs/web-ui/appearance/)** – Customize your own color theme, light and dark mode.
 
 Certificates are created or signed from the Nodes page (Create or Sign flow). For Sign flow, the server does not have the private key; place `host.key` on the device (e.g. in the ncclient output directory).
