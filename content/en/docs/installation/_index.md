@@ -4,6 +4,8 @@ linkTitle: Server Installation
 weight: 20
 ---
 
+Prefer not to run a server? [Nebula Commander Cloud](/docs/cloud/) hosts it for you.
+
 You can run Nebula Commander in several ways:
 
 | Method                                             | Best for                                                                |

@@ -38,10 +38,11 @@
           {{ $href = .URL | relLangURL -}}
         {{ end -}}
         {{ $isExternal := ne $baseURL.Host (urls.Parse .URL).Host -}}
+        {{ $newTab := and $isExternal (ne .Params.newtab false) -}}
         <a {{/**/ -}}
-          class="nav-link {{- if $active }} active {{- end }}" {{/**/ -}}
+          class="nav-link {{- if $active }} active {{- end }} {{- with .Params.class }} {{ . }} {{- end }}" {{/**/ -}}
           href="{{ $href }}"
-          {{- if $isExternal }} target="_blank" rel="noopener" {{- end -}}
+          {{- if $newTab }} target="_blank" rel="noopener" {{- end -}}
         >
             {{- .Pre -}}
             <span>{{ .Name }}</span>

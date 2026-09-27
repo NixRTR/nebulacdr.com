@@ -21,8 +21,8 @@ params:
 <a class="btn btn-lg btn-secondary me-3 mb-4" href="https://github.com/NixRTR/nebula-commander">
   Get the code <i class="fab fa-github ms-2"></i>
 </a>
-<a class="btn btn-lg mb-4" href="https://www.paypal.com/donate/?hosted_button_id=CHLZH2ZJXKQFU" target="_blank" rel="noopener noreferrer" style="background-color: #003087; color: #fff; border-color: #003087;">
-  Donate <i class="fab fa-paypal ms-2" aria-hidden="true"></i>
+<a class="btn btn-lg btn-cloud mb-4" href="https://cloud.nebulacdr.net/">
+  Nebula Commander Cloud <i class="fa-solid fa-cloud ms-2" aria-hidden="true"></i>
 </a>
 
 {{% blocks/link-down color="info" %}}
@@ -34,6 +34,8 @@ params:
 **Nebula Commander** is a self-hosted control plane for [nebula](https://github.com/slackhq/nebula) overlay networks.
 
 Create networks, manage nodes, allocate IPs, create group firewall rules and issue certificates all from a modern web UI with an optional device client for enrollment and automatic updates.
+
+Don't want to run a server? [Nebula Commander Cloud](https://cloud.nebulacdr.net/) hosts it for you.
 
 {{% /blocks/lead %}}
 

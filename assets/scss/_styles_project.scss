@@ -112,6 +112,42 @@ a[href*="matrix.to/#/#nebula-commander:matrix.org"]::after {
   color: inherit !important;
 }
 
+// Nebula Commander Cloud: brand gold (same as the "Nebula Commander" title) with a soft white
+// glow, so the hosted version is findable without being loud. Static on purpose - no pulsing.
+.td-navbar .nav-link.nav-link--cloud {
+  color: #cec074 !important;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.45), 0 0 12px rgba(255, 255, 255, 0.18);
+}
+.td-navbar .nav-link.nav-link--cloud:hover,
+.td-navbar .nav-link.nav-link--cloud:focus {
+  color: #e0d8a8 !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 16px rgba(255, 255, 255, 0.3);
+}
+
+// Hero "Nebula Commander Cloud" button: gold outline with the same glow; fills gold on hover.
+.btn-cloud {
+  color: #cec074 !important;
+  background-color: transparent !important;
+  border: 2px solid #cec074 !important;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+}
+.btn-cloud:hover,
+.btn-cloud:focus {
+  color: #1a0a2e !important;
+  background-color: #cec074 !important;
+  border-color: #cec074 !important;
+  text-shadow: none;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .td-navbar .nav-link.nav-link--cloud,
+  .btn-cloud {
+    transition: color 0.2s, background-color 0.2s, text-shadow 0.2s, box-shadow 0.2s;
+  }
+}
+
 // Navbar: reduce gap between logo and "Nebula Commander" title
 .td-navbar .navbar-brand {
   gap: 0.4rem;

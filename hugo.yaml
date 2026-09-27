@@ -55,6 +55,18 @@ markup:
       style: monokai
       noClasses: false
 
+# Site-level menu entries (content pages add their own via front matter).
+menu:
+  main:
+    - name: Cloud
+      identifier: cloud
+      url: https://cloud.nebulacdr.net/
+      weight: 50
+      pre: '<i class="fa-solid fa-cloud me-1" aria-hidden="true"></i>'
+      params:
+        class: nav-link--cloud
+        newtab: false
+
 outputs:
   home: [HTML, print, RSS, redirects]
   section: [HTML, print, RSS]
