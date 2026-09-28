@@ -20,7 +20,7 @@ The Docker client is the **preferred** method for the **first lighthouse** in a 
 - `NEBULA_OUTPUT_DIR` – Directory where ncclient writes Nebula config and certs inside the container (default: `/data/nebula`).
 - `NEBULA_DEVICE_TOKEN_FILE` – Path to the device token file (default: `/data/nebula-commander/token`).
 
-Use a **persistent volume** for `/data` so the token and Nebula config/certs survive restarts. The compose file uses `network_mode: host` so Nebula and dnsmasq can bind to the host.
+Use a **persistent volume** for `/data` so the token and Nebula config/certs survive restarts. The compose file uses `network_mode: host` so Nebula and dnsmasq can bind to the host, and `cap_add: NET_ADMIN` so Nebula can create and configure its tun interface.
 
 **Example (docker-compose):**
 
@@ -29,6 +29,8 @@ services:
   ncclient:
     image: ghcr.io/nixrtr/nebula-commander-ncclient:latest
     network_mode: host
+    cap_add:
+      - NET_ADMIN
     restart: unless-stopped
     environment:
       NEBULA_COMMANDER_SERVER: "https://nc.example.com"
