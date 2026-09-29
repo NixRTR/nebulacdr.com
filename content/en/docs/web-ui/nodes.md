@@ -39,7 +39,8 @@ including the status backgrounds and badge colors, are user-configurable — see
 4. The server assigns an **IP address** from the network's subnet, or you may suggest one.
 5. Set the node's **group** (e.g. `laptops`, `servers`). The group is used for [firewall rules](/docs/web-ui/groups/) and must match a group defined for that network.
 6. Set the **platform** — Desktop (runs `ncclient`), iOS, or Android.
-7. Submit. The node is created, its certificate is issued, and its card appears in the grid.
+7. Optionally set a **public endpoint** (`hostname:port` or `IP:port`) if other nodes can reach this one at a fixed address. See the [details panel](#the-node-details-panel) below.
+8. Submit. The node is created, its certificate is issued, and its card appears in the grid.
 
 ## The node details panel
 
@@ -52,6 +53,7 @@ likely to change often:
 | **Group** | Nebula security group for this node. Used for firewall (see [Groups](/docs/web-ui/groups/)). |
 | **Lighthouse** | If enabled, this node acts as a Nebula lighthouse (others can punch through to it). Desktop only. |
 | **Relay** | If enabled, this node can relay traffic for other nodes. Desktop only. |
+| **Public endpoint** | Optional `hostname:port` or `IP:port` where other nodes can reach this one directly (Nebula's UDP port, usually `4242`; IPv6 as `[2001:db8::1]:4242`). Every node's endpoint is added to every other node's `static_host_map`, so peers can connect without asking a lighthouse first. Lighthouses and relays need one. Clear the field to remove it. |
 | **Use Subnet Router** | Pick another node on this network to route this node's traffic to its advertised subnets through. See [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/). |
 | **Use Exit Node** | Pick another node to route *all* of this node's traffic through (full-tunnel). Same doc as above. |
 
