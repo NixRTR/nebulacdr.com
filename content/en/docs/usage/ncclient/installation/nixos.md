@@ -4,7 +4,7 @@ linkTitle: NixOS
 weight: 40
 ---
 
-A `services.ncclient` module runs ncclient declaratively as a systemd service — an alternative to the Docker image, the Windows service, or a hand-written unit (see [Install service](/docs/usage/ncclient/usage/#install-service) in Usage). It's exposed by the same `flake.nix` as the [server module](/docs/installation/nixos/#adding-via-a-flake), as `nixosModules.client`.
+A `services.ncclient` module runs ncclient declaratively as a systemd service — an alternative to the Docker image, the Windows service, or a hand-written unit (see [ncclient CLI: Run as a service](/docs/usage/ncclient/usage/cli/#run-as-a-service)). It's exposed by the same `flake.nix` as the [server module](/docs/installation/nixos/#adding-via-a-flake), as `nixosModules.client`.
 
 ```nix
 {
@@ -35,7 +35,7 @@ services.ncclient = {
 };
 ```
 
-Then rebuild: `nixos-rebuild switch` (path-based) or `nixos-rebuild switch --flake .#yourHost`.
+Then rebuild: `nixos-rebuild switch` (path-based) or `nixos-rebuild switch --flake .#yourHost`. See [NixOS usage](/docs/usage/ncclient/usage/nixos/) for controlling the service, running `ncclient` commands, and re-enrolling.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -53,7 +53,7 @@ The service runs as root, matching the Windows Service (`LocalSystem`) and Docke
 
 ## Desktop app
 
-On a NixOS desktop, you can add the [Linux desktop app](/docs/usage/ncclient/usage/#linux-app) alongside the service with the `nixosModules.client-desktop` module (or `nix/client-desktop-module.nix` by path):
+On a NixOS desktop, you can add the [Linux desktop app](/docs/usage/ncclient/usage/linux/) alongside the service with the `nixosModules.client-desktop` module (or `nix/client-desktop-module.nix` by path):
 
 ```nix
 modules = [

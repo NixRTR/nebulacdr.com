@@ -58,7 +58,7 @@ sudo dnf install ./nebula-commander-client.rpm ./nebula-commander-service.rpm ./
 
 ## Windows installer
 
-The **Windows** tab offers the CLI on its own and the **MSI installer** (`/downloads/NebulaCommander-windows-amd64.msi`). The MSI installs the CLI, the [Windows app](/docs/usage/ncclient/usage/#windows-app), and a background Windows Service together, and can add them to PATH. The service does the actual work (polling, running Nebula, split-horizon DNS) as `LocalSystem`, so nothing here needs an admin prompt after installation.
+The **Windows** tab offers the CLI on its own and the **MSI installer** (`/downloads/NebulaCommander-windows-amd64.msi`). The MSI installs the CLI, the [Windows app](/docs/usage/ncclient/usage/windows/), and a background Windows Service together, and can add them to PATH. The service does the actual work (polling, running Nebula, split-horizon DNS) as `LocalSystem`, so nothing here needs an admin prompt after installation.
 
 The standalone app and service executables (`NebulaCommanderApp-windows-amd64.exe`, `ncclient-service-windows-amd64.exe`) are published on [GitHub Releases](https://github.com/NixRTR/nebula-commander/releases) but not on this page. They're mainly for development: the service is only ever registered by the MSI, so for normal use install the MSI.
 
@@ -69,4 +69,4 @@ The standalone app and service executables (`NebulaCommanderApp-windows-amd64.ex
 3. Click **Enroll** and copy the one-time code.
 4. On the device: if you installed the Windows MSI or the Linux desktop app, open **Nebula Commander**, go to the **Enrollment** tab, and enter the server URL and code - the service picks it up automatically. Otherwise (CLI, Docker, other platforms), run: `ncclient enroll --server https://YOUR_SERVER_URL --code XXXXXXXX`, then `ncclient run --server https://YOUR_SERVER_URL` to start polling for config and certs.
 
-See [ncclient usage](/docs/usage/ncclient/usage/) for full steps.
+See [ncclient usage](/docs/usage/ncclient/usage/) for full steps for each client, including how to re-enroll.

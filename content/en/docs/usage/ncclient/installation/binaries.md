@@ -30,3 +30,5 @@ Pre-built binaries are attached to [GitHub Releases](https://github.com/NixRTR/n
 2. Download the file for your platform (same names as in [From Web UI](#from-web-ui)).
 3. Optionally verify with `SHA256SUMS.txt` in the same release.
 4. Place the binary in a directory on your PATH (or add that directory to PATH). On Linux and macOS, make it executable: `chmod +x ncclient-linux-amd64` (or the file you downloaded).
+
+Next, see [ncclient CLI usage](/docs/usage/ncclient/usage/cli/) to enroll and run it.

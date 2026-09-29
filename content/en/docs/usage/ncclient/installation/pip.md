@@ -27,3 +27,5 @@ Then run as `python -m client --server URL enroll --code XXX`, or install the cl
 cd client
 pip install -e .
 ```
+
+Next, see [ncclient CLI usage](/docs/usage/ncclient/usage/cli/) to enroll and run it.

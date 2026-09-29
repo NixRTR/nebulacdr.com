@@ -17,10 +17,10 @@ The Docker client is the **preferred** method for the **first lighthouse** in a 
 - `ENROLL_CODE` – One-time enrollment code from the Nebula Commander UI (Nodes → Enroll for the node). Only used when the token file does not exist; after enrollment the token is stored and this is ignored.
 - `SERVE_DNS` – Set to `"true"` to run dnsmasq on this node when it is a lighthouse, so the network can use Magic DNS. Omit or set to `false` if this node is not a lighthouse or you do not need DNS.
 - `NEBULA_DNS_POLL_INTERVAL` – Seconds between dnsmasq config polls when this node is a lighthouse (default: 60).
-- `NEBULA_OUTPUT_DIR` – Directory where ncclient writes Nebula config and certs inside the container (default: `/data/nebula`).
-- `NEBULA_DEVICE_TOKEN_FILE` – Path to the device token file (default: `/data/nebula-commander/token`).
+- `NEBULA_OUTPUT_DIR` – Directory where ncclient writes Nebula config and certs inside the container. Set it to `/data/nebula` (the image default is `/etc/nebula`, outside the volume).
+- `NEBULA_DEVICE_TOKEN_FILE` – Path to the device token file. Set it to `/data/nebula-commander/token` (the image default is `/etc/nebula-commander/token`, outside the volume).
 
-Use a **persistent volume** for `/data` so the token and Nebula config/certs survive restarts. The compose file uses `network_mode: host` so Nebula and dnsmasq can bind to the host, and `cap_add: NET_ADMIN` so Nebula can create and configure its tun interface.
+Use a **persistent volume** for `/data`, and point both paths above into it, so the token and Nebula config/certs survive the container being recreated. The compose file uses `network_mode: host` so Nebula and dnsmasq can bind to the host, and `cap_add: NET_ADMIN` so Nebula can create and configure its tun interface.
 
 **Example (docker-compose):**
 
@@ -36,6 +36,8 @@ services:
       NEBULA_COMMANDER_SERVER: "https://nc.example.com"
       ENROLL_CODE: "XXXXXXXX"   # one-time, from UI
       SERVE_DNS: "true"         # for first lighthouse + Magic DNS
+      NEBULA_OUTPUT_DIR: "/data/nebula"
+      NEBULA_DEVICE_TOKEN_FILE: "/data/nebula-commander/token"
     volumes:
       - ncclient-data:/data
 
@@ -50,3 +52,5 @@ volumes:
 2. Create or sign a certificate for the node, then click **Enroll** and copy the one-time code.
 3. Set `NEBULA_COMMANDER_SERVER` and `ENROLL_CODE` (and `SERVE_DNS: "true"` for the first lighthouse), then start the container.
 4. After enrollment, the container fetches config and certs and runs Nebula (and dnsmasq if `SERVE_DNS` is set and the node is a lighthouse).
+
+See [Docker usage](/docs/usage/ncclient/usage/docker/) for logs, routes, DNS, and re-enrolling.

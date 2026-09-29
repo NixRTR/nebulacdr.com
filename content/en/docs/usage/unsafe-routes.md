@@ -87,12 +87,12 @@ automatically *active*. `ncclient` writes everything it's authorized to consume 
   CIDRs don't overlap - `accept` rejects an overlapping one with an explanation of
   which already-accepted route it conflicts with. At most one exit node is ever
   accepted at a time.
-- **The [Windows app](/docs/usage/ncclient/usage/#windows-app)**: the Status page's
+- **The [Windows app](/docs/usage/ncclient/usage/windows/)**: the Status page's
   "Exit Node / Subnet Router" card lists the same available/accepted state
   interactively - checkboxes for subnet routes (disabled with a reason if accepting
   one would overlap an already-accepted route) and a single-select list for the exit
   node.
-- **The [Linux desktop app](/docs/usage/ncclient/usage/#linux-app)**: the Status tab
+- **The [Linux desktop app](/docs/usage/ncclient/usage/linux/)**: the Status tab
   has a switch per offered subnet route (disabled with the conflict shown if it would
   overlap an accepted one) and an **Exit node** picker. It also sends a desktop
   notification when a new route is offered.

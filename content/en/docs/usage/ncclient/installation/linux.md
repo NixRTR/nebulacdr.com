@@ -87,4 +87,4 @@ The Flatpak is the GUI only - it still needs `nebula-commander-service` (or an e
 2. Go to the **Enrollment** tab and enter the server URL and the one-time code from Nebula Commander (**Nodes** → open the node → **Enroll**).
 3. The **Status** tab shows connection/service state and lets you start/stop/restart the service, view the generated `config.yaml`, and accept or reject offered subnet routes and exit nodes.
 
-See [ncclient usage](/docs/usage/ncclient/usage/) for the equivalent CLI-only steps, or [Development: Manual builds](/docs/development/manual-builds/) to build these packages yourself.
+See [Linux App usage](/docs/usage/ncclient/usage/linux/) for day-to-day use, headless (service-only) setup, and re-enrolling, or [Development: Manual builds](/docs/development/manual-builds/) to build these packages yourself.

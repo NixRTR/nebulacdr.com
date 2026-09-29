@@ -4,7 +4,7 @@ linkTitle: DNS
 weight: 25
 ---
 
-The **DNS** page configures **split-horizon DNS** per network: a domain and optional hostname aliases that resolve to nodes inside the Nebula overlay. When enabled, lighthouses (or the Docker ncclient stack) can run dnsmasq to serve this domain; enrolled devices can use [ncclient with `--accept-dns`](/docs/usage/ncclient/usage/#split-horizon-dns) to resolve the Nebula domain via the overlay.
+The **DNS** page configures **split-horizon DNS** per network: a domain and optional hostname aliases that resolve to nodes inside the Nebula overlay. When enabled, lighthouses (or the Docker ncclient stack) can run dnsmasq to serve this domain; enrolled devices can use [ncclient with `--accept-dns`](/docs/usage/ncclient/usage/cli/#split-horizon-dns) to resolve the Nebula domain via the overlay.
 
 | Light | Dark |
 |---|---|
