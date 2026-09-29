@@ -66,8 +66,8 @@ disclosure at the bottom of the panel:
 - **Punchy** — NAT hole-punching behavior (respond, delay, respond delay).
 - **Subnet Router & Exit Node Config** — the *gateway* side of routing: which local
   subnets this node advertises (auto-discovered on Linux nodes running `ncclient`,
-  or entered by hand under **Other**), plus a **"Used by"** picker per route
-  controlling which other nodes may consume it.
+  or entered by hand under **Other**), plus a **"Used by"** list per route where you
+  add the groups and individual hosts that may consume it.
 - **Exit Node** — the gateway-side exit-node toggle (**Exit node (route all
   traffic)**) and its own "Used by" picker.
 
