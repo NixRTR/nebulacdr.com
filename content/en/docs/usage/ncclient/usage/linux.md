@@ -1,7 +1,7 @@
 ---
 title: Linux App
 linkTitle: Linux App
-weight: 25
+weight: 40
 ---
 
 | Light | Dark |

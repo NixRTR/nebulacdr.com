@@ -1,7 +1,7 @@
 ---
 title: ncclient CLI
 linkTitle: ncclient CLI
-weight: 20
+weight: 10
 ---
 
 This page covers the plain `ncclient` command from the [binaries](/docs/usage/ncclient/installation/binaries/) or [Pip](/docs/usage/ncclient/installation/pip/), run by hand or under your own init system. If you installed the Linux packages, the Windows MSI, or the NixOS module, use the [Linux App](/docs/usage/ncclient/usage/linux/), [Windows App](/docs/usage/ncclient/usage/windows/), or [NixOS](/docs/usage/ncclient/usage/nixos/) page instead. Those set up a background service that keeps its state somewhere the plain CLI doesn't look.

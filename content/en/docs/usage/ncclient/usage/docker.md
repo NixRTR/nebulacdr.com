@@ -1,7 +1,7 @@
 ---
 title: Docker
 linkTitle: Docker
-weight: 10
+weight: 20
 ---
 
 The Docker client runs ncclient, Nebula, and (on lighthouses) dnsmasq in one container. See [Docker installation](/docs/usage/ncclient/installation/docker/) for the image and a full `docker-compose.yml`. The commands below assume that compose file, with the service named `ncclient`, run from the directory that holds it.

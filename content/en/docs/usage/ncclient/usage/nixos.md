@@ -1,7 +1,7 @@
 ---
 title: NixOS
 linkTitle: NixOS
-weight: 40
+weight: 30
 ---
 
 This page covers day-to-day use of the `services.ncclient` module. See [NixOS installation](/docs/usage/ncclient/installation/nixos/) for importing the module and its full option list. Paths below use the defaults (`stateDir = "/var/lib/ncclient"`, `outputDir = "/var/lib/ncclient/nebula"`); adjust them if you changed those options.

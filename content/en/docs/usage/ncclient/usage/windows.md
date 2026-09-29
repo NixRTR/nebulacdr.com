@@ -1,7 +1,7 @@
 ---
 title: Windows App
 linkTitle: Windows App
-weight: 30
+weight: 50
 ---
 
 ![Windows app Status page](/screenshots/apps/windows-status.png)

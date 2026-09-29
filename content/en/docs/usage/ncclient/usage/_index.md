@@ -8,11 +8,11 @@ After [installing ncclient](/docs/usage/ncclient/installation/), follow the page
 
 | Client | Installed via | Page |
 |--------|---------------|------|
-| Docker | [Docker image](/docs/usage/ncclient/installation/docker/) | [Docker](/docs/usage/ncclient/usage/docker/) |
 | ncclient CLI | [Binaries](/docs/usage/ncclient/installation/binaries/) or [Pip](/docs/usage/ncclient/installation/pip/) | [ncclient CLI](/docs/usage/ncclient/usage/cli/) |
+| Docker | [Docker image](/docs/usage/ncclient/installation/docker/) | [Docker](/docs/usage/ncclient/usage/docker/) |
+| NixOS module | [`services.ncclient`](/docs/usage/ncclient/installation/nixos/) | [NixOS](/docs/usage/ncclient/usage/nixos/) |
 | Linux app (and the headless Linux service) | [`.deb`, `.rpm`, or Flatpak](/docs/usage/ncclient/installation/linux/) | [Linux App](/docs/usage/ncclient/usage/linux/) |
 | Windows app | [MSI installer](/docs/usage/ncclient/installation/windows/) | [Windows App](/docs/usage/ncclient/usage/windows/) |
-| NixOS module | [`services.ncclient`](/docs/usage/ncclient/installation/nixos/) | [NixOS](/docs/usage/ncclient/usage/nixos/) |
 
 ## Concepts shared by every client
 
