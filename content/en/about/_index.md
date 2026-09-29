@@ -14,7 +14,7 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Web UI** — React dashboard with OIDC (e.g. Keycloak) or dev token authentication
 - **Device client (ncclient)** — `pip install nebula-commander` for enroll and run; see [ncclient documentation](/docs/usage/ncclient/)
 
-## Status (as of v0.6.1)
+## Status (as of v0.6.8)
 
 ### What's implemented already
 
@@ -23,26 +23,36 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - Nebula v2 certificates, with P256 as an opt-in curve
 - Firewall group rules, with a visual group access diagram
 - Magic DNS: split-horizon DNS via dnsmasq (Linux/Docker) and NRPT (Windows), with
-  wildcard alias support
+  wildcard alias support and automatic detection of the host's DNS manager on Linux
 - Client UI via web interface — a full React dashboard for networks, nodes, groups,
   DNS, users, invitations, and the audit log, with a consistent square-card layout
   across the list pages
 - **Subnet routers and exit nodes** (Nebula's `unsafe_routes`), configurable from
   both sides: the gateway that advertises a route, and a simple "Use Subnet
-  Router"/"Use Exit Node" picker on any other node that wants to consume one — see
+  Router"/"Use Exit Node" picker on any other node that wants to consume one. The
+  gateway's "Used by" list takes whole groups or individual hosts — see
   [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/)
+- **Public endpoint on any node**, not just lighthouses and relays, added to every
+  peer's `static_host_map` so nodes with a known address connect directly — see
+  [Nodes](/docs/web-ui/nodes/)
 - **Per-account color theming** — every user can customize button, status, badge,
   and background colors independently for light and dark mode, and save named
   presets to switch between — see [Appearance](/docs/web-ui/appearance/)
 - Device client (`ncclient`): CLI, native desktop apps for Windows (WinUI 3, with a
-  background service) and Linux (GTK4, as `.deb`/`.rpm`/Flatpak), a Docker image, and
-  NixOS modules (`services.ncclient`, `services.ncclient-desktop`), plus mobile support
+  background service) and Linux (GTK4, as `.deb`/`.rpm`/Flatpak), a Docker image,
+  a signed apt/rpm package repository (amd64 and arm64), and NixOS modules (`services.ncclient`, `services.ncclient-desktop`), plus mobile support
   (iOS/Android via the official Mobile Nebula app)
 - Lighthouse-based peer reachability monitoring and node offline detection
 - OIDC (e.g. Keycloak) or dev-token authentication, with step-up reauth required for
   sensitive actions (deletions, revocations)
 - Audit logging, an invitation system, and multi-user management
 - Encryption at rest for certificates and keys
+- **Backup & export** — download the whole instance as one passphrase-encrypted
+  file (standard [age](https://age-encryption.org) format) and import it into a
+  fresh instance; devices keep working after a move without re-enrolling — see
+  [Backup & export](/docs/web-ui/backup/)
+- **Hosted option** — [Nebula Commander Cloud](/docs/cloud/) if you'd rather not run
+  the server yourself
 
 ### What's still planned
 
