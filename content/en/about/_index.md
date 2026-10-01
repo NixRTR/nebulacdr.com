@@ -14,7 +14,7 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Web UI** — React dashboard with OIDC (e.g. Keycloak) or dev token authentication
 - **Device client (ncclient)** — `pip install nebula-commander` for enroll and run; see [ncclient documentation](/docs/usage/ncclient/)
 
-## Status (as of v0.6.8)
+## Status (as of v0.6.9)
 
 ### What's implemented already
 
@@ -33,15 +33,19 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
   gateway's "Used by" list takes whole groups or individual hosts — see
   [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/)
 - **Public endpoint on any node**, not just lighthouses and relays, added to every
-  peer's `static_host_map` so nodes with a known address connect directly — see
-  [Nodes](/docs/web-ui/nodes/)
+  peer's `static_host_map` so nodes with a known address connect directly, plus
+  **additional reachable addresses** (port forwards, second uplinks) a node reports
+  to its lighthouses — see
+  [Public Endpoints & Reachable Addresses](/docs/usage/reachable-addresses/)
 - **Per-account color theming** — every user can customize button, status, badge,
   and background colors independently for light and dark mode, and save named
   presets to switch between — see [Appearance](/docs/web-ui/appearance/)
 - Device client (`ncclient`): CLI, native desktop apps for Windows (WinUI 3, with a
   background service) and Linux (GTK4, as `.deb`/`.rpm`/Flatpak), a Docker image,
   a signed apt/rpm package repository (amd64 and arm64), and NixOS modules (`services.ncclient`, `services.ncclient-desktop`), plus mobile support
-  (iOS/Android via the official Mobile Nebula app)
+  (iOS/Android via the official Mobile Nebula app). Only administrators can change a
+  device's network settings: an elevated administrator on Windows, the `sudo`/`wheel`
+  group on Linux
 - Lighthouse-based peer reachability monitoring and node offline detection
 - OIDC (e.g. Keycloak) or dev-token authentication, with step-up reauth required for
   sensitive actions (deletions, revocations)
