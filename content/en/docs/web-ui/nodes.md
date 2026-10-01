@@ -53,7 +53,7 @@ likely to change often:
 | **Group** | Nebula security group for this node. Used for firewall (see [Groups](/docs/web-ui/groups/)). |
 | **Lighthouse** | If enabled, this node acts as a Nebula lighthouse (others can punch through to it). Desktop only. |
 | **Relay** | If enabled, this node can relay traffic for other nodes. Desktop only. |
-| **Public endpoint** | Optional `hostname:port` or `IP:port` where other nodes can reach this one directly (Nebula's UDP port, usually `4242`; IPv6 as `[2001:db8::1]:4242`). Every node's endpoint is added to every other node's `static_host_map`, so peers can connect without asking a lighthouse first. Lighthouses and relays need one. Clear the field to remove it. |
+| **Public endpoint** | Optional `hostname:port` or `IP:port` where other nodes can reach this one directly (Nebula's UDP port, usually `4242`; IPv6 as `[2001:db8::1]:4242`). Every node's endpoint is added to every other node's `static_host_map`, so peers can connect without asking a lighthouse first. Lighthouses and relays need one. Clear the field to remove it. For more addresses, see **Additional reachable addresses** under [Advanced](#advanced) and [Public Endpoints & Reachable Addresses](/docs/usage/reachable-addresses/). |
 | **Use Subnet Router** | Pick another node on this network to route this node's traffic to its advertised subnets through. See [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/). |
 | **Use Exit Node** | Pick another node to route *all* of this node's traffic through (full-tunnel). Same doc as above. |
 
@@ -64,6 +64,10 @@ disclosure at the bottom of the panel:
 
 - **Logging** — Nebula's own log level, format, and timestamp options.
 - **Punchy** — NAT hole-punching behavior (respond, delay, respond delay).
+- **Additional reachable addresses** — extra `IP:port` addresses this node reports
+  to the lighthouses (a port forward, a second uplink), added one at a time with a
+  delete button on each. Not shown for lighthouses. See
+  [Public Endpoints & Reachable Addresses](/docs/usage/reachable-addresses/).
 - **Subnet Router & Exit Node Config** — the *gateway* side of routing: which local
   subnets this node advertises (auto-discovered on Linux nodes running `ncclient`,
   or entered by hand under **Other**), plus a **"Used by"** list per route where you
