@@ -62,6 +62,10 @@ current list.
   `255.255.255.255`), IPv4-mapped IPv6 (use the plain IPv4 address instead), and
   `0.0.0.0` / `::`.
 - **At most 8** addresses per node. Duplicates are merged.
+- **Addresses ending in `.0` or `.255`** are accepted but flagged with a warning:
+  on a `/24` LAN they're the network or broadcast address and won't work, but on a
+  larger LAN they can be ordinary hosts. Nebula Commander can't see your LAN's
+  subnet mask, so it's up to you.
 
 Additional reachable addresses were contributed by Austin Colt
 ([@YeeClaw](https://github.com/YeeClaw)).
