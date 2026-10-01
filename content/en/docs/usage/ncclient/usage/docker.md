@@ -95,6 +95,6 @@ To move to a **different server**, change `NEBULA_COMMANDER_SERVER`, use either 
 
 - **`Token file not found and ENROLL_CODE not set`**: the container has no token and nothing to enroll with. Set `ENROLL_CODE`, or check that the volume is mounted and the token path points into it.
 - **The device keeps asking to enroll after every recreate**: the token path isn't in the volume. See [Where state lives](#where-state-lives).
-- **`Token invalid or expired. Waiting for re-enrollment...`**: the node was re-enrolled elsewhere, or its token was revoked. [Re-enroll](#re-enroll).
+- **`Revoked, deleted, or re-enrolled elsewhere - Nebula stopped. Enroll again to reconnect.`**: the device was revoked, deleted, or re-enrolled elsewhere; Nebula was stopped and its config and key removed. [Re-enroll](#re-enroll) it with a new code.
 - **Nebula can't create its tun device**: the container needs `network_mode: host` and `cap_add: NET_ADMIN`. It also needs **rootful** Docker. Under rootless Docker or Podman, "host" networking is a private namespace owned by an unprivileged user, so Nebula can't configure the real host's network and inbound UDP never reaches it.
 - **dnsmasq never starts**: check `SERVE_DNS` is set, the node is a lighthouse, and DNS is enabled for the network. The logs show `Warning: listen-address … not assigned` if Nebula's interface never came up.

@@ -123,5 +123,5 @@ If `services.ncclient-desktop` is enabled, the app's **Enrollment** tab works as
 
 - **`ncclient.service` won't start and `ncclient-enroll` failed**: there's no token, and the code file is missing or its code was rejected (already used or expired). Put a fresh code in the file and restart both units.
 - **`ncclient: command not found`**: expected; see [Running ncclient commands](#running-ncclient-commands).
-- **`Token invalid or expired. Waiting for re-enrollment...`**: the node was re-enrolled elsewhere or its token was revoked. [Re-enroll](#re-enroll).
+- **`Revoked, deleted, or re-enrolled elsewhere - Nebula stopped. Enroll again to reconnect.`**: the device was revoked, deleted, or re-enrolled elsewhere; Nebula was stopped and its config and key removed. [Re-enroll](#re-enroll) it with a new code.
 - **Enrolled with the CLI but the service still waits for enrollment**: the CLI ran without both environment variables, so the token went to root's home directory. Run it again with them.

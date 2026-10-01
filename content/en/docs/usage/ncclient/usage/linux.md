@@ -84,7 +84,7 @@ sudo ncclient routes accept 192.168.1.0/24
 ## Troubleshooting
 
 - **Status says the service isn't installed or is unreachable**: install `nebula-commander-service` and start it with `sudo systemctl enable --now ncclient`. The Flatpak app can't do this for you.
-- **`Token invalid or expired. Waiting for re-enrollment...` in the journal**: the node was re-enrolled elsewhere or its token revoked. [Re-enroll](#re-enroll).
+- **`Revoked, deleted, or re-enrolled elsewhere - Nebula stopped. Enroll again to reconnect.` in the journal**: the device was revoked, deleted, or re-enrolled elsewhere; Nebula was stopped and its config and key removed. [Re-enroll](#re-enroll) it with a new code.
 - **"Administrator required" in the app**: your account isn't in the `sudo` or `wheel` group. Ask an administrator to add you (`sudo usermod -aG sudo USER` on Debian/Ubuntu, `wheel` elsewhere, then log out and back in), or have them make the change.
 - **Enrolled with `sudo ncclient enroll` but the service still waits for enrollment** (versions before 0.6.9): the token went to root's home directory instead of `/var/lib/ncclient`. Upgrade, or prefix the command with `NEBULA_COMMANDER_CONFIG_DIR=/var/lib/ncclient NEBULA_DEVICE_TOKEN_FILE=/var/lib/ncclient/token`.
 

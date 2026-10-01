@@ -102,10 +102,25 @@ The device stores a token and can then use `ncclient run` to pull config and cer
 
 You can download the node's Nebula config and certs (e.g. `config.yaml`, `ca.crt`, `host.crt`, and `host.key` if Create was used). Use this for [manual (nebula) setup](/docs/usage/nebula/) or backup.
 
-## Re-enroll and delete
+## Revoke, re-enroll and delete
 
-- **Re-enroll** – If a device was enrolled but the token is lost or expired, generate a new enrollment code and run `ncclient enroll` again on the device.
-- **Delete node** – Removes the node and its certificate from Nebula Commander. Requires reauthentication and typing the node's hostname to confirm. Devices using that node will need a new node or re-enrollment if you recreate it.
+- **Revoke certificate**: takes the node off the network but keeps its record, so it can be re-enrolled later. Requires reauthentication and typing the node's hostname to confirm.
+- **Re-enroll**: issues the node a new certificate and enrollment code (for example if the device's token was lost, or the device is being replaced), and retires the old certificate.
+- **Delete node**: removes the node and its certificate from Nebula Commander. Requires reauthentication and typing the node's hostname to confirm.
+
+All three retire the node's current certificate in the same way:
+
+- **Every other node rejects it.** Its fingerprint goes on the network's certificate blocklist (Nebula's `pki.blocklist`), which every node picks up on its next config poll (within its poll interval, 60 seconds by default). Existing tunnels using it are dropped. This works even if the device keeps a copy of its key and ignores the server.
+- **The device shuts itself down.** Its token stops working; `ncclient` then stops Nebula and deletes its config and key from disk, and waits to be enrolled again.
+- **Its IP address is held** until the old certificate would have expired, so it isn't given to a different node in the meantime. A re-enrolled node gets its own address back.
+
+Changing a node's group, or which subnets it advertises, re-issues its certificate; the previous certificate is blocklisted the same way, so the old group's firewall access really goes away.
+
+Certificates revoked before v0.6.10 can't be blocklisted retroactively, because no fingerprint was kept for them. If that matters for your network, re-create the network to get a new CA.
+
+### If Nebula Commander is unreachable
+
+Nodes keep working: the mesh doesn't depend on the server, only on lighthouses. A node that restarts while the server is down starts Nebula from its last known config. Config, route and DNS changes, and revocations, reach a node once it can poll the server again.
 
 ## Mobile nodes (iOS/Android)
 
