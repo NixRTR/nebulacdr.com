@@ -8,11 +8,10 @@ This page covers day-to-day use of the `services.ncclient` module. See [NixOS in
 
 ## What the module sets up
 
-- `ncclient.service`: runs `ncclient run` as root, with `nebula` from `nebulaPackage` on its PATH. It restarts on failure.
+- `ncclient.service`: runs `ncclient run` as root, with `nebula` from `nebulaPackage`, plus `nftables` and `iproute2` (for subnet-router/exit-node forwarding and NAT), on its PATH. It restarts on failure.
 - `ncclient-enroll.service`: only when `enrollCodeFile` is set. A oneshot that runs `ncclient enroll` before the main service, **only if no token exists yet**.
-- The D-Bus policy and polkit rules the [Linux desktop app](/docs/usage/ncclient/usage/linux/) uses, if you also enable `services.ncclient-desktop`.
-
-It does **not** put `ncclient` on anyone's PATH. See [Running ncclient commands](#running-ncclient-commands).
+- The D-Bus policy and polkit rules the [Linux desktop app](/docs/usage/ncclient/usage/linux/) uses, if you also enable `services.ncclient-desktop`. Only members of `adminGroups` (default `wheel`/`sudo`) can make changes without a password.
+- An `ncclient` command on the system PATH, pre-pointed at the service's state. See [Running ncclient commands](#running-ncclient-commands).
 
 ## Where state lives
 
@@ -58,36 +57,17 @@ Change `server`, `interval`, or `acceptDns` in your configuration and `nixos-reb
 
 ## Running ncclient commands
 
-The module doesn't install the `ncclient` command. Either add it to your system:
-
-```nix
-environment.systemPackages = [ config.services.ncclient.package ];
-```
-
-or use the service's own binary from the Nix store:
+The module puts an `ncclient` wrapper on the system PATH that already points at the service's `stateDir` and `outputDir`. Commands that change the service's state just need root:
 
 ```bash
-NC=$(systemctl show -p ExecStart --value ncclient | grep -o '/nix/store/[^ ]*/bin/ncclient' | head -1)
+sudo ncclient …
 ```
-
-Either way, commands that touch the service's state must run as root and be pointed at `stateDir`. Otherwise `ncclient` uses root's own locations, which the service never reads:
-
-```bash
-sudo NEBULA_COMMANDER_CONFIG_DIR=/var/lib/ncclient \
-     NEBULA_DEVICE_TOKEN_FILE=/var/lib/ncclient/token \
-     "$NC" …
-```
-
-(Use `ncclient` instead of `"$NC"` if you added it to `systemPackages`.)
 
 ## Subnet routes and exit nodes
 
 ```bash
-sudo NEBULA_COMMANDER_CONFIG_DIR=/var/lib/ncclient \
-     "$NC" routes --output-dir /var/lib/ncclient/nebula list
-
-sudo NEBULA_COMMANDER_CONFIG_DIR=/var/lib/ncclient \
-     "$NC" routes --output-dir /var/lib/ncclient/nebula accept 192.168.1.0/24
+sudo ncclient routes list
+sudo ncclient routes accept 192.168.1.0/24
 ```
 
 `reject`, `accept-exit-node --via <IP>`, and `reject-exit-node` work the same way (see the [CLI page](/docs/usage/ncclient/usage/cli/#subnet-routes-and-exit-nodes)). The service applies changes on its next poll. With `services.ncclient-desktop` enabled, you can use the app's Status tab instead.
@@ -130,16 +110,14 @@ Keep the old token until you have the new code; once it's removed the device is 
 Enroll with the CLI, pointed at the service's state (see [Running ncclient commands](#running-ncclient-commands)). It overwrites the old token, so there's nothing to delete:
 
 ```bash
-sudo NEBULA_COMMANDER_CONFIG_DIR=/var/lib/ncclient \
-     NEBULA_DEVICE_TOKEN_FILE=/var/lib/ncclient/token \
-     "$NC" --server https://nebula.example.com enroll --code NEWCODE
+sudo ncclient --server https://nebula.example.com enroll --code NEWCODE
 ```
 
 The service switches to the new token on its next poll. If you changed servers, update `server` and rebuild, which also restarts the service.
 
 ### With the desktop app
 
-If `services.ncclient-desktop` is enabled, the app's **Enrollment** tab works as described on the [Linux App page](/docs/usage/ncclient/usage/linux/#re-enroll), with no password prompt.
+If `services.ncclient-desktop` is enabled, the app's **Enrollment** tab works as described on the [Linux App page](/docs/usage/ncclient/usage/linux/#re-enroll), with no password prompt for members of `adminGroups`.
 
 ## Troubleshooting
 

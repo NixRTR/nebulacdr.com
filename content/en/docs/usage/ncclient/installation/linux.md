@@ -13,10 +13,10 @@ On Linux, three packages give you a GTK4/libadwaita desktop app plus a backgroun
 **What's included:**
 
 - **nebula-commander-client** – The `ncclient` CLI (frozen binary, no Python runtime needed).
-- **nebula-commander-service** – Installs `ncclient.service` (systemd), which polls for config/certs and runs Nebula as root. Exposes a system D-Bus API (`org.beardedtek.NebulaCommander1`) that the desktop app talks to, authorized per-call via polkit for any active local session.
+- **nebula-commander-service** – Installs `ncclient.service` (systemd), which polls for config/certs and runs Nebula as root. Exposes a system D-Bus API (`org.beardedtek.NebulaCommander1`) that the desktop app talks to, authorized per-call via polkit.
 - **nebula-commander-desktop** – The GTK4 app: enroll, view connection/service status, and accept or reject offered subnet routes and exit nodes.
 
-Because authorization goes through polkit (`allow_active=yes`) instead of Unix group membership, the desktop app works immediately after install and login - there is no `usermod`/relogin step like older group-based designs.
+Any user logged in at the machine can view status in the desktop app. Changes (enrolling, settings, routes, exit node, starting/stopping the service) need no password for members of the `sudo` or `wheel` group, which administrators normally already are, and an administrator's password for everyone else.
 
 ## Package repository (recommended)
 

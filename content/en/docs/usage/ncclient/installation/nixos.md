@@ -47,6 +47,7 @@ Then rebuild: `nixos-rebuild switch` (path-based) or `nixos-rebuild switch --fla
 | `interval` | int | 60 | Poll interval in seconds |
 | `outputDir` | string | `/var/lib/ncclient/nebula` | Directory ncclient writes Nebula's config/certs/binary to |
 | `acceptDns` | bool | false | Accept and apply DNS settings pushed by Nebula Commander |
+| `adminGroups` | null or list of strings | `[ "wheel" "sudo" ]` | Active local users in these groups may change the device (desktop app enrollment, settings, routes, exit node; start/stop/restart `ncclient.service`) without a password. Everyone else needs an administrator's password. `null` lets any active local user do it (single-user machines only). |
 | `stateDir` | string | `/var/lib/ncclient` | Directory holding the device token and `settings.json` together on the same persistent path — both must live in the same place or the node's identity is lost on restart even though the token survives |
 
 The service runs as root, matching the Windows Service (`LocalSystem`) and Docker image (root-in-container) precedent above — Nebula needs to create a TUN device. `--nebula`/`--restart-service` are intentionally not exposed; `nebula` is resolved via `PATH` (from `nebulaPackage`), matching the Docker image's approach.
@@ -73,4 +74,4 @@ services.ncclient-desktop.enable = true;  # adds "Nebula Commander" to the app l
 | `enable` | bool | — | Install the Nebula Commander desktop app (GTK4/libadwaita) |
 | `package` | package | built from `nix/client-desktop-package.nix` | The desktop app package |
 
-The desktop module only installs the app. `services.ncclient` already registers the D-Bus policy and polkit rules the app needs, so any user in an active local session can enroll, change settings, accept routes, and start/stop/restart `ncclient.service` without a password prompt or group membership.
+The desktop module installs the app and turns on `security.polkit.enable` (as a default you can override), since every request the app makes is authorized by polkit. `services.ncclient` registers the D-Bus policy and polkit rules the app needs. Any user in an active local session can view status; members of `adminGroups` (default `wheel`/`sudo`) can enroll, change settings, accept routes, and start/stop/restart `ncclient.service` without a password prompt, and everyone else needs an administrator's password.

@@ -4,7 +4,7 @@ linkTitle: Windows Installer
 weight: 30
 ---
 
-On Windows the MSI installer sets up the ncclient CLI, a native windowed app, and a background Windows Service that does the actual work as `LocalSystem` - no UAC prompts for enrolling, starting/stopping, or applying split-horizon DNS.
+On Windows the MSI installer sets up the ncclient CLI, a native windowed app, and a background Windows Service that does the actual work as `LocalSystem`. Any user can view status in the app; enrolling, changing settings or routes, and starting/stopping the service require running the app as administrator.
 
 ![Nebula Commander Windows app](/screenshots/apps/windows-status.png)
 
@@ -23,7 +23,7 @@ All three are installed to `%ProgramFiles%\Nebula Commander\`. The installer can
 
 **After install:**
 
-1. Open **Nebula Commander** from the Start Menu and use the **Enrollment** tab: paste the server URL and the one-time code from Nebula Commander (**Nodes** → open the node → **Enroll**). This is the recommended way to enroll after an MSI install - it writes the token where the service reads it (`%ProgramData%\nebula-commander\`) and immediately notifies the service to fetch config. (The CLI's `ncclient enroll` writes to a separate per-user location the service does not read from, so avoid it for MSI installs unless you've explicitly redirected `NEBULA_COMMANDER_CONFIG_DIR`.)
-2. The service starts polling automatically once enrolled - nothing else to run. Use the app's Start/Stop/Restart Service controls on the Status tab, and Settings to change server URL, poll interval, or enable split-horizon DNS. See [Windows App usage](/docs/usage/ncclient/usage/windows/) for details, including re-enrolling.
+1. Open **Nebula Commander** from the Start Menu, choose **Relaunch as administrator**, and use the **Enrollment** tab: paste the server URL and the one-time code from Nebula Commander (**Nodes** → open the node → **Enroll**). This is the recommended way to enroll after an MSI install - the service stores the token in its protected folder (`%ProgramData%\nebula-commander\`) and fetches config immediately. (The CLI's `ncclient enroll` writes to a separate per-user location the service does not read from, so avoid it for MSI installs unless you've explicitly redirected `NEBULA_COMMANDER_CONFIG_DIR`.)
+2. The service starts polling automatically once enrolled - nothing else to run. On first start it also downloads and verifies Nebula itself. As administrator, use the app's Start/Stop/Restart Service controls on the Status tab, and Settings to change server URL, poll interval, or enable split-horizon DNS. See [Windows App usage](/docs/usage/ncclient/usage/windows/) for details, including re-enrolling.
 
 For building the MSI yourself, see [Development: Manual builds](/docs/development/manual-builds/#windows-msi).
