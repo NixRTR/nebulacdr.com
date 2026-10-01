@@ -116,7 +116,7 @@ All three retire the node's current certificate in the same way:
 
 Changing a node's group, or which subnets it advertises, re-issues its certificate; the previous certificate is blocklisted the same way, so the old group's firewall access really goes away.
 
-Certificates revoked before v0.6.10 can't be blocklisted retroactively, because no fingerprint was kept for them. If that matters for your network, re-create the network to get a new CA.
+Certificates revoked before v0.7.0 can't be blocklisted retroactively, because no fingerprint was kept for them. If that matters for your network, re-create the network to get a new CA.
 
 ### If Nebula Commander is unreachable
 
