@@ -119,6 +119,10 @@ The service switches to the new token on its next poll. If you changed servers, 
 
 If `services.ncclient-desktop` is enabled, the app's **Enrollment** tab works as described on the [Linux App page](/docs/usage/ncclient/usage/linux/#re-enroll), with no password prompt for members of `adminGroups`.
 
+## Updates
+
+The client can check daily for new releases and tell you when one is out (`sudo ncclient auto-update enable`). On NixOS it never installs anything itself; you update the flake input and rebuild. See [Automatic updates](/docs/usage/ncclient/usage/auto-update/).
+
 ## Troubleshooting
 
 - **`ncclient.service` won't start and `ncclient-enroll` failed**: there's no token, and the code file is missing or its code was rejected (already used or expired). Put a fresh code in the file and restart both units.

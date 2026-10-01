@@ -75,6 +75,10 @@ Turn on **Split-horizon DNS** in **Settings**. The service applies it with NRPT 
 
 Open the **Enrollment** page and enroll again with a new code, and a new server URL if you're moving servers. This replaces the token, re-points the device at the server you entered, and makes the service poll immediately. Nothing needs restarting.
 
+## Updates
+
+The service can install new releases by itself during a daily window: **Settings → Updates** (as administrator), or `ncclient auto-update enable` from an elevated prompt. See [Automatic updates](/docs/usage/ncclient/usage/auto-update/).
+
 ## Troubleshooting
 
 - **Status shows the service as unreachable**: the MSI's service isn't installed or isn't running. Start it from the Status page or `services.msc`, or reinstall the MSI.

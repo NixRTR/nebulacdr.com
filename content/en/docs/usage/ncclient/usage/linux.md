@@ -81,6 +81,10 @@ sudo ncclient routes accept 192.168.1.0/24
 
 **Split-horizon DNS:** the service adds `--accept-dns` when `/var/lib/ncclient/settings.json` contains `"accept_dns": true`. Edit it as root, then `sudo systemctl restart ncclient`.
 
+## Updates
+
+With the [package repository](/docs/usage/ncclient/installation/linux/) configured, the client can upgrade itself during a daily window: **Settings → Updates** in the app, or `sudo ncclient auto-update enable`. See [Automatic updates](/docs/usage/ncclient/usage/auto-update/).
+
 ## Troubleshooting
 
 - **Status says the service isn't installed or is unreachable**: install `nebula-commander-service` and start it with `sudo systemctl enable --now ncclient`. The Flatpak app can't do this for you.
