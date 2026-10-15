@@ -20,7 +20,9 @@ Any user logged in at the machine can view status in the desktop app. Changes (e
 
 ## Package repository (recommended)
 
-Add the signed Nebula Commander repository once, and new releases arrive with your normal system updates (`apt upgrade`, `dnf upgrade`, `zypper update`). It carries the current and the previous few releases, for amd64 and arm64. Installing `nebula-commander-desktop` and `nebula-commander-service` pulls in `nebula-commander-client`.
+**This is the recommended way to install the client on Linux nodes other than lighthouses** (for lighthouses, see [Docker](/docs/usage/ncclient/installation/docker/)). Installing from the repository is what makes [automatic updates](/docs/usage/ncclient/usage/auto-update/) possible: once you turn them on (`sudo ncclient auto-update enable`, or **Settings → Updates** in the app), the client upgrades itself during a daily window. Without the repository, a `.deb` or `.rpm` can't update itself.
+
+Add the signed Nebula Commander repository once, and new releases also arrive with your normal system updates (`apt upgrade`, `dnf upgrade`, `zypper update`). It carries the current and the previous few releases, for amd64 and arm64. Installing `nebula-commander-desktop` and `nebula-commander-service` pulls in `nebula-commander-client`.
 
 **Debian / Ubuntu:**
 

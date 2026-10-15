@@ -39,7 +39,7 @@ On Windows, add the directory containing `ncclient-windows-amd64.exe` to your PA
 
 ## Linux desktop app packages
 
-The **Linux** tab offers the [Linux desktop app](/docs/usage/ncclient/installation/linux/) as three packages, in both `.deb` and `.rpm` form, plus a Flatpak:
+The **Linux** tab leads with the [package repository](/docs/usage/ncclient/installation/linux/#package-repository-recommended) at `pkgs.nebulacommander.com`, the recommended install for Linux nodes other than lighthouses because it's what enables [automatic updates](/docs/usage/ncclient/usage/auto-update/). It also offers the packages for direct download, in both `.deb` and `.rpm` form, plus a Flatpak:
 
 | File | Contents |
 |------|----------|
