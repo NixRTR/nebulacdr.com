@@ -10,17 +10,52 @@ This page covers the plain `ncclient` command from the [binaries](/docs/usage/nc
 
 | What | Default location |
 |------|------------------|
-| Device token | The OS keyring if the Python `keyring` package is available. Otherwise `~/.nebula/device-token` (the frozen binaries and a plain `pip install` use this). Set `NEBULA_DEVICE_TOKEN_FILE` to use a specific file. |
+| Device token | The OS keyring, when there is a usable one (normally only in a logged-in desktop session). Otherwise `~/.nebula/device-token`, readable only by its owner. That's what root, servers, SSH sessions, and the frozen binaries get. Set `NEBULA_DEVICE_TOKEN_FILE` to use a specific file. |
 | `settings.json` (server, node ID, accepted routes) | `~/.config/nebula-commander/` on Linux and macOS, `%APPDATA%\nebula-commander\` on Windows. Set `NEBULA_COMMANDER_CONFIG_DIR` to change it. |
 | Nebula config and certificates | `/etc/nebula` on Linux and macOS, `%USERPROFILE%\.nebula` on Windows. Set with `--output-dir`. |
 
 `~` is the home directory of whoever runs the command, so `sudo ncclient …` uses root's (`/root/.nebula/device-token`). **Run `enroll`, `run`, and `routes` as the same user** (and with the same environment variables), or they won't find each other's files.
 
+## Linux setup
+
+On Linux the client has to run as root, because Nebula needs root to create its TUN interface. Do every step as root, in this order:
+
+1. **Enroll as root.** In Nebula Commander, open **Nodes**, select the node, click **Enroll**, and copy the code. Then:
+
+   ```bash
+   sudo ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code XXXXXXXX
+   ```
+
+2. **Install the service.** This writes a systemd unit that runs `ncclient run` as root, enables it, and offers to start it (see [Run as a service](#linux-ncclient-install) for the prompts and options):
+
+   ```bash
+   sudo ncclient install
+   ```
+
+3. **Check that it's running.** From now on the service *is* the client; don't also start `ncclient run` by hand.
+
+   ```bash
+   systemctl status ncclient
+   sudo journalctl -u ncclient -f
+   ```
+
+Keep using `sudo` for everything else (`sudo ncclient routes …`, re-enrolling). Run as a regular user, `ncclient` reads that user's own (empty) token and settings instead of the service's, so it either says you're not enrolled or changes nothing the service sees. As a regular user you can still check `systemctl status ncclient`.
+
+If you installed with pip into a virtualenv, `sudo ncclient` may say `command not found`, because `sudo` resets `PATH`. See [Pip: Linux](/docs/usage/ncclient/installation/pip/#linux) for a setup that works with `sudo`.
+
+{{% alert title="Linux servers on 0.7.0 and earlier" color="warning" %}}
+`enroll` crashes with `keyring.errors.KeyringLocked` or `NoKeyringError` on a machine with no unlocked desktop keyring, which is most servers and anything run with `sudo`. The code is used up by then, so get a new one. Until you can upgrade, set the token file explicitly for `enroll` (and for `run`, if you run it by hand):
+
+```bash
+sudo NEBULA_DEVICE_TOKEN_FILE=/root/.nebula/device-token ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code XXXXXXXX
+```
+{{% /alert %}}
+
 ## Enroll
 
 1. In Nebula Commander, open **Nodes**, select the node for this device, and click **Enroll**.
 2. Copy the enrollment code.
-3. On the device, as the user that will run the daemon (root on Linux):
+3. On the device, as the user that will run the daemon (root on Linux, see [Linux setup](#linux-setup)):
 
 ```bash
 sudo ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code XXXXXXXX
@@ -36,7 +71,7 @@ sudo ncclient run --server https://YOUR_NEBULA_COMMANDER_URL
 
 Defaults: poll every 60 seconds, write files to `/etc/nebula` (or `~/.nebula` on Windows), and start or restart Nebula from PATH when config changes. `--server` can be left out once you've enrolled; ncclient uses the server saved in `settings.json`, or `NEBULA_COMMANDER_SERVER`.
 
-**Linux:** creating the Nebula TUN device requires root, so run `run` with `sudo`.
+**Linux:** creating the Nebula TUN device requires root, so run `run` with `sudo`. Running it by hand like this is useful for testing. For normal use, [install the service](#linux-setup) instead, and don't run both at once.
 
 ### Options
 
@@ -70,7 +105,7 @@ sudo ncclient run --server https://nc.example.com --restart-service nebula
 sudo ncclient install
 ```
 
-This checks that root is enrolled (if not, it prints the `ncclient enroll …` command to run first). It then prompts for the server URL and options, writes `/etc/default/ncclient` and `/etc/systemd/system/ncclient.service`, and enables (and optionally starts) the service. The unit runs `ncclient run` as root.
+This is step 2 of [Linux setup](#linux-setup). It checks that root is enrolled (if not, it prints the `ncclient enroll …` command to run first). It then prompts for the server URL and options, writes `/etc/default/ncclient` and `/etc/systemd/system/ncclient.service`, and enables (and optionally starts) the service. The unit runs `ncclient run` as root.
 
 - Use `--no-start` to enable without starting.
 - Use `--non-interactive` with `NEBULA_COMMANDER_SERVER` (and optional env vars) set for scripting.
@@ -132,7 +167,8 @@ If `enroll` succeeds but the daemon keeps logging `Token invalid or expired`, th
 
 - **No TUN device / cannot ping Nebula IP**: on Linux, run with `sudo`. For the Sign flow, make sure `host.key` is in the output directory. Check Nebula's error output (e.g. "failed to get tun device", "no such file").
 - **Nebula starts then exits**: often a missing `host.key` (Sign flow), a wrong config path, or on Linux not running as root. Check the Nebula lines ncclient prints.
-- **`Token not found. Run 'ncclient enroll' first.`**: this user has no token. Enroll as the same user that runs the daemon.
+- **`Token not found. Run 'ncclient enroll' first.`**: this user has no token. Enroll as the same user that runs the daemon (root, on Linux).
+- **`enroll` fails with `KeyringLocked` or `NoKeyringError`** (0.7.0 and earlier): see the [Linux setup](#linux-setup) note. Get a new code, since the old one was used.
 
 ## macOS notes
 
