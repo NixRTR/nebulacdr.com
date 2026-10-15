@@ -44,7 +44,7 @@ Keep using `sudo` for everything else (`sudo ncclient routes …`, re-enrolling)
 If you installed with pip into a virtualenv, `sudo ncclient` may say `command not found`, because `sudo` resets `PATH`. See [Pip: Linux](/docs/usage/ncclient/installation/pip/#linux) for a setup that works with `sudo`.
 
 {{% alert title="Linux servers on 0.7.0 and earlier" color="warning" %}}
-`enroll` crashes with `keyring.errors.KeyringLocked` or `NoKeyringError` on a machine with no unlocked desktop keyring, which is most servers and anything run with `sudo`. The code is used up by then, so get a new one. Until you can upgrade, set the token file explicitly for `enroll` (and for `run`, if you run it by hand):
+`enroll` crashes with `keyring.errors.KeyringLocked` or `NoKeyringError` on a machine with no unlocked desktop keyring, which is most servers and anything run with `sudo`. The code is used up by then, so get a new one. This is fixed in 0.7.1. If you can't upgrade yet, set the token file explicitly for `enroll` (and for `run`, if you run it by hand):
 
 ```bash
 sudo NEBULA_DEVICE_TOKEN_FILE=/root/.nebula/device-token ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code XXXXXXXX
