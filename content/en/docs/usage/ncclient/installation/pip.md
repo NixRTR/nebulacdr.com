@@ -4,7 +4,7 @@ linkTitle: Pip (PyPI)
 weight: 50
 ---
 
-**Fallback method** when Docker, binaries, or NixOS are not suitable (e.g. no Docker, or you need to run from source).
+**For advanced users only.** Pip is the most delicate way to install ncclient. It's easy to end up with a setup that `sudo` can't find, that root can't safely run, or that stores the token somewhere the service doesn't look. Use the [Linux packages](/docs/usage/ncclient/installation/linux/), the [Windows installer](/docs/usage/ncclient/installation/windows/), [Docker](/docs/usage/ncclient/installation/docker/), or the [binaries](/docs/usage/ncclient/installation/binaries/) unless you need to run from source or none of those fit.
 
 From PyPI:
 
