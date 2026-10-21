@@ -134,11 +134,14 @@ A [subnet router or exit node](/docs/usage/unsafe-routes/) that an admin assigns
 sudo ncclient routes list                              # offered routes, and which are accepted
 sudo ncclient routes accept 192.168.1.0/24             # add --via <IP> if several gateways offer it
 sudo ncclient routes reject 192.168.1.0/24
-sudo ncclient routes accept-exit-node --via 10.100.0.1
+sudo ncclient routes accept-exit-node --via 10.100.0.1   # --block-lan: LAN through it too
+sudo ncclient routes exit-lan allow|block                # local network direct (default) or via the exit node
 sudo ncclient routes reject-exit-node
 ```
 
 You can accept several subnet routes as long as they don't overlap, and at most one exit node. The running daemon picks up changes on its next poll; no restart needed.
+
+An exit node carries all of the device's traffic. From v0.7.2, ncclient keeps Nebula's own traffic out of the tunnel, blocks IPv6 the gateway can't route, and on Linux drops internet traffic while Nebula is down instead of letting it bypass the tunnel. See [Using an exit node](/docs/usage/unsafe-routes/#using-an-exit-node-full-tunnel).
 
 ## Split-horizon DNS
 
