@@ -14,7 +14,7 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Web UI** — React dashboard with OIDC (e.g. Keycloak) or dev token authentication
 - **Device client (ncclient)** — `pip install nebula-commander` for enroll and run; see [ncclient documentation](/docs/usage/ncclient/)
 
-## Status (as of v0.7.1)
+## Status (as of v0.7.2)
 
 ### What's implemented already
 
@@ -30,7 +30,9 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Subnet routers and exit nodes** (Nebula's `unsafe_routes`), configurable from
   both sides: the gateway that advertises a route, and a simple "Use Subnet
   Router"/"Use Exit Node" picker on any other node that wants to consume one. The
-  gateway's "Used by" list takes whole groups or individual hosts — see
+  gateway's "Used by" list takes whole groups or individual hosts. On Linux and
+  Windows clients an exit node is a full tunnel with a kill switch and an "Allow
+  local network access" toggle — see
   [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/)
 - **Public endpoint on any node**, not just lighthouses and relays, added to every
   peer's `static_host_map` so nodes with a known address connect directly, plus
@@ -68,8 +70,8 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 
 ### What's still planned
 
-- [ ] Automatic host-level route/NAT configuration for subnet routers and exit
-  nodes on Windows and Docker-deployed nodes (Linux nodes running `ncclient`
+- [ ] Automatic host-level route/NAT configuration for Windows subnet routers and
+  exit nodes (Linux and Docker nodes running `ncclient`
   already get this automatically; see
   [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/))
 - [ ] Continued client hardening as real-world deployments surface edge cases

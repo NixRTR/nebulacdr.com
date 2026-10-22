@@ -413,3 +413,74 @@ a[href*="matrix.to/#/#nebula-commander:matrix.org"]::after {
   .chroma .nb,
   .chroma .nf { color: #dcdcaa !important; }   // builtin / function
 }
+
+// Front page (layouts/partials/home-cloud.html): same design as the cloud.nebulacdr.net
+// portal (nebula-commander-cloud cloud/web/static/css/site.css), scoped to .ncc-home.
+.ncc-home {
+  --ncc-brand: #6f22cc;
+  --ncc-brand-strong: #5a18ab;
+  --ncc-btn-bg: #6f22cc;
+  --ncc-btn-bg-hover: #5a18ab;
+  --ncc-bg: #ffffff;
+  --ncc-bg-alt: #f7f5fb;
+  --ncc-surface: #ffffff;
+  --ncc-text: #1b1530;
+  --ncc-muted: #5d5670;
+  --ncc-border: #e4dff0;
+  --ncc-radius: 12px;
+  --ncc-shadow: 0 1px 2px rgba(20, 10, 40, .06), 0 8px 24px rgba(20, 10, 40, .06);
+  background: var(--ncc-bg);
+  color: var(--ncc-text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  // Full width inside Docsy's padded .td-outer.
+  margin: 0 calc(var(--bs-gutter-x, 1.5rem) * -.5);
+
+  a { color: var(--ncc-brand); }
+  a:hover, a:focus-visible { color: var(--ncc-brand-strong) !important; }
+  img { max-width: 100%; height: auto; }
+  h1, h2, h3 { line-height: 1.2; letter-spacing: -.01em; color: var(--ncc-text); font-family: inherit; font-weight: 700; }
+  h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 1rem; }
+  h2 { font-size: 1.6rem; margin: .5rem 0 1.25rem; }
+  h3 { font-size: 1.15rem; margin: 0 0 .5rem; }
+  code { font-size: .9em; background: var(--ncc-bg-alt); color: var(--ncc-text); padding: .1em .35em; border-radius: 4px; }
+  section { padding: 2.5rem 0; }
+}
+[data-bs-theme="dark"] .ncc-home {
+  --ncc-brand: #a46bf0;
+  --ncc-brand-strong: #b98cff;
+  --ncc-btn-bg: #7c3aed;
+  --ncc-btn-bg-hover: #6d28d9;
+  --ncc-bg: #0f0b1a;
+  --ncc-bg-alt: #151024;
+  --ncc-surface: #1a1430;
+  --ncc-text: #ece8f6;
+  --ncc-muted: #a59dbb;
+  --ncc-border: #2f2648;
+  --ncc-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+}
+.ncc-wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.ncc-narrow { max-width: 720px; }
+.ncc-home .ncc-hero {
+  padding: calc(4.5rem + 64px) 0 3.5rem;  // clears the fixed navbar
+  background: radial-gradient(ellipse at 80% 0%, color-mix(in srgb, var(--ncc-brand) 18%, transparent), transparent 60%), var(--ncc-bg);
+}
+.ncc-lead { font-size: 1.2rem; color: var(--ncc-muted); max-width: 40rem; }
+.ncc-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.75rem; }
+.ncc-shot { margin-top: 3rem; border-radius: var(--ncc-radius); border: 1px solid var(--ncc-border); box-shadow: var(--ncc-shadow); }
+.ncc-eyebrow { text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; font-weight: 700; color: var(--ncc-brand); margin-bottom: .5rem; }
+.ncc-home .ncc-alt { background: var(--ncc-bg-alt); }
+.ncc-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.ncc-card {
+  background: var(--ncc-surface); border: 1px solid var(--ncc-border); border-radius: var(--ncc-radius);
+  padding: 1.4rem; box-shadow: var(--ncc-shadow);
+  p { margin: 0; color: var(--ncc-muted); }
+}
+.ncc-muted { color: var(--ncc-muted); }
+.ncc-home .ncc-btn {
+  display: inline-block; border: 1px solid transparent; border-radius: 8px; padding: .6rem 1.1rem;
+  font: inherit; font-weight: 600; text-decoration: none; line-height: 1.3;
+  background: var(--ncc-btn-bg); color: #fff;
+  &:hover, &:focus-visible { background: var(--ncc-btn-bg-hover); color: #fff !important; }
+  &.secondary { background: transparent; color: var(--ncc-text); border-color: var(--ncc-border); }
+  &.secondary:hover, &.secondary:focus-visible { border-color: var(--ncc-brand); color: var(--ncc-brand) !important; }
+}

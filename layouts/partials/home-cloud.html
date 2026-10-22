@@ -1,0 +1,59 @@
+{{/* Front page, in the same design as the cloud.nebulacdr.net portal (cloud/web in
+     nebula-commander-cloud). Price and URLs mirror the portal; update both together. */}}
+{{ $cloud := "https://cloud.nebulacdr.net" -}}
+<div class="ncc-home">
+<section class="ncc-hero">
+  <div class="ncc-wrap">
+    <div class="ncc-eyebrow">Nebula Commander</div>
+    <h1>Your Nebula control plane,<br>without running a server.</h1>
+    <p class="ncc-lead">A control plane for <a href="https://github.com/slackhq/nebula">Nebula</a> overlay networks:
+      certificates, networks, groups, firewall rules and device enrollment from one web UI.
+      Get a private hosted instance at <strong>your-name.nebulacdr.net</strong> in a few minutes,
+      or run the same open-source software yourself.</p>
+    <div class="ncc-actions">
+      <a class="ncc-btn" href="{{ $cloud }}/signup">Start for $9/month</a>
+      <a class="ncc-btn secondary" href="{{ $cloud }}/how-it-works">How it works</a>
+      <a class="ncc-btn secondary" href="/docs/installation/">Self-host it free</a>
+    </div>
+    <img class="ncc-shot" src="/screenshots/networks.png" alt="The Nebula Commander networks page" width="1600" height="900">
+  </div>
+</section>
+
+<section class="ncc-alt">
+  <div class="ncc-wrap">
+    <h2>Nebula Commander Cloud</h2>
+    <div class="ncc-grid">
+      <div class="ncc-card"><h3>Your own instance</h3><p>A dedicated Nebula Commander with its own database and certificate authority. Nothing is shared with other customers except the sign-in service.</p></div>
+      <div class="ncc-card"><h3>Your traffic stays yours</h3><p>We host the control plane only. Your devices talk to each other directly over Nebula, through lighthouses you run. Your network traffic never passes through us.</p></div>
+      <div class="ncc-card"><h3>Backups and updates</h3><p>Encrypted nightly backups, plus Nebula Commander updates rolled out after we've tested them.</p></div>
+      <div class="ncc-card"><h3>Open source, no lock-in</h3><p>It's the same MIT-licensed Nebula Commander you can self-host. Export your own data whenever you want to move.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="ncc-wrap">
+    <h2>What Nebula Commander does</h2>
+    <div class="ncc-grid">
+      <div class="ncc-card"><h3>Networks and nodes</h3><p>Create networks, add nodes, allocate IPs and issue certificates. Lighthouses, relays, subnet routers and exit nodes included. <a href="/docs/web-ui/">Web UI docs</a></p></div>
+      <div class="ncc-card"><h3>Groups and firewall rules</h3><p>Put nodes in groups and decide who can reach what, with a diagram that shows the result.</p></div>
+      <div class="ncc-card"><h3>Device clients</h3><p>Apps for Windows and Linux, plus <code>ncclient</code> for servers and Docker. Enroll with a one-time code; configs and certificates stay up to date. <a href="/docs/usage/ncclient/">Client docs</a></p></div>
+      <div class="ncc-card"><h3>Self-host anywhere</h3><p>Run it with Docker or the NixOS module on your own hardware, free. <a href="/docs/installation/">Installation docs</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="ncc-alt">
+  <div class="ncc-wrap ncc-narrow">
+    <h2>Simple pricing</h2>
+    <p><strong>Hosted:</strong> $9 per month, with unlimited networks and nodes and the full feature set. Cancel any time.</p>
+    <p><strong>Self-hosted:</strong> free. Run the same open-source Nebula Commander on your own hardware.</p>
+    <p class="ncc-actions">
+      <a class="ncc-btn" href="{{ $cloud }}/pricing">Compare options</a>
+      <a class="ncc-btn secondary" href="/docs/installation/">Install it yourself</a>
+    </p>
+    <p class="ncc-muted">Questions? Ask in the <a href="https://matrix.to/#/#nebula-commander:matrix.org">Matrix room</a>
+      or read the code on <a href="https://github.com/NixRTR/nebula-commander">GitHub</a>.</p>
+  </div>
+</section>
+</div>
