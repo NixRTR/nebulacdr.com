@@ -125,6 +125,7 @@ All options live under `services.nebula-commander`:
 | `debug` | bool | false | Enable debug mode |
 | `publicUrl` | null or string | null | Public URL of this instance (e.g. `https://nebula.example.com`). Derives the OIDC redirect URI and is used for redirect validation. |
 | `standaloneAdminBootstrap` | bool | false | Allow the unauthenticated dev-token admin bootstrap endpoint when no OIDC provider is configured. Must be explicitly opted into. |
+| `apiDocs` | bool | true | From v0.8.4. Serve the interactive API docs at `/api/docs` and `/api/redoc` (schema at `/api/openapi.json`). Set to false to hide the endpoint list and server version. |
 | `corsOrigins` | string | `"*"` | CORS origins: `"*"` or a comma-separated list. |
 | `sessionHttpsOnly` | bool | false | Set to true in production when served over HTTPS. |
 | `allowedRedirectHosts` | string | `""` | Comma-separated allowed hosts for OAuth/OIDC redirects. Empty derives from `oidc.redirectUri`/`publicUrl`. |

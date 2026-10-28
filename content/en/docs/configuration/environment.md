@@ -11,6 +11,7 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NEBULA_COMMANDER_DEBUG` | Enable debug mode (enables dev-token endpoint; do not use in production) | `false` |
+| `NEBULA_COMMANDER_API_DOCS_ENABLED` | From v0.8.4. Serve the interactive API docs at `/api/docs` (Swagger UI) and `/api/redoc`, with the schema at `/api/openapi.json`. Every API endpoint still requires authentication either way; set to `false` to hide the endpoint list and the server version from anyone who can reach the server. NixOS: `services.nebula-commander.apiDocs`. | `true` |
 | `NEBULA_COMMANDER_UPDATE_CHECK_ENABLED` | Check GitHub for a newer release, shown as a notification in the About screen. Set to `false` to disable all outbound calls to github.com (air-gapped/privacy-conscious deployments). | `true` |
 
 ## Database

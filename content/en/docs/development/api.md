@@ -8,12 +8,13 @@ The Nebula Commander backend exposes a REST API under the base path **`/api`**. 
 
 ## OpenAPI docs
 
-When the backend is running in debug mode, interactive documentation is available at:
+The backend serves interactive documentation at:
 
 - **Swagger UI** – /api/docs
 - **ReDoc** – /api/redoc
+- **OpenAPI schema** – /api/openapi.json
 
-For full request/response schemas and parameters, use the interactive docs.
+For full request/response schemas and parameters, use the interactive docs. They're on by default; set [`NEBULA_COMMANDER_API_DOCS_ENABLED`](/docs/configuration/environment/#application) to `false` (NixOS: `apiDocs = false;`) to turn all three off. Before v0.8.4 the docs pages loaded the schema from `/openapi.json`, which a reverse proxy usually sends to the frontend, so they didn't render.
 
 ---
 

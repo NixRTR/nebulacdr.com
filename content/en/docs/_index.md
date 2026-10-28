@@ -19,4 +19,4 @@ This section contains guides for installing, configuring, and using Nebula Comma
 - **[Client Usage](/docs/usage/)** – ncclient (experimental), nebula (preferred)
 - **[Development](/docs/development/)** – Setup, GitHub Actions, manual builds, API
 
-When the backend is running, interactive API docs are available at `/api/docs`.
+When the backend is running, interactive API docs are available at `/api/docs` (unless turned off with [`NEBULA_COMMANDER_API_DOCS_ENABLED`](/docs/configuration/environment/#application)).

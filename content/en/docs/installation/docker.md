@@ -319,6 +319,10 @@ NEBULA_COMMANDER_CORS_ORIGINS=https://nebula.example.com
 # Set session cookie to HTTPS-only (recommended for production)
 NEBULA_COMMANDER_SESSION_HTTPS_ONLY=false
 
+# Interactive API docs at /api/docs and /api/redoc (schema at /api/openapi.json).
+# All endpoints still require auth; set false to hide the endpoint list and version.
+NEBULA_COMMANDER_API_DOCS_ENABLED=true
+
 # =============================================================================
 # Redirect Security
 # =============================================================================
