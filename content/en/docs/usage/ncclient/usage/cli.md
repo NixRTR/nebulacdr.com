@@ -10,9 +10,11 @@ This page covers the plain `ncclient` command from the [binaries](/docs/usage/nc
 
 | What | Default location |
 |------|------------------|
-| Device token | The OS keyring, when there is a usable one (normally only in a logged-in desktop session). Otherwise `~/.nebula/device-token`, readable only by its owner. That's what root, servers, SSH sessions, and the frozen binaries get. Set `NEBULA_DEVICE_TOKEN_FILE` to use a specific file. |
-| `settings.json` (server, node ID, accepted routes) | `~/.config/nebula-commander/` on Linux and macOS, `%APPDATA%\nebula-commander\` on Windows. Set `NEBULA_COMMANDER_CONFIG_DIR` to change it. |
-| Nebula config and certificates | `/etc/nebula` on Linux and macOS, `%USERPROFILE%\.nebula` on Windows. Set with `--output-dir`. |
+| Device tokens (one per network) | The OS keyring, when there is a usable one (normally only in a logged-in desktop session). Otherwise files in `~/.nebula/tokens/`, readable only by their owner. That's what root, servers, SSH sessions, and the frozen binaries get. Set `NEBULA_DEVICE_TOKEN_FILE` to a file path, and the tokens go in a `tokens/` folder next to it. |
+| `settings.json` (each network's server, node ID, accepted routes) | `~/.config/nebula-commander/` on Linux and macOS, `%APPDATA%\nebula-commander\` on Windows. Set `NEBULA_COMMANDER_CONFIG_DIR` to change it. |
+| Nebula config and certificates | `networks/<id>/` under the output directory: `/etc/nebula` on Linux and macOS, `%USERPROFILE%\.nebula` on Windows. Set with `--output-dir`. |
+
+Before v0.8.0 there was one token (`~/.nebula/device-token`) and the Nebula files were directly in the output directory. ncclient moves them into this layout the first time v0.8.0 or newer runs.
 
 `~` is the home directory of whoever runs the command, so `sudo ncclient …` uses root's (`/root/.nebula/device-token`). **Run `enroll`, `run`, and `routes` as the same user** (and with the same environment variables), or they won't find each other's files.
 
@@ -60,6 +62,8 @@ sudo NEBULA_DEVICE_TOKEN_FILE=/root/.nebula/device-token ncclient enroll --serve
 ```bash
 sudo ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code XXXXXXXX
 ```
+
+Run `enroll` again with a code from another network to add that network; one `run` handles all of them. List them with `sudo ncclient networks list`, and leave one with `sudo ncclient networks remove NAME`. See [Several networks on one device](/docs/usage/ncclient/usage/networks/).
 
 ## Run (daemon)
 
@@ -139,7 +143,9 @@ sudo ncclient routes exit-lan allow|block                # local network direct 
 sudo ncclient routes reject-exit-node
 ```
 
-You can accept several subnet routes as long as they don't overlap, and at most one exit node. The running daemon picks up changes on its next poll; no restart needed.
+You can accept several subnet routes as long as they don't overlap, and at most one exit node, across all networks on the device. The running daemon picks up changes on its next poll; no restart needed.
+
+With several networks, say which one with `--network NAME` (name or id from `ncclient networks list`) before the subcommand: `sudo ncclient routes --network office list`.
 
 An exit node carries all of the device's traffic. From v0.7.2, ncclient keeps Nebula's own traffic out of the tunnel, blocks IPv6 the gateway can't route, and on Linux drops internet traffic while Nebula is down instead of letting it bypass the tunnel. See [Using an exit node](/docs/usage/unsafe-routes/#using-an-exit-node-full-tunnel).
 
@@ -162,7 +168,9 @@ Get a new code from **Nodes → Enroll**, then run `enroll` again **as the same 
 sudo ncclient enroll --server https://YOUR_NEBULA_COMMANDER_URL --code NEWCODE
 ```
 
-This overwrites the old token and node ID. The running daemon switches to the new token on its next poll. If you changed servers, restart it too (`sudo systemctl restart ncclient` for an `ncclient install` service) and update `NEBULA_COMMANDER_SERVER` in `/etc/default/ncclient`.
+With a code for the same node on the same server, this overwrites that network's token. The running daemon switches to the new token on its next poll.
+
+A code for a different node or server adds a network instead. If you're moving the device, remove the old network afterwards with `sudo ncclient networks remove NAME`, and update `NEBULA_COMMANDER_SERVER` in `/etc/default/ncclient` for an `ncclient install` service.
 
 If `enroll` succeeds but the daemon keeps logging `Token invalid or expired`, the two are using different token locations (usually one ran with `sudo` and the other didn't). See [Where state lives](#where-state-lives).
 
@@ -171,6 +179,7 @@ If `enroll` succeeds but the daemon keeps logging `Token invalid or expired`, th
 - **No TUN device / cannot ping Nebula IP**: on Linux, run with `sudo`. For the Sign flow, make sure `host.key` is in the output directory. Check Nebula's error output (e.g. "failed to get tun device", "no such file").
 - **Nebula starts then exits**: often a missing `host.key` (Sign flow), a wrong config path, or on Linux not running as root. Check the Nebula lines ncclient prints.
 - **`Token not found. Run 'ncclient enroll' first.`**: this user has no token. Enroll as the same user that runs the daemon (root, on Linux).
+- **`Use --network <name or id>`**: the device is in several networks, so the command needs to know which one. Add `--network NAME` before the subcommand.
 - **`enroll` fails with `KeyringLocked` or `NoKeyringError`** (0.7.0 and earlier): see the [Linux setup](#linux-setup) note. Get a new code, since the old one was used.
 
 ## macOS notes

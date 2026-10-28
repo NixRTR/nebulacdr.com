@@ -31,7 +31,7 @@ Group Access Diagram.
 ## Adding a group
 
 1. Select the network.
-2. Click **Add group** and enter a name (e.g. `servers`). Group names are case-sensitive and must be unique within the network.
+2. Click **Add group** and enter a name (e.g. `servers`). Group names are case-sensitive and must be unique within the network. They can be 1–63 letters, digits, `.`, `_` or `-`. Since v0.8.2, names with spaces, commas or other characters are rejected, because Nebula would split a name like `web,admin` into two certificate groups.
 3. Submit. The group's card appears in the grid with an empty set of inbound rules — click it to add rules (see below).
 
 Groups are also created implicitly when you create a node and assign it a group that doesn't exist yet.

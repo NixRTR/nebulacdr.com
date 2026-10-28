@@ -24,13 +24,13 @@ A device joins Nebula Commander by **enrolling** with a one-time code:
 2. Copy the code. It works once and expires if unused.
 3. Give the code to the client (how depends on the client, see its page).
 
-Enrolling stores a **device token** and the node's ID on the device. From then on the client uses the token to fetch the node's Nebula config and certificates, and reports a heartbeat so the node shows as online.
+Enrolling stores a **device token** and the node's ID on the device. From v0.8.0 a device can enroll in several networks, one code each; see [Several networks on one device](/docs/usage/ncclient/usage/networks/). From then on the client uses the token to fetch the node's Nebula config and certificates, and reports a heartbeat so the node shows as online.
 
 ### Re-enrolling
 
 Re-enroll when a device's token was lost or revoked, when you want the device to become a different node, or when moving it to another Nebula Commander server. Generate a **new** code (the old one is already used up) and enroll again.
 
-Enrolling a node again **invalidates that node's previous token** on the server. A running client notices on its next poll (it gets a `401`), then picks up the new token from disk without a restart. If you switched to a **different server**, restart the client so it polls the new URL. The per-client pages spell out the exact steps, and a couple of clients (Docker and the NixOS module) need the old token removed first.
+Enrolling a node again **invalidates that node's previous token** on the server. A running client notices on its next poll (it gets a `401`), then picks up the new token from disk without a restart. From v0.8.0, a code for the same node on the same server replaces that network's token, while a code from a **different server** (or a different node) adds a network next to the old one; remove the old one afterwards. The per-client pages spell out the exact steps, and a couple of clients (Docker and the NixOS module) need an extra step first.
 
 ### Subnet routes, exit nodes, and DNS
 

@@ -34,10 +34,26 @@ This is refused if the official package repository isn't configured. [Add it](/d
 Other commands:
 
 ```bash
-ncclient auto-update status      # installed version, setting, last check and install
-ncclient auto-update check-now   # check now, and install if automatic updates are on (admin)
-ncclient auto-update disable     # admin
+ncclient auto-update status        # installed version, setting, last check and install
+ncclient auto-update check-now     # check for a new release now; doesn't install it (admin)
+ncclient auto-update install-now   # check, and install a new release right away (admin)
+ncclient auto-update disable       # admin
 ```
+
+Before v0.8.3, `check-now` also installed the update straight away when automatic updates were on. From v0.8.3 it only checks; an update it finds installs in the next window, or when you install it now.
+
+## Install an update now
+
+You don't have to wait for the window, and automatic updates don't have to be on. On Windows (MSI) and Linux deb/rpm installs from the package repository:
+
+1. In the app, go to **Settings → Updates** (as administrator on Windows) and click **Check now**.
+2. If a newer release is out, an **Install now** button appears. Click it.
+3. A progress bar shows the download (Windows) and then the install. The tunnel drops for a few seconds while the client restarts.
+4. When it's done, the app says **Download complete. Please restart the app or click Restart App.** Click **Restart App** to reopen the app on the new version. The same message appears at the top of the other pages.
+
+From the command line, `ncclient auto-update install-now` does the same (elevated prompt on Windows, `sudo` on Linux). Follow it with `ncclient auto-update status`.
+
+Where automatic updates aren't available (see the table above), **Install now** isn't either. On NixOS, **Check now** tells you a release is out and you [update the flake](#nixos-updating-when-notified).
 
 ## The window
 
@@ -52,7 +68,7 @@ Updates install once a day, at a random time inside the window (local time, `HH:
 ## Where to look when something goes wrong
 
 - `ncclient auto-update status` shows the last check and the last install, with the error if there was one.
-- **Windows:** the installer log is in `C:\ProgramData\nebula-commander\updates\install-<version>.log` (administrators only). If the app was open during an update, it shows **Nebula Commander was updated → Restart now**.
+- **Windows:** the installer log is in `C:\ProgramData\nebula-commander\updates\install-<version>.log` (administrators only). If the app was open during an update, it shows **Nebula Commander was updated** with a **Restart App** button.
 - **Linux:** `journalctl -u ncclient-update`. The timer is `ncclient-update.timer`; its window lives in `/etc/systemd/system/ncclient-update.timer.d/window.conf`, which ncclient writes. Don't edit it by hand.
 
 ## NixOS: updating when notified

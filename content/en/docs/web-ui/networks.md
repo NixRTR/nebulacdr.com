@@ -30,7 +30,7 @@ Click a network's card to open its detail view: node/user/group counts and the
    - **Certificate Curve** – Curve25519 (default) or P256, opt-in per network. Applies to every node's certificate on this network and can't be changed after creation.
 4. Click **Create Network**. The new network's card appears in the grid.
 
-You can create multiple networks to separate environments (e.g. dev, staging, prod) or teams.
+You can create multiple networks to separate environments (e.g. dev, staging, prod) or teams. One device can be in several of them at once; see [Several networks on one device](/docs/usage/ncclient/usage/networks/).
 
 ## The network grid
 
@@ -60,6 +60,21 @@ means *any* group can reach it ("open"), not that it's unreachable.
 
 As a network owner you can also configure [DNS](/docs/web-ui/dns/) (split-horizon
 domain and aliases) for the network from here.
+
+### Interface name
+
+The detail page's header also shows the network's **Interface**: the name of the
+tun device Nebula creates on every node in this network. From v0.8.0, each new
+network gets a unique name starting with `nc-` (for example `nc-3f9a1c0b2e`), so a
+device that's in [several networks](/docs/usage/ncclient/usage/networks/) gets one
+interface per network. Networks created before v0.8.0 keep `nebula1`.
+
+To change it, click the pencil next to the name, type the part after `nc-` (up to
+12 lowercase letters, digits or `-`), and click **Save**. Every node in the network
+restarts Nebula on the new interface, and host firewall rules or scripts that match
+the old name stop applying. A `nebula1` network can move to an `nc-` name but can't
+go back. Nodes running ncclient older than v0.8.0 always use `nebula1`, whatever the
+network's setting.
 
 ## Deleting a network
 

@@ -18,37 +18,40 @@ Everything lives in `%ProgramData%\nebula-commander\`, which only SYSTEM and Adm
 
 | What | Where |
 |------|-------|
-| Device token | `token.bin` (DPAPI-encrypted) |
-| Settings | `settings.json`, written by the service |
-| Nebula config, certs, and log | `config.yaml` (includes the node's private key), certificates, `nebula.log` |
+| Device tokens | `tokens\<id>.bin`, one per network (DPAPI-encrypted) |
+| Settings | `settings.json`, written by the service: every network's server and accepted routes, plus the device-wide settings |
+| Nebula config, certs, and log | `networks\<id>\`, one folder per network: `config.yaml` (includes the node's private key), certificates, `nebula.log` |
 | Nebula itself | `nebula\`, installed and updated by the service |
+
+`<id>` is the network's id on this device, shown by `ncclient networks list`. Installs from before v0.8.0 kept one `token.bin` and the config directly in this folder; the service moves them into this layout on its first start.
 
 The service's own messages go to the Windows **Application** event log.
 
 ## Enroll
 
 1. Open **Nebula Commander** from the Start Menu.
-2. On the **Enrollment** page, enter the server URL and the one-time code from Nebula Commander (**Nodes** → open the node → **Enroll**).
+2. Click **Add network** in the side bar, and enter the server URL and the one-time code from Nebula Commander (**Nodes** → open the node → **Enroll**).
 
-This needs the app running as administrator. The service makes the enrollment request itself, stores the token, and polls right away instead of waiting for the next interval.
+This needs the app running as administrator. The service makes the enrollment request itself, stores the token, and starts the network right away instead of waiting for the next interval.
+
+To join another network, use **Add network** again with that network's code. One device can be in several networks, on different servers if needed. See [Several networks on one device](/docs/usage/ncclient/usage/networks/).
 
 **Don't enroll with `ncclient enroll` from a terminal** on an MSI install. The plain CLI writes to a per-user location the service never reads.
 
 ## Using the app
 
-The app has three side tabs (Settings is pinned at the bottom of the side bar) and follows the Windows light/dark app theme.
+The side bar has **Networks** and **Add network**, with **Settings** pinned at the bottom. The app follows the Windows light/dark app theme.
 
-- **Status**: one card each for:
-  - **Connection**: the server URL and a **Test Connection** button.
-  - **Nebula Commander Service**: state and Start/Stop/Restart.
+- **Networks**: the **Nebula Commander Service** card (state and Start/Stop/Restart), then one entry per network this device is enrolled in. Click a network to open its page, which has one card each for:
+  - **Connection**: the server URL, **This node's IP** in that network, and a **Test Connection** button.
   - **Nebula Interface**: connected/error, the interface name, whether the Nebula process is running, and when the service last updated.
-  - **Split-Horizon DNS**: active or inactive.
+  - **Split-Horizon DNS**: active or inactive for this network.
   - **Exit Node / Subnet Router**: what this device advertises, plus checkboxes for offered subnet routes and a picker for offered exit nodes.
   - **Configuration**: **View Config** (the node's private key is shown as `<redacted>`) and **Open Containing Folder** (administrator only).
 
-  Use **Refresh** to update the page right away.
-- **Enrollment**: enroll, or see which server the device is enrolled with.
-- **Settings**: server URL, poll interval, and **Split-horizon DNS**. Under **Nebula** you can see the installed Nebula version, **Check for updates** against Nebula's GitHub releases, and **Install / update Nebula**: the service downloads the official release, verifies its SHA256 checksum, and installs the whole archive (`nebula.exe`, `nebula-cert.exe`, wintun) itself. The service installs Nebula automatically on first start, and there's no custom Nebula path. Under **Startup**, **Run on startup** opens the app to the tray when you sign in.
+  Use **Refresh** to update the page right away, and **Leave network** to remove the network from this device.
+- **Add network**: enroll in a network with a server URL and code.
+- **Settings**: poll interval and **Split-horizon DNS**, which apply to every network. Under **Nebula** you can see the installed Nebula version, **Check for updates** against Nebula's GitHub releases, and **Install / update Nebula**: the service downloads the official release, verifies its SHA256 checksum, and installs the whole archive (`nebula.exe`, `nebula-cert.exe`, wintun) itself. The service installs Nebula automatically on first start, and there's no custom Nebula path. Under **Startup**, **Run on startup** opens the app to the tray when you sign in.
 
 | Enrollment | Settings |
 |------------|----------|
@@ -65,26 +68,28 @@ Restart-Service NebulaCommanderService
 
 ## Subnet routes and exit nodes
 
-Use the checkboxes and the exit-node picker on the **Exit Node / Subnet Router** card of the Status page. The service applies changes right away. See [Subnet routers and exit nodes](/docs/usage/unsafe-routes/) for how routes are offered.
+Open the network on the **Networks** page and use the checkboxes and the exit-node picker on its **Exit Node / Subnet Router** card. A device has one exit node across all its networks: picking one in a network replaces one in use in another, and the card warns you when that would happen. The service applies changes right away. See [Subnet routers and exit nodes](/docs/usage/unsafe-routes/) for how routes are offered.
 
 ## Split-horizon DNS
 
-Turn on **Split-horizon DNS** in **Settings**. The service applies it with NRPT rules for the network's domain and removes them when turned off or when the service stops. The **Split-Horizon DNS** card on Status shows whether it's active.
+Turn on **Split-horizon DNS** in **Settings**. The service applies it with NRPT rules for the network's domain and removes them when turned off or when the service stops. The **Split-Horizon DNS** card on each network's page shows whether it's active for that network.
 
 ## Re-enroll
 
-Open the **Enrollment** page and enroll again with a new code, and a new server URL if you're moving servers. This replaces the token, re-points the device at the server you entered, and makes the service poll immediately. Nothing needs restarting.
+Open **Add network** and enroll again with a new code for the same node on the same server. This replaces that network's token and makes the service poll immediately. Nothing needs restarting.
+
+If you're moving the device to a **different server**, enrolling adds the new server's network next to the old one. Open the old network on the **Networks** page and click **Leave network**.
 
 ## Updates
 
-The service can install new releases by itself during a daily window: **Settings → Updates** (as administrator), or `ncclient auto-update enable` from an elevated prompt. See [Automatic updates](/docs/usage/ncclient/usage/auto-update/).
+The service can install new releases by itself during a daily window: **Settings → Updates** (as administrator), or `ncclient auto-update enable` from an elevated prompt. **Check now** looks for a new release; when one is out, **Install now** installs it right away with a progress bar, and **Restart App** reopens the app on the new version. See [Automatic updates](/docs/usage/ncclient/usage/auto-update/).
 
 ## Troubleshooting
 
-- **Status shows the service as unreachable**: the MSI's service isn't installed or isn't running. Start it from the Status page or `services.msc`, or reinstall the MSI.
+- **The Networks page shows the service as unreachable**: the MSI's service isn't installed or isn't running. Start it from the Networks page or `services.msc`, or reinstall the MSI.
 - **"Administrator required"** when changing something: relaunch the app as administrator (the bar at the top of the window).
-- **Nebula Interface shows an error**: as administrator, check `%ProgramData%\nebula-commander\nebula.log` (**Open Containing Folder** on Status gets you there).
-- **Status says Nebula isn't installed**: the service's first-run download failed (e.g. offline). Use **Settings → Install / update Nebula** as administrator.
+- **Nebula Interface shows an error**: as administrator, check that network's `nebula.log` under `%ProgramData%\nebula-commander\networks\` (**Open Containing Folder** on the network's page gets you there).
+- **The app says Nebula isn't installed**: the service's first-run download failed (e.g. offline). Use **Settings → Install / update Nebula** as administrator.
 - **Enrolled from a terminal and the app still says not enrolled**: the CLI wrote a per-user token. Enroll from the app instead.
 
 ## Run from source
@@ -95,7 +100,7 @@ From `client/windows-app/`:
 dotnet build   # or: dotnet run
 ```
 
-Running this way still expects a real installed-and-running `NebulaCommanderService` to control (the app checks that the control pipe really belongs to that service). If it isn't installed or running, the Status page says so rather than failing.
+Running this way still expects a real installed-and-running `NebulaCommanderService` to control (the app checks that the control pipe really belongs to that service). If it isn't installed or running, the Networks page says so rather than failing.
 
 ## Build (self-contained publish)
 

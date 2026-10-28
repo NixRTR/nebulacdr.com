@@ -35,9 +35,9 @@ including the status backgrounds and badge colors, are user-configurable — see
 
 1. Open **Nodes** and optionally filter by network.
 2. Click **Create Node**. Pick a network first if you haven't filtered to one.
-3. Enter a **hostname** (e.g. `laptop-alice`, `server-1`). The hostname identifies the node and is used in certificates and config.
+3. Enter a **hostname** (e.g. `laptop-alice`, `server-1`). The hostname identifies the node and is used in certificates and config. It can be 1–63 letters, digits, `.`, `_` or `-`; spaces and other characters are rejected.
 4. The server assigns an **IP address** from the network's subnet, or you may suggest one.
-5. Set the node's **group** (e.g. `laptops`, `servers`). The group is used for [firewall rules](/docs/web-ui/groups/) and must match a group defined for that network.
+5. Set the node's **group** (e.g. `laptops`, `servers`). The group is used for [firewall rules](/docs/web-ui/groups/) and must match a group defined for that network. Group names follow the same rules as hostnames (1–63 letters, digits, `.`, `_` or `-`; no commas or spaces).
 6. Set the **platform** — Desktop (runs `ncclient`), iOS, or Android.
 7. Optionally set a **public endpoint** (`hostname:port` or `IP:port`) if other nodes can reach this one at a fixed address. See the [details panel](#the-node-details-panel) below.
 8. Submit. The node is created, its certificate is issued, and its card appears in the grid.
@@ -53,7 +53,9 @@ likely to change often:
 | **Group** | Nebula security group for this node. Used for firewall (see [Groups](/docs/web-ui/groups/)). |
 | **Lighthouse** | If enabled, this node acts as a Nebula lighthouse (others can punch through to it). Desktop only. |
 | **Relay** | If enabled, this node can relay traffic for other nodes. Desktop only. |
-| **Public endpoint** | Optional `hostname:port` or `IP:port` where other nodes can reach this one directly (Nebula's UDP port, usually `4242`; IPv6 as `[2001:db8::1]:4242`). Every node's endpoint is added to every other node's `static_host_map`, so peers can connect without asking a lighthouse first. Lighthouses and relays need one. Clear the field to remove it. For more addresses, see **Additional reachable addresses** under [Advanced](#advanced) and [Public Endpoints & Reachable Addresses](/docs/usage/reachable-addresses/). |
+| **Public endpoint** | Optional `hostname:port` or `IP:port` where other nodes can reach this one directly (Nebula's UDP port, usually `4242`; IPv6 as `[2001:db8::1]:4242`). Every node's endpoint is added to every other node's `static_host_map`, so peers can connect without asking a lighthouse first. Lighthouses and relays need one. Clear the field to remove it. For more addresses, see **Additional endpoints** below, **Additional reachable addresses** under [Advanced](#advanced), and [Public Endpoints & Reachable Addresses](/docs/usage/reachable-addresses/). |
+| **Additional endpoints** | Shown once a public endpoint is set. Up to 8 more `host:port` addresses every peer tries after the public endpoint, for addresses only some nodes can reach (e.g. a lighthouse's LAN IP for nodes in the same office). See [Additional endpoints](/docs/usage/reachable-addresses/#additional-endpoints). |
+| **Listen port (UDP)** | The UDP port Nebula listens on, `4242` by default; `0` lets the OS pick. Change it when several nodes share one NAT or one device is in several networks. Desktop only. See [Listen port](/docs/usage/reachable-addresses/#listen-port). |
 | **Use Subnet Router** | Pick another node on this network to route this node's traffic to its advertised subnets through. See [Subnet Routers and Exit Nodes](/docs/usage/unsafe-routes/). |
 | **Use Exit Node** | Pick another node to route *all* of this node's traffic through (full-tunnel). Same doc as above. |
 

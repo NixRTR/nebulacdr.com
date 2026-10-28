@@ -28,8 +28,8 @@ Or import `nix/client-module.nix` directly by path if you're not using a flake, 
 services.ncclient = {
   enable = true;
   server = "https://nebula.example.com";
-  # One-time enrollment: a file holding the enrollment code, consumed once (the
-  # unit only runs `ncclient enroll` when no token exists yet at stateDir/token).
+  # One-time enrollment: a file holding the enrollment code, used once (the unit
+  # records that the network is enrolled and doesn't send the code again).
   enrollCodeFile = "/run/secrets/ncclient-enroll-code";
   acceptDns = true;
 };
@@ -42,13 +42,14 @@ Then rebuild: `nixos-rebuild switch` (path-based) or `nixos-rebuild switch --fla
 | `enable` | bool | — | Enable the ncclient service |
 | `package` | package | built from `nix/client-package.nix` | The ncclient package |
 | `nebulaPackage` | package | `pkgs.nebula` | Package providing the `nebula`/`nebula-cert` binaries ncclient orchestrates |
-| `server` | string | — (required) | Nebula Commander server URL |
-| `enrollCodeFile` | null or path | null | Path to a file containing a one-time enrollment code. When set and no token exists yet, a oneshot unit runs `ncclient enroll` before the main service starts. Leave null if you provision the token file out of band. |
+| `server` | null or string | null | Nebula Commander server URL, for a device in one network. With several networks use `networks` instead. |
+| `enrollCodeFile` | null or path | null | Path to a file containing a one-time enrollment code for `server`. A oneshot unit runs `ncclient enroll` once, before the main service starts, and records that it did (same as `networks.default`). Leave null to enroll by hand or provision the token out of band. |
+| `networks` | attribute set of `{ server; enrollCodeFile; }` | `{ }` | From v0.8.0: networks this device joins, each with its own server and code file, enrolled once each. Removing an entry doesn't leave the network; use `ncclient networks remove`. See [Several networks](/docs/usage/ncclient/usage/nixos/#several-networks). |
 | `interval` | int | 60 | Poll interval in seconds |
 | `outputDir` | string | `/var/lib/ncclient/nebula` | Directory ncclient writes Nebula's config/certs/binary to |
 | `acceptDns` | bool | false | Accept and apply DNS settings pushed by Nebula Commander |
 | `adminGroups` | null or list of strings | `[ "wheel" "sudo" ]` | Active local users in these groups may change the device (desktop app enrollment, settings, routes, exit node; start/stop/restart `ncclient.service`) without a password. Everyone else needs an administrator's password. `null` lets any active local user do it (single-user machines only). |
-| `stateDir` | string | `/var/lib/ncclient` | Directory holding the device token and `settings.json` together on the same persistent path — both must live in the same place or the node's identity is lost on restart even though the token survives |
+| `stateDir` | string | `/var/lib/ncclient` | Directory holding the device tokens and `settings.json` together on the same persistent path — both must live in the same place or the node's identity is lost on restart even though the token survives |
 
 The service runs as root, matching the Windows Service (`LocalSystem`) and Docker image (root-in-container) precedent above — Nebula needs to create a TUN device. `--nebula`/`--restart-service` are intentionally not exposed; `nebula` is resolved via `PATH` (from `nebulaPackage`), matching the Docker image's approach.
 

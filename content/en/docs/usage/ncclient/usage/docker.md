@@ -17,9 +17,13 @@ NEBULA_DEVICE_TOKEN_FILE: "/data/nebula-commander/token"
 
 | Path in the container | What it is |
 |------|------------|
-| `/data/nebula-commander/token` | Device token |
+| `/data/nebula-commander/tokens/` | Device token (from v0.8.0, one file per network, named by its id) |
 | `/data/nebula-commander/settings.json` | Server URL, node ID, accepted routes |
-| `/data/nebula/` | Nebula `config.yaml`, certificates, status |
+| `/data/nebula/networks/<id>/` | Nebula `config.yaml`, certificates, status |
+
+Before v0.8.0 the token was `/data/nebula-commander/token` and the Nebula files were directly in `/data/nebula/`. The container moves them into this layout on its first start with v0.8.0 or newer; the variables stay the same.
+
+A container runs one network. To put the host in a second network, run a second container with its own volume. Every ncclient on the host must then be v0.8.0 or newer; see [Several networks on one device](/docs/usage/ncclient/usage/networks/#things-to-know).
 
 Without those two variables the image falls back to `/etc/nebula` and `/etc/nebula-commander/token`. Those paths are **outside** the volume, so the device loses its enrollment every time the container is recreated.
 
@@ -33,7 +37,7 @@ Without those two variables the image falls back to `/etc/nebula` and `/etc/nebu
    docker compose logs -f ncclient
    ```
 
-The container enrolls once, when no token exists yet. After that, `ENROLL_CODE` is ignored and you can remove it.
+The container enrolls once, when it has no token yet. After that, `ENROLL_CODE` is ignored and you can remove it.
 
 ## Run and control
 
@@ -59,7 +63,7 @@ docker compose exec -e NEBULA_COMMANDER_CONFIG_DIR=/data/nebula-commander ncclie
   ncclient routes --output-dir /data/nebula accept 192.168.1.0/24
 ```
 
-`reject`, `accept-exit-node --via <IP>`, and `reject-exit-node` work the same way (see the [ncclient CLI page](/docs/usage/ncclient/usage/cli/#subnet-routes-and-exit-nodes)). The running client applies changes on its next poll.
+`reject`, `accept-exit-node --via <IP>`, and `reject-exit-node` work the same way (see the [ncclient CLI page](/docs/usage/ncclient/usage/cli/#subnet-routes-and-exit-nodes)). The running client applies changes on its next poll. `--output-dir` stays `/data/nebula`; ncclient finds the network's own folder under it.
 
 ## Split-horizon DNS
 
@@ -71,25 +75,28 @@ The container does **not** apply split-horizon DNS to the host it runs on (it do
 
 The container only uses `ENROLL_CODE` when no token exists. There are two ways to re-enroll.
 
-**Enroll inside the running container.** This needs no restart unless the server changed:
+**Enroll inside the running container.** For a new code for the same node on the same server. No restart needed:
 
 ```bash
 docker compose exec -e NEBULA_COMMANDER_CONFIG_DIR=/data/nebula-commander ncclient \
   ncclient enroll --code NEWCODE
 ```
 
-The server URL comes from `NEBULA_COMMANDER_SERVER`. The old token is replaced, and the client switches to the new one on its next poll.
+The server URL comes from `NEBULA_COMMANDER_SERVER`. With a new code for the same node, the old token is replaced, and the client switches to the new one on its next poll. A code for a different node or server would add a second network to the container instead; use the second method for that.
 
-**Or remove the token and let the container enroll on start:**
+**Or leave the network and let the container enroll on start:**
 
 ```bash
-docker compose exec ncclient rm /data/nebula-commander/token
+docker compose exec -e NEBULA_COMMANDER_CONFIG_DIR=/data/nebula-commander ncclient \
+  ncclient networks --output-dir /data/nebula list            # note the network's name or id
+docker compose exec -e NEBULA_COMMANDER_CONFIG_DIR=/data/nebula-commander ncclient \
+  ncclient networks --output-dir /data/nebula remove NAME
 # set ENROLL_CODE to the new code in docker-compose.yml, then:
 docker compose up -d --force-recreate
 docker compose logs -f ncclient
 ```
 
-To move to a **different server**, change `NEBULA_COMMANDER_SERVER`, use either method above, then `docker compose up -d --force-recreate`.
+To move to a **different server** or make the container a different node, use the second method, and change `NEBULA_COMMANDER_SERVER` along with `ENROLL_CODE` before recreating.
 
 ## Troubleshooting
 
