@@ -14,7 +14,7 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Web UI** — React dashboard with OIDC (e.g. Keycloak) or dev token authentication
 - **Device client (ncclient)** — `pip install nebula-commander` for enroll and run; see [ncclient documentation](/docs/usage/ncclient/)
 
-## Status (as of v0.7.2)
+## Status (as of v0.8.2)
 
 ### What's implemented already
 
@@ -48,6 +48,9 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
   (iOS/Android via the official Mobile Nebula app). Only administrators can change a
   device's network settings: an elevated administrator on Windows, the `sudo`/`wheel`
   group on Linux
+- **One device in several networks** — a device can be enrolled in networks on
+  different servers at once, each with its own Nebula interface and listen port; the
+  desktop apps list every network and show this node's IP in each
 - **Revocation that holds**: revoking, deleting or re-enrolling a node blocklists its
   old certificate on every other node, and nodes keep running from their last config
   if the server is unreachable — see [Nodes](/docs/web-ui/nodes/#revoke-re-enroll-and-delete)
