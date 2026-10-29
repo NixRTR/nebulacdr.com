@@ -8,7 +8,7 @@ On Linux, three packages give you a GTK4/libadwaita desktop app plus a backgroun
 
 | Light | Dark |
 |-------|------|
-| ![Linux desktop app](/screenshots/apps/linux-status.png) | ![Linux desktop app in dark mode](/screenshots/dark/apps/linux-status.png) |
+| ![Linux desktop app](/screenshots/apps/linux-networks.png) | ![Linux desktop app in dark mode](/screenshots/dark/apps/linux-networks.png) |
 
 **What's included:**
 

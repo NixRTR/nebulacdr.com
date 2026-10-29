@@ -6,7 +6,7 @@ weight: 30
 
 On Windows the MSI installer sets up the ncclient CLI, a native windowed app, and a background Windows Service that does the actual work as `LocalSystem`. Any user can view status in the app; enrolling, changing settings or routes, and starting/stopping the service require running the app as administrator.
 
-![Nebula Commander Windows app](/screenshots/apps/windows-status.png)
+![Nebula Commander Windows app](/screenshots/apps/windows-networks.png)
 
 **What the installer includes:**
 

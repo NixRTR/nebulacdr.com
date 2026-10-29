@@ -6,7 +6,7 @@ weight: 40
 
 | Light | Dark |
 |-------|------|
-| ![Linux app Status tab](/screenshots/apps/linux-status.png) | ![Linux app Status tab in dark mode](/screenshots/dark/apps/linux-status.png) |
+| ![Linux app Networks tab, enrolled in two networks](/screenshots/apps/linux-networks.png) | ![Linux app Networks tab in dark mode](/screenshots/dark/apps/linux-networks.png) |
 
 On Linux, **Nebula Commander** (GTK4/libadwaita) is an unelevated desktop app for the background **ncclient** systemd service. The service does the actual work (polling for config and certs, running Nebula) as root, and exposes a system D-Bus API (`org.beardedtek.NebulaCommander1`) that the app talks to, authorized per call via polkit.
 
@@ -42,9 +42,11 @@ The app has three tabs in its header bar and follows the desktop's light/dark pr
 - **Add network**: enroll in a network with a server URL and code.
 - **Settings**: poll interval, **Accept split-horizon DNS** (both apply to every network), **Run on startup** (an XDG autostart entry for the app itself), and **Updates**. Saving restarts the service automatically so the new values take effect.
 
-| Enrollment | Settings |
-|------------|----------|
-| ![Linux app Enrollment tab](/screenshots/apps/linux-enroll.png) | ![Linux app Settings tab](/screenshots/apps/linux-settings.png) |
+| | Light | Dark |
+|-|-------|------|
+| A network | ![Linux app page for the home network](/screenshots/apps/linux-network.png) | ![Linux app page for the home network in dark mode](/screenshots/dark/apps/linux-network.png) |
+| Add network | ![Linux app Add network tab](/screenshots/apps/linux-add-network.png) | ![Linux app Add network tab in dark mode](/screenshots/dark/apps/linux-add-network.png) |
+| Settings | ![Linux app Settings tab](/screenshots/apps/linux-settings.png) | ![Linux app Settings tab in dark mode](/screenshots/dark/apps/linux-settings.png) |
 
 ## Subnet routes and exit nodes
 

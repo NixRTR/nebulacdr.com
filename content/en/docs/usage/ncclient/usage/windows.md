@@ -4,7 +4,7 @@ linkTitle: Windows App
 weight: 50
 ---
 
-![Windows app Status page](/screenshots/apps/windows-status.png)
+![Windows app Networks page, enrolled in two networks](/screenshots/apps/windows-networks.png)
 
 On Windows, **Nebula Commander** (WinUI 3) is a native windowed app for a background **Windows Service** (`NebulaCommanderService`). The service does the actual work (polling for config and certs, running Nebula, applying split-horizon DNS) as `LocalSystem`.
 
@@ -34,6 +34,8 @@ The service's own messages go to the Windows **Application** event log.
 
 This needs the app running as administrator. The service makes the enrollment request itself, stores the token, and starts the network right away instead of waiting for the next interval.
 
+![Windows app Add network page](/screenshots/apps/windows-add-network.png)
+
 To join another network, use **Add network** again with that network's code. One device can be in several networks, on different servers if needed. See [Several networks on one device](/docs/usage/ncclient/usage/networks/).
 
 **Don't enroll with `ncclient enroll` from a terminal** on an MSI install. The plain CLI writes to a per-user location the service never reads.
@@ -53,9 +55,9 @@ The side bar has **Networks** and **Add network**, with **Settings** pinned at t
 - **Add network**: enroll in a network with a server URL and code.
 - **Settings**: poll interval and **Split-horizon DNS**, which apply to every network. Under **Nebula** you can see the installed Nebula version, **Check for updates** against Nebula's GitHub releases, and **Install / update Nebula**: the service downloads the official release, verifies its SHA256 checksum, and installs the whole archive (`nebula.exe`, `nebula-cert.exe`, wintun) itself. The service installs Nebula automatically on first start, and there's no custom Nebula path. Under **Startup**, **Run on startup** opens the app to the tray when you sign in.
 
-| Enrollment | Settings |
-|------------|----------|
-| ![Windows app Enrollment page](/screenshots/apps/windows-enroll.png) | ![Windows app Settings page](/screenshots/apps/windows-settings.png) |
+| A network's page | Settings |
+|------------------|----------|
+| ![Windows app page for the home network](/screenshots/apps/windows-network.png) | ![Windows app Settings page](/screenshots/apps/windows-settings.png) |
 
 Closing the window minimizes it to the tray rather than exiting. Use the tray icon's **Open Nebula Commander** item to bring it back, or **Exit** to quit the app. The service keeps running either way: it starts automatically at boot, whether or not the app is open or anyone is signed in.
 
