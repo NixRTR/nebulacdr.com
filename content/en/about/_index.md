@@ -14,7 +14,7 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - **Web UI** — React dashboard with OIDC (e.g. Keycloak) or dev token authentication
 - **Device client (ncclient)** — `pip install nebula-commander` for enroll and run; see [ncclient documentation](/docs/usage/ncclient/)
 
-## Status (as of v0.8.3)
+## Status (as of v0.9.0)
 
 ### What's implemented already
 
@@ -62,6 +62,12 @@ Nebula Commander is a **self-hosted control plane** for [Nebula](https://github.
 - Lighthouse-based peer reachability monitoring and node offline detection
 - OIDC (e.g. Keycloak) or dev-token authentication, with step-up reauth required for
   sensitive actions (deletions, revocations)
+- **Two-factor login** with any authenticator app, on top of any sign-in provider:
+  optional and encouraged, or required for everyone with one setting — see
+  [Security](/docs/web-ui/security/)
+- **Server moves** — move an instance to a new domain, your own server or an IP
+  address and every device follows on its own, after checking the move is genuine
+  — see [Move server](/docs/web-ui/move/)
 - Audit logging, an invitation system, and multi-user management
 - Encryption at rest for certificates and keys
 - **Backup & export** — download the whole instance as one passphrase-encrypted

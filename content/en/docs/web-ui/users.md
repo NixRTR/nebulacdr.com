@@ -16,8 +16,9 @@ everyone else never sees this link.
 ## The user grid
 
 Each card shows a user's email, their **system role** badge (`system-admin` in red,
-`user` in gray), and how many networks they belong to. Click a card to open its
-details.
+`user` in gray), whether they use [two-factor login](/docs/web-ui/security/)
+(**2FA on** or **No 2FA**), and how many networks they belong to.
+Click a card to open its details.
 
 ## User details
 
@@ -37,6 +38,9 @@ of.
   email to confirm) and requires reauthentication, the same as deleting a network
   or a node. Deleting a user removes all their network permissions; it does not
   delete nodes they created.
+- **Reset 2FA** — for a user who lost their authenticator app. You sign in
+  again and enter your own two-factor code; the user then sets up two-factor
+  again at their next sign-in. See [Security](/docs/web-ui/security/#if-someone-loses-their-authenticator).
 
 System role is separate from per-network permissions: a plain `user` can still be
 a network owner with full control over their own networks — `system-admin` is

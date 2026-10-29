@@ -29,7 +29,9 @@ Everything needed to run the instance somewhere else:
   [Keeping devices working](#keeping-devices-working))
 
 Passwords aren't included. Sign-in is handled by your identity provider
-(for example Keycloak), not by Nebula Commander.
+(for example Keycloak), not by Nebula Commander. Two-factor settings aren't
+included either: after an import, everyone sets up
+[two-factor](/docs/web-ui/security/) again on the new server.
 
 ## Encryption
 
@@ -82,7 +84,7 @@ Import only works on a **fresh** instance, one with no networks or nodes yet.
    [NixOS](/docs/installation/nixos/)) and sign in as a system admin.
 2. Open **Backup & export** and click **Import from a file**.
 3. Sign in again, choose the export file and enter its passphrase.
-4. Check the summary, then point your devices at the new server (below).
+4. Check the summary, then move your devices to the new server (below).
 
 Everything is re-encrypted with the new instance's own encryption key. If
 anything goes wrong, the import is rolled back and nothing is changed.
@@ -104,7 +106,13 @@ anything goes wrong, the import is rolled back and nothing is changed.
 
 With **Keep enrolled devices working after a move** ticked (the default), the
 export includes the key that signed your devices' credentials. After importing,
-each device only needs the new server address:
+each device only needs the new server address.
+
+From v0.9.0, let the old server hand it out: start a
+[server move](/docs/web-ui/move/) on the old server and devices on ncclient
+0.9.0 or newer switch on their own.
+
+For older devices, set the address on the device by hand:
 
 ```sh
 # /etc/default/ncclient (Linux service) or the ncclient environment

@@ -32,6 +32,14 @@ Re-enroll when a device's token was lost or revoked, when you want the device to
 
 Enrolling a node again **invalidates that node's previous token** on the server. A running client notices on its next poll (it gets a `401`), then picks up the new token from disk without a restart. From v0.8.0, a code for the same node on the same server replaces that network's token, while a code from a **different server** (or a different node) adds a network next to the old one; remove the old one afterwards. The per-client pages spell out the exact steps, and a couple of clients (Docker and the NixOS module) need an extra step first.
 
+### When the server moves
+
+From v0.9.0, when an admin moves Nebula Commander to a new address, devices follow
+on their own after a waiting period (at least 1 hour, or 24 hours to another domain
+or an IP) and a few checks, with no re-enrollment. The device shows "Moving to ..."
+meanwhile. See [Move server](/docs/web-ui/move/#what-devices-do), including how to
+limit this on a device with `move_policy`.
+
 ### Subnet routes, exit nodes, and DNS
 
 - A [subnet router or exit node](/docs/usage/unsafe-routes/) assigned to a node is only **offered** to it. Each device has to accept it before using it.

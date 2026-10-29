@@ -11,7 +11,7 @@ All backend settings use the `NEBULA_COMMANDER_` prefix. Set them in the environ
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NEBULA_COMMANDER_DEBUG` | Enable debug mode (enables dev-token endpoint; do not use in production) | `false` |
-| `NEBULA_COMMANDER_API_DOCS_ENABLED` | From v0.8.4. Serve the interactive API docs at `/api/docs` (Swagger UI) and `/api/redoc`, with the schema at `/api/openapi.json`. Every API endpoint still requires authentication either way; set to `false` to hide the endpoint list and the server version from anyone who can reach the server. NixOS: `services.nebula-commander.apiDocs`. | `true` |
+| `NEBULA_COMMANDER_API_DOCS_ENABLED` | From v0.9.0. Serve the interactive API docs at `/api/docs` (Swagger UI) and `/api/redoc`, with the schema at `/api/openapi.json`. Every API endpoint still requires authentication either way; set to `false` to hide the endpoint list and the server version from anyone who can reach the server. NixOS: `services.nebula-commander.apiDocs`. | `true` |
 | `NEBULA_COMMANDER_UPDATE_CHECK_ENABLED` | Check GitHub for a newer release, shown as a notification in the About screen. Set to `false` to disable all outbound calls to github.com (air-gapped/privacy-conscious deployments). | `true` |
 
 ## Database
@@ -64,6 +64,16 @@ value — unlike most settings here, there's no insecure-but-working default.
 | `NEBULA_COMMANDER_CORS_ORIGINS` | Allowed CORS origins: `*` or comma-separated list. Include your public app URL. Using `*` with credentials is insecure. | `http://localhost:3000`, `http://localhost:5173` |
 | `NEBULA_COMMANDER_SESSION_HTTPS_ONLY` | Set session cookie to HTTPS-only (use true in production with HTTPS) | `false` |
 | `NEBULA_COMMANDER_ALLOWED_REDIRECT_HOSTS` | Allowed hosts for OAuth/OIDC redirects (comma-separated). When empty and PUBLIC_URL is set, derived from PUBLIC_URL. | — |
+
+## Two-factor login and server moves
+
+From v0.9.0. See [Security](/docs/web-ui/security/) and [Move server](/docs/web-ui/move/).
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEBULA_COMMANDER_REQUIRE_MFA` | Require every user to set up and use a two-factor (TOTP) code at sign-in. When `false`, two-factor is optional per user. | `false` |
+| `NEBULA_COMMANDER_MOVE_MIN_WAIT_HOURS` | Shortest wait an admin may pick before devices switch to a new server (up to 72). Devices add their own minimum on top: 1 hour within the same domain, 24 hours to another domain or an IP. | `1` |
+| `NEBULA_COMMANDER_MOVED_ONLY_FILE` | Moved-only mode after a server move: path to the `move-responder.json` downloaded from the Move page. When set, the backend only tells devices where the server moved (no database, no sign-in). | — |
 
 ## Certificates and device tokens
 
